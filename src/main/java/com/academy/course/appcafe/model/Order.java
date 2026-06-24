@@ -3,6 +3,7 @@ package com.academy.course.appcafe.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -24,7 +25,7 @@ public class Order extends DataEntity{
     private String paymentData;
 
     @Column
-    private Double totalCost;
+    private BigDecimal totalCost;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "employee_id")

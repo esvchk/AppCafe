@@ -21,6 +21,7 @@ public class Employee extends DataEntity{
 
     @Column
     private String passWord;
+
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @ManyToMany(cascade = {CascadeType.REFRESH,CascadeType.PERSIST,CascadeType.MERGE},

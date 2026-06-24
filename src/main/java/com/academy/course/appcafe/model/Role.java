@@ -20,4 +20,7 @@ public class Role extends DataEntity{
     @ManyToMany(mappedBy = "roles",fetch = FetchType.EAGER)
     Set<Employee> employees;
 
+    @ManyToMany(mappedBy = "roles",fetch = FetchType.EAGER)
+    Set<Discount> discounts;
+
 }

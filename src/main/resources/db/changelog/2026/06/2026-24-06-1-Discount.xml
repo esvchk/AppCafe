@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-5.0.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1782324690765-1" author="User">
+        <createTable tableName="discount">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_discount"/>
+            </column>
+            <column name="create_date_time" type="DATETIME"/>
+            <column name="update_date_time" type="DATETIME"/>
+            <column name="percent_of_discount" type="DECIMAL"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1782324690765-2" author="User">
+        <createTable tableName="discount_role">
+            <column name="discount_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_discount_role"/>
+            </column>
+            <column name="role_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_discount_role"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1782324690765-3" author="User">
+        <addForeignKeyConstraint baseColumnNames="discount_id" baseTableName="discount_role"
+                                 constraintName="fk_disrol_on_discount" referencedColumnNames="id"
+                                 referencedTableName="discount"/>
+    </changeSet>
+    <changeSet id="1782324690765-4" author="User">
+        <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="discount_role"
+                                 constraintName="fk_disrol_on_role" referencedColumnNames="id"
+                                 referencedTableName="role"/>
+    </changeSet>
+
+</databaseChangeLog>
