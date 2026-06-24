@@ -1,6 +1,7 @@
 package com.academy.course.appcafe.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.time.Instant;
@@ -15,13 +16,16 @@ import java.util.Set;
 @Entity
 @Table
 public class Employee extends DataEntity{
+
+    @NotBlank
     @Column
     private String login;
 
-
+    @NotBlank
     @Column
     private String passWord;
 
+    @NotBlank
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @ManyToMany(cascade = {CascadeType.REFRESH,CascadeType.PERSIST,CascadeType.MERGE},
@@ -31,6 +35,7 @@ public class Employee extends DataEntity{
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
+    @NotBlank
     @ToString.Exclude
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default

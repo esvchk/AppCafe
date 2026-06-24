@@ -1,6 +1,7 @@
 package com.academy.course.appcafe.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.util.HashSet;
@@ -15,6 +16,8 @@ import java.util.Set;
 @Table
 public class Category extends DataEntity {
 
+
+    @NotBlank
     @Column
     private String name;
 
