@@ -1,30 +1,59 @@
 package com.academy.course.appcafe.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 
-@Getter
-@Setter
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 @Entity
-@Table(name = "orders", schema = "internet_shop")
-public class Order {
-    @Id
-    @Column(name = "id", nullable = false)
-    private Integer id;
+@Table(name = "orders")
+public class Order extends DataEntity{
 
+    @ToString.Exclude
+    @OneToMany(mappedBy = "order",cascade = {CascadeType.MERGE,CascadeType.REMOVE},orphanRemoval = true,fetch = FetchType.LAZY)
+    @Builder.Default
+    private Set<OrderItem> orderItems = new HashSet<>();
 
-    @Column(name = "paymentData")
+    @Column
     private String paymentData;
 
-    @Column(name = "totalCost")
+    @Column
     private Double totalCost;
 
-    @Column(name = "isBought", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "employee_id")
+    private Employee employee;
+
+
+    @Column
     private Boolean isBought;
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Order order = (Order) o;
+        return Objects.equals(getId(),order.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
+    }
+
+    public void addItem(OrderItem orderItem){
+        if (this.getOrderItems()==null){
+            this.setOrderItems(new HashSet<>());
+        }
+        this.orderItems.add(orderItem);
+        orderItem.setOrder(this);
+    }
 
 
 }

@@ -1,37 +1,61 @@
 package com.academy.course.appcafe.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
-@Getter
-@Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 @Entity
-@Table(name = "employee", schema = "internet_shop")
-public class Employee {
-    @Id
-    @Column(name = "id", nullable = false)
-    private Integer id;
-
-    @Column(name = "createDateTime")
-    private Instant createDateTime;
-
-    @Column(name = "updateDateTime")
-    private Instant updateDateTime;
-
-    @Column(name = "login", nullable = false)
+@Table
+public class Employee extends DataEntity{
+    @Column
     private String login;
 
-    @Column(name = "passWord", nullable = false)
-    private String passWord;
 
-    @Column(name = "role", nullable = false)
-    private String role;
+    @Column
+    private String passWord;
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @ManyToMany(cascade = {CascadeType.REFRESH,CascadeType.PERSIST,CascadeType.MERGE},
+            fetch = FetchType.EAGER)
+    @JoinTable(name = "user_role",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
+    private Set<Order> orders = new HashSet<>();
+
+
+//    @Override
+//    public boolean equals(Object object) {
+//        if (object == null || getClass() != object.getClass()) return false;
+//        if (!super.equals(object)) return false;
+//        Employee employee = (Employee) object;
+//        return Objects.equals(employee.getId(), getId());
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(getId());
+//    }
+
+    public void addOrder(Order order){
+        if (this.orders == null) {
+            this.orders = new HashSet<>();
+        }
+        this.orders.add(order);
+        order.setEmployee(this);
+    }
 
 
 }

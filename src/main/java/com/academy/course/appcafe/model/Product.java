@@ -1,35 +1,60 @@
 package com.academy.course.appcafe.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
-@Setter
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 @Entity
-@Table(name = "product", schema = "internet_shop")
-public class Product {
-    @Id
-    @Column(name = "id", nullable = false)
-    private Integer id;
+@Table
+public class Product extends DataEntity{
 
-    @Column(name = "name")
+    @Column
     private String name;
 
-    @Column(name = "price")
+
+    @Column
     private Double price;
 
-    @Column(name = "info")
+    @Column
     private String info;
 
-    @Column(name = "isAvailable")
+
+    @Column
     private Boolean isAvailable;
 
-    @Column(name = "productLimit")
+    @Column
     private Integer productLimit;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
+
+    @OneToMany(mappedBy = "product",cascade = CascadeType.REMOVE,orphanRemoval = true)
+    private Set<OrderItem> orderItems = new HashSet<>();
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Product product = (Product) o;
+        return Objects.equals(getId(),product.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
+    }
 
 
 }

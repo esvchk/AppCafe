@@ -1,24 +1,55 @@
 package com.academy.course.appcafe.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 
-@Getter
-@Setter
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 @Entity
-@Table(name = "category", schema = "internet_shop")
-public class Category {
-    @Id
-    @Column(name = "id", nullable = false)
-    private Integer id;
+@Table
+public class Category extends DataEntity {
 
-
-    @Column(name = "name", nullable = false)
+    @Column
     private String name;
 
+    @ToString.Exclude
+    @OneToMany(mappedBy = "category",fetch = FetchType.LAZY,cascade = CascadeType.MERGE)
+    @Builder.Default
+    private Set<Product> products = new HashSet<>();
+
+
+    @Override
+    public boolean equals(Object object) {
+        if (object == null || getClass() != object.getClass()) return false;
+        if (!super.equals(object)) return false;
+        Category category = (Category) object;
+        return Objects.equals(getId(),category.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
+    }
+
+    public void addProduct(Product product){
+        if (this.getProducts() == null) {
+            this.setProducts(new HashSet<>());
+        }
+        this.products.add(product);
+        product.setCategory(this);
+    }
+    public void removeProduct(Product product){
+        if (this.getProducts() == null) {
+            this.setProducts(new HashSet<>());
+        }
+        this.products.remove(product);
+        product.setCategory(null);
+    }
 
 }
