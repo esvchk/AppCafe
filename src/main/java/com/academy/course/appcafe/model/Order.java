@@ -10,15 +10,21 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "category", schema = "internet_shop")
-public class Category {
+@Table(name = "orders", schema = "internet_shop")
+public class Order {
     @Id
     @Column(name = "id", nullable = false)
     private Integer id;
 
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "paymentData")
+    private String paymentData;
+
+    @Column(name = "totalCost")
+    private Double totalCost;
+
+    @Column(name = "isBought", nullable = false)
+    private Boolean isBought;
 
 
 }
