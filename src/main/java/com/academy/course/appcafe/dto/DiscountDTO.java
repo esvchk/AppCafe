@@ -19,5 +19,5 @@ public class DiscountDTO {
 
     private BigDecimal percentOfDiscount;
 
-    private Set<Role> roles;
+    private Set<RoleDTO> roles;
 }

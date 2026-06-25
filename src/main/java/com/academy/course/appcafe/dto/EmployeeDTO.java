@@ -18,7 +18,7 @@ public class EmployeeDTO {
 
     private String login;
 
-    private Set<Role> roles;
+    private Set<RoleDTO> roles;
 
     private Set<OrderDTO> orderDTOs;
 
