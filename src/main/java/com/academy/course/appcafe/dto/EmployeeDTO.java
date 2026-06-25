@@ -14,11 +14,11 @@ import java.util.Set;
 @AllArgsConstructor
 
 public class EmployeeDTO {
-    private Integer id;
+    private Long id;
 
     private String login;
 
-    private Role role;
+    private Set<Role> roles;
 
     private Set<OrderDTO> orderDTOs;
 

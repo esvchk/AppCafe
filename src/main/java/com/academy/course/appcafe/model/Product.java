@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -21,13 +22,11 @@ public class Product extends DataEntity{
     @Column
     private String name;
 
-
     @Column
-    private Double price;
+    private BigDecimal price;
 
     @Column
     private String info;
-
 
     @Column
     private Boolean isAvailable;

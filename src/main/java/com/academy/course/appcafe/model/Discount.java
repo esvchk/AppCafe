@@ -25,4 +25,7 @@ public class Discount extends DataEntity{
             joinColumns = @JoinColumn(name = "discount_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
+
+    @OneToMany(mappedBy = "discount",cascade = {CascadeType.MERGE,CascadeType.REFRESH})
+    private Set<OrderItem> orderItems;
 }

@@ -31,7 +31,6 @@ public class Order extends DataEntity{
     @JoinColumn(name = "employee_id")
     private Employee employee;
 
-
     @Column
     private Boolean isBought;
 

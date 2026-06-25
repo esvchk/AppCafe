@@ -15,6 +15,8 @@ import java.util.Set;
 @AllArgsConstructor
 public class DiscountDTO {
 
+    private Long id;
+
     private BigDecimal percentOfDiscount;
 
     private Set<Role> roles;

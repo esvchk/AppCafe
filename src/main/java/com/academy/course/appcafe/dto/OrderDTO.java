@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.Set;
 
 @Builder
@@ -13,13 +14,13 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderDTO {
-    private Integer id;
+    private Long id;
 
     private Set<OrderItemDTO> orderItemDTOS;
 
     private String paymentData;
 
-    private Double totalCost;
+    private BigDecimal totalCost;
 
     private Boolean isBought;
 }
