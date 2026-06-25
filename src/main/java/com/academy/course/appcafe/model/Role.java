@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Set;
 @Builder
 @AllArgsConstructor
@@ -17,10 +18,10 @@ public class Role extends DataEntity{
     @Column
     private String name;
 
-    @ManyToMany(mappedBy = "roles",fetch = FetchType.EAGER)
-    Set<Employee> employees;
+    @OneToMany(mappedBy = "role",fetch = FetchType.EAGER)
+    List<Employee> employees;
 
-    @ManyToMany(mappedBy = "roles",fetch = FetchType.EAGER)
-    Set<Discount> discounts;
+    @OneToOne(mappedBy = "role",fetch = FetchType.EAGER)
+    Discount discount;
 
 }

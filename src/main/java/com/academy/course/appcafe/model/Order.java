@@ -4,9 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Builder
 @AllArgsConstructor
@@ -19,7 +17,7 @@ public class Order extends DataEntity{
     @ToString.Exclude
     @OneToMany(mappedBy = "order",cascade = {CascadeType.MERGE,CascadeType.REMOVE},orphanRemoval = true,fetch = FetchType.LAZY)
     @Builder.Default
-    private Set<OrderItem> orderItems = new HashSet<>();
+    private List<OrderItem> orderItems = new ArrayList<>();
 
     @Column
     private String paymentData;
@@ -49,7 +47,7 @@ public class Order extends DataEntity{
 
     public void addItem(OrderItem orderItem){
         if (this.getOrderItems()==null){
-            this.setOrderItems(new HashSet<>());
+            this.setOrderItems(new ArrayList<>());
         }
         this.orderItems.add(orderItem);
         orderItem.setOrder(this);

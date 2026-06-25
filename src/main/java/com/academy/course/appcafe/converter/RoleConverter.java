@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Component
 public class RoleConverter implements Converter<Role, RoleDTO> {
-    private final EmployeeConverter employeeConverter;
     private final DiscountConverter discountConverter;
 
     @Override
@@ -19,12 +18,7 @@ public class RoleConverter implements Converter<Role, RoleDTO> {
         return RoleDTO.builder()
                 .id(source.getId())
                 .name(source.getName())
-                .employeeDTOS(source.getEmployees().stream()
-                        .map(employeeConverter::convert)
-                        .collect(Collectors.toSet()))
-                .discountDTOS(source.getDiscounts().stream()
-                        .map(discountConverter::convert)
-                        .collect(Collectors.toSet()))
+                .discountDTO(discountConverter.convert(source.getDiscount()))
                 .build();
     }
 }

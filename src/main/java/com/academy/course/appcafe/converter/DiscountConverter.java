@@ -12,16 +12,12 @@ import java.util.stream.Collectors;
 @Component
 public class DiscountConverter implements Converter<Discount, DiscountDTO> {
 
-    private final RoleConverter roleConverter;
 
     @Override
     public DiscountDTO convert(Discount source) {
         return DiscountDTO.builder()
                 .id(source.getId())
                 .percentOfDiscount(source.getPercentOfDiscount())
-                .roles(source.getRoles().stream()
-                        .map(roleConverter::convert)
-                        .collect(Collectors.toSet()))
                 .build();
     }
 }

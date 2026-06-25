@@ -17,5 +17,4 @@ public class CategoryDTO {
 
     private String name;
 
-    private Set<ProductDTO> productsDTO;
 }

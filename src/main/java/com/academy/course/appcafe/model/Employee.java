@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Builder
@@ -25,19 +27,15 @@ public class Employee extends DataEntity{
 
     @NotBlank
     @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    @ManyToMany(cascade = {CascadeType.REFRESH,CascadeType.PERSIST,CascadeType.MERGE},
-            fetch = FetchType.EAGER)
-    @JoinTable(name = "user_role",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "role_id")
+    private Role role;
 
     @NotBlank
     @ToString.Exclude
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
-    private Set<Order> orders = new HashSet<>();
+    private List<Order> orders = new ArrayList<>();
 
 
 //    @Override
@@ -55,7 +53,7 @@ public class Employee extends DataEntity{
 
     public void addOrder(Order order){
         if (this.orders == null) {
-            this.orders = new HashSet<>();
+            this.orders = new ArrayList<>();
         }
         this.orders.add(order);
         order.setEmployee(this);

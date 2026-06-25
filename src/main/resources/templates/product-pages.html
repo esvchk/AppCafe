@@ -1,0 +1,89 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+</head>
+
+<body>
+<table border="1">
+
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Info</th>
+        <th>IsAvailable</th>
+        <th>Limit</th>
+    </tr>
+
+    <tr th:each="product : ${productPage.getContent}">
+        <td th:utext="${product.id}">...</td>
+        <td th:utext="${product.name}">...</td>
+        <td th:utext="${product.price}">...</td>
+        <td th:utext="${product.info}">...</td>
+        <td th:utext="${product.isAvailable}">...</td>
+        <td th:utext="${product.productLimit}">...</td>
+<!--        <td>-->
+<!--            <a th:href="@{/deleteCar(id=${car.id})}">Delete </a>-->
+<!--            <a th:href="@{/editCar(id=${car.id})}">Edit </a>-->
+<!--        </td>-->
+    </tr>
+
+<!--    <form th:action="@{/addCar}"-->
+<!--          th:object="${newCar}" method="post">-->
+<!--        Name:-->
+<!--        <input type="text" th:field="*{name}"/>-->
+<!--        <br/>-->
+<!--        Type:-->
+<!--        <input type="text" th:field="*{type}"/>-->
+<!--        <br/>-->
+<!--        <input type="submit" value="Add car"/>-->
+<!--    </form>-->
+
+<!--    <form th:action="@{/findCar}"-->
+<!--          method="get">-->
+<!--        Identifier:-->
+<!--        <input type="text" name="id"/>-->
+<!--        <br/>-->
+<!--        <input type="submit" value="Find Car"/>-->
+<!--    </form>-->
+
+
+<!--    <form th:action="@{/byNameAndType}"-->
+<!--          method="get">-->
+<!--        Name:-->
+<!--        <input type="text" name="name"/>-->
+<!--        <br/>-->
+<!--        Type:-->
+<!--        <input type="text" name="type"/>-->
+<!--        <br/>-->
+<!--        <input type="submit" value="Find Car"/>-->
+<!--    </form>-->
+
+
+
+</table>
+
+<div>
+    <span th:if ="${productPage.hasPrevious()}">
+        <a th:href="@{/getProductPage(offset=${productPage.number - 1},size=${productPage.size})}">Back</a>
+    </span>
+    <th:block th:each="counter : ${#numbers.sequence(0,productPage.totalPages - 1)}">
+        <span th:if="${productPage.number == counter} " class="selected">[[${counter} + 1]] </span>
+        <span th:unless="${productPage.number == counter}">
+        <a th:href="@{/getProductPage(offset=${counter},size=${productPage.size})}">[[${counter} + 1]] </a>
+        </span>
+    </th:block>
+    <span th:if="${productPage.hasNext()}">
+        <a th:href="@{/getProductPage(offset=${productPage.number + 1},size = ${productPage.size})}">Forward</a>
+    </span>
+
+
+</div>
+
+
+</body>
+
+</html>

@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Component
 public class OrderConverter implements Converter<Order, OrderDTO> {
+
     private final OrderItemConverter orderItemConverter;
     @Override
     public OrderDTO convert(Order source) {
@@ -18,7 +19,7 @@ public class OrderConverter implements Converter<Order, OrderDTO> {
                 .id(source.getId())
                 .orderItemDTOS(source.getOrderItems().stream()
                         .map(orderItemConverter::convert)
-                        .collect(Collectors.toSet()))
+                        .collect(Collectors.toList()))
                 .paymentData(source.getPaymentData())
                 .totalCost(source.getTotalCost())
                 .isBought(source.getIsBought())

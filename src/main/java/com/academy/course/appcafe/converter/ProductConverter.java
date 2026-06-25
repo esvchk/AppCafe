@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-
 public class ProductConverter implements Converter<Product, ProductDTO> {
     private final CategoryConverter categoryConverter;
     @Override
@@ -20,7 +19,7 @@ public class ProductConverter implements Converter<Product, ProductDTO> {
                 .info(source.getInfo())
                 .productLimit(source.getProductLimit())
                 .isAvailable(source.getIsAvailable())
-                .categoryDTO(categoryConverter.convert(source.getCategory()))
+//                .categoryDTO(categoryConverter.convert(source.getCategory()))
                 .build();
     }
 }

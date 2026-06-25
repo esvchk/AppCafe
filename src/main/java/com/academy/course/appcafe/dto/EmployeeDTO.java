@@ -1,11 +1,11 @@
 package com.academy.course.appcafe.dto;
 
-import com.academy.course.appcafe.model.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Set;
 
 @Builder
@@ -18,9 +18,8 @@ public class EmployeeDTO {
 
     private String login;
 
-    private Set<RoleDTO> roles;
+    private RoleDTO roleDTO;
 
-    private Set<OrderDTO> orderDTOs;
-
+    private List<OrderDTO> orderDTOs;
 
 }

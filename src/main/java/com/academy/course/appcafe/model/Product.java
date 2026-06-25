@@ -7,9 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Builder
 @NoArgsConstructor
@@ -39,7 +37,7 @@ public class Product extends DataEntity{
     private Category category;
 
     @OneToMany(mappedBy = "product",cascade = CascadeType.REMOVE,orphanRemoval = true)
-    private Set<OrderItem> orderItems = new HashSet<>();
+    private List<OrderItem> orderItems = new ArrayList<>();
 
 
     @Override

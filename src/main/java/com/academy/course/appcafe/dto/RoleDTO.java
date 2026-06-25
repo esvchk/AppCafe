@@ -17,7 +17,5 @@ public class RoleDTO {
 
     private String name;
 
-    private Set<EmployeeDTO> employeeDTOS;
-
-    private Set<DiscountDTO> discountDTOS;
+    private DiscountDTO discountDTO;
 }

@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Builder
@@ -19,13 +20,9 @@ public class Discount extends DataEntity{
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @ManyToMany(cascade = {CascadeType.REFRESH,CascadeType.PERSIST,CascadeType.MERGE},
-            fetch = FetchType.EAGER)
-    @JoinTable(name = "discount_role",
-            joinColumns = @JoinColumn(name = "discount_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<>();
+    @OneToOne(fetch = FetchType.EAGER)
+    private Role role ;
 
     @OneToMany(mappedBy = "discount",cascade = {CascadeType.MERGE,CascadeType.REFRESH})
-    private Set<OrderItem> orderItems;
+    private List<OrderItem> orderItems;
 }

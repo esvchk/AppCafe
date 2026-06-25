@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Set;
 @Data
 @Builder
@@ -12,7 +13,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class OrderProductsDTO {
 
-    Set<ProductDTO> products;
+    List<ProductDTO> products;
 
     OrderDTO orderDTO;
 }

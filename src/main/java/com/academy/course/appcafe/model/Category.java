@@ -4,9 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Builder
 @AllArgsConstructor
@@ -22,9 +20,8 @@ public class Category extends DataEntity {
     private String name;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "category",fetch = FetchType.LAZY,cascade = CascadeType.MERGE)
-    @Builder.Default
-    private Set<Product> products = new HashSet<>();
+    @OneToMany(mappedBy = "category",fetch = FetchType.LAZY)
+    private List<Product> products = new ArrayList<>();
 
 
     @Override
@@ -42,14 +39,14 @@ public class Category extends DataEntity {
 
     public void addProduct(Product product){
         if (this.getProducts() == null) {
-            this.setProducts(new HashSet<>());
+            this.setProducts(new ArrayList<>());
         }
         this.products.add(product);
         product.setCategory(this);
     }
     public void removeProduct(Product product){
         if (this.getProducts() == null) {
-            this.setProducts(new HashSet<>());
+            this.setProducts(new ArrayList<>());
         }
         this.products.remove(product);
         product.setCategory(null);

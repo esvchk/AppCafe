@@ -20,12 +20,10 @@ public class EmployeeConverter implements Converter<Employee, EmployeeDTO> {
         return EmployeeDTO.builder()
                 .id(source.getId())
                 .login(source.getLogin())
-                .roles(source.getRoles().stream()
-                        .map(roleConverter::convert)
-                        .collect(Collectors.toSet()))
+                .roleDTO(roleConverter.convert(source.getRole()))
                 .orderDTOs(source.getOrders().stream()
                         .map(orderConverter::convert)
-                        .collect(Collectors.toSet()))
+                        .collect(Collectors.toList()))
                 .build();
     }
 }

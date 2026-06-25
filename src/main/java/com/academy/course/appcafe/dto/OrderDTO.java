@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Set;
 
 @Builder
@@ -16,7 +17,7 @@ import java.util.Set;
 public class OrderDTO {
     private Long id;
 
-    private Set<OrderItemDTO> orderItemDTOS;
+    private List<OrderItemDTO> orderItemDTOS;
 
     private String paymentData;
 
