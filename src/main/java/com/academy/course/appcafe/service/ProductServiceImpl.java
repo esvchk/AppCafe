@@ -1,5 +1,6 @@
 package com.academy.course.appcafe.service;
 
+import com.academy.course.appcafe.converter.ProductConverter;
 import com.academy.course.appcafe.dto.CategoryDTO;
 import com.academy.course.appcafe.dto.ProductDTO;
 import com.academy.course.appcafe.model.Product;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -24,7 +26,7 @@ import java.util.stream.Collectors;
 public class ProductServiceImpl implements ProductService{
 
     private final ProductRepository productRepository;
-    private final ConversionService conversionService;
+    private final ProductConverter productConverter;
 
     @Override
     public Set<ProductDTO> getAvailableProducts() {
@@ -39,34 +41,49 @@ public class ProductServiceImpl implements ProductService{
         Pageable pageable = PageRequest.of(offset,size);
         Page<Product> page = productRepository.findAll(pageable);
         List<ProductDTO> productDTOS = page.getContent().stream()
-                .map(product -> conversionService.convert(product, ProductDTO.class))
+                .map(productConverter::toProductDto)
                 .collect(Collectors.toList());
 
         return new PageImpl<>(productDTOS,pageable,page.getTotalElements());
     }
 
     @Override
-    public void setProductLimit(Integer id, Integer limit) throws SQLException {
+    public void setProductLimit(Long id, Integer limit) throws SQLException {
+
 
     }
 
     @Override
-    public void updateProduct(Integer oldValueId, ProductDTO newValue) throws SQLException {
+    public void updateProduct(Long oldValueId,ProductDTO newValue) throws SQLException {
+        if (productRepository.existsById(oldValueId)) {
+            Product oldProduct = productRepository.getReferenceById(oldValueId);
+            oldProduct.setName(newValue.getName());
+            oldProduct.setPrice(newValue.getPrice());
+            oldProduct.setInfo(newValue.getInfo());
+            oldProduct.setIsAvailable(newValue.getIsAvailable());
+            oldProduct.setProductLimit(newValue.getProductLimit());
+            productRepository.save(productConverter.toEntityProduct(newValue));
+        }
+//              logger.info("Product with id {} has been successfully updated", oldValueId);
 
     }
 
     @Override
-    public void addProduct(ProductDTO productDTO) throws SQLException {
-
+    public void addProduct(ProductDTO productDTO) {
+        productRepository.save(productConverter.toEntityProduct(productDTO));
+//        logger.info("New product {} has been successfully added", productDTO);
     }
 
     @Override
-    public void deleteProduct(Integer id) throws SQLException {
-
+    public void deleteProduct(Long id) throws SQLException {
+        productRepository.deleteById(id);
     }
 
     @Override
-    public ProductDTO getProductById(Integer id) throws SQLException {
+    public ProductDTO getProductById(Long id) throws SQLException {
+        if (productRepository.existsById(id)) {
+            return productConverter.toProductDto(productRepository.getReferenceById(id));
+        }
         return null;
     }
 

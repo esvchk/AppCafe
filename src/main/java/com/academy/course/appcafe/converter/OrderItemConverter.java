@@ -13,7 +13,7 @@ public class OrderItemConverter implements Converter<OrderItem, OrderItemDTO> {
     public OrderItemDTO convert(OrderItem source) {
         return OrderItemDTO.builder()
                 .id(source.getId())
-                .productDTO(productConverter.convert(source.getProduct()))
+//                .productDTO(productConverter.convert(source.getProduct()))
                 .quantity(source.getProductQuantity())
                 .discount(source.getDiscount())
                 .build();

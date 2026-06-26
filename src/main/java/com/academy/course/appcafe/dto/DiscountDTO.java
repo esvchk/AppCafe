@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.util.Set;
+import java.util.List;
 
 @Builder
 @Data
@@ -18,5 +18,6 @@ public class DiscountDTO {
     private Long id;
 
     private BigDecimal percentOfDiscount;
+
 
 }

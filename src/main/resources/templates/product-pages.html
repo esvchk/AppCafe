@@ -25,22 +25,31 @@
         <td th:utext="${product.info}">...</td>
         <td th:utext="${product.isAvailable}">...</td>
         <td th:utext="${product.productLimit}">...</td>
-<!--        <td>-->
-<!--            <a th:href="@{/deleteCar(id=${car.id})}">Delete </a>-->
-<!--            <a th:href="@{/editCar(id=${car.id})}">Edit </a>-->
-<!--        </td>-->
+        <td>
+            <a th:href="@{/deleteProduct(id=${product.id})}">Delete </a>
+            <a th:href="@{/editProduct(id=${product.id})}">Edit </a>
+        </td>
     </tr>
 
-<!--    <form th:action="@{/addCar}"-->
-<!--          th:object="${newCar}" method="post">-->
-<!--        Name:-->
-<!--        <input type="text" th:field="*{name}"/>-->
-<!--        <br/>-->
-<!--        Type:-->
-<!--        <input type="text" th:field="*{type}"/>-->
-<!--        <br/>-->
-<!--        <input type="submit" value="Add car"/>-->
-<!--    </form>-->
+    <form th:action="@{/addProduct}"
+          th:object="${newProduct}" method="post">
+        Name:
+        <input type="text" th:field="*{name}"/>
+        <br/>
+        Price:
+        <input type="number" th:field="*{price}"/>
+        <br/>
+        Info:
+        <input type="text" th:field="*{info}"/>
+        <br/>
+        IsAvailable:
+        <input type="text" th:field="*{isAvailable}"/>
+        <br/>
+        Limit:
+        <input type="number" th:field="*{productLimit}"/>
+        <br/>
+        <input type="submit" value="Add product"/>
+    </form>
 
 <!--    <form th:action="@{/findCar}"-->
 <!--          method="get">-->

@@ -15,11 +15,11 @@ public interface ProductService {
 
     Set<ProductDTO> getAvailableProducts();
     Page<ProductDTO> getPaginatedListOfProducts(int offset, int size);
-    void setProductLimit(Integer id,Integer limit) throws SQLException;
-    void updateProduct(Integer oldValueId,ProductDTO newValue) throws SQLException;
+    void setProductLimit(Long id,Integer limit) throws SQLException;
+    void updateProduct(Long oldValueId,ProductDTO newValue) throws SQLException;
     void addProduct(ProductDTO productDTO) throws SQLException;
-    void deleteProduct(Integer id) throws SQLException;
-    ProductDTO getProductById(Integer id) throws SQLException;
+    void deleteProduct(Long id) throws SQLException;
+    ProductDTO getProductById(Long id) throws SQLException;
     Set<ProductDTO> findProductsByName(String name);
     Set<ProductDTO> getAllProducts();
     Set<ProductDTO> getAllProductsFromCategory(CategoryDTO categoryDTO) throws SQLException;
