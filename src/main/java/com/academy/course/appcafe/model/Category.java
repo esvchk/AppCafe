@@ -15,7 +15,6 @@ import java.util.*;
 public class Category extends DataEntity {
 
 
-    @NotBlank
     @Column
     private String name;
 

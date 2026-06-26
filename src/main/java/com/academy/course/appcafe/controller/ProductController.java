@@ -55,4 +55,18 @@ public class ProductController {
         productService.updateProduct(newValue.getId(), newValue);
         return "redirect:/getProductPage";
     }
+
+    @RequestMapping(value = "/findByName",method = RequestMethod.GET)
+    public String findByName(@RequestParam("name")String name,
+                             Model model){
+        model.addAttribute("productsByName",productService.findProductsByName(name));
+        model.addAttribute("name",name);
+        return "productByName-results";
+    }
+    @RequestMapping(value = "/findById",method = RequestMethod.GET)
+    public String findById(@RequestParam("id")Long id,
+                           Model model) throws SQLException {
+        model.addAttribute("productById",productService.getProductById(id));
+        return "productById-results";
+    }
 }

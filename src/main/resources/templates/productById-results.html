@@ -1,0 +1,45 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Results</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+</head>
+<h1>Results</h1>
+<body>
+<table border="1">
+
+    <th:block th:value="${productById}">
+        <label> Results </label>
+        <br>
+        <label>Id:</label>
+        <span th:text="${productById.id}"></span>
+        <br>
+        <label>Name:</label>
+        <span th:text="${productById.name}"></span>
+        <br>
+        <label>Price:</label>
+        <span th:text="${productById.price}"></span>
+        <br>
+        <label>IsAvailable:</label>
+        <span th:text="${productById.isAvailable}"></span>
+        <br>
+        <label>Info:</label>
+        <span th:text="${productById.info}"></span>
+        <br>
+        <label>Limit:</label>
+        <span th:text="${productById.productLimit}"></span>
+        <br>
+        <label>Category:</label>
+        <span th:text="${productById.categoryDTO != null ? productById.categoryDTO.name : 'Without category' }"></span>
+        <br>
+    </th:block>
+    <br>
+    <a th:href="@{/getProductPage}">Home</a>
+    <a th:href="@{/editProduct(id=${productById.id})}">Edit</a>
+    <a th:href="@{/deleteProduct(id=${productById.id})}">Delete</a>
+
+
+</table>
+</body>
+</html>

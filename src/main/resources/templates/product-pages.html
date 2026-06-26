@@ -2,9 +2,11 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Welcome</title>
+    <title>Product List</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
 </head>
+
+<h1>Product List</h1>
 
 <body>
 <table border="1">
@@ -16,6 +18,7 @@
         <th>Info</th>
         <th>IsAvailable</th>
         <th>Limit</th>
+        <th>Category</th>
     </tr>
 
     <tr th:each="product : ${productPage.getContent}">
@@ -25,6 +28,7 @@
         <td th:utext="${product.info}">...</td>
         <td th:utext="${product.isAvailable}">...</td>
         <td th:utext="${product.productLimit}">...</td>
+        <td th:utext="${product.categoryDTO != null ? product.categoryDTO.name : 'Without category' }">...</td>
         <td>
             <a th:href="@{/deleteProduct(id=${product.id})}">Delete </a>
             <a th:href="@{/editProduct(id=${product.id})}">Edit </a>
@@ -48,35 +52,43 @@
         Limit:
         <input type="number" th:field="*{productLimit}"/>
         <br/>
+
         <input type="submit" value="Add product"/>
     </form>
 
-<!--    <form th:action="@{/findCar}"-->
-<!--          method="get">-->
-<!--        Identifier:-->
-<!--        <input type="text" name="id"/>-->
-<!--        <br/>-->
-<!--        <input type="submit" value="Find Car"/>-->
-<!--    </form>-->
+    <br>
+    <br>
+    <br>
 
+        <form th:action="@{/findById}"
+              method="get">
+            Identifier:
+            <input type="text" name="id"/>
+            <br/>
+            <input type="submit" value="Find Product"/>
+        </form>
 
-<!--    <form th:action="@{/byNameAndType}"-->
-<!--          method="get">-->
-<!--        Name:-->
-<!--        <input type="text" name="name"/>-->
-<!--        <br/>-->
-<!--        Type:-->
-<!--        <input type="text" name="type"/>-->
-<!--        <br/>-->
-<!--        <input type="submit" value="Find Car"/>-->
-<!--    </form>-->
+    <br>
+    <br>
+    <br>
 
+    <form th:action="@{/findByName}"
+          method="get">
+        Name:
+        <input type="text" name="name"/>
+        <br/>
+        <input type="submit" value="Find Product"/>
+    </form>
+
+    <br>
+    <br>
+    <br>
 
 
 </table>
 
 <div>
-    <span th:if ="${productPage.hasPrevious()}">
+    <span th:if="${productPage.hasPrevious()}">
         <a th:href="@{/getProductPage(offset=${productPage.number - 1},size=${productPage.size})}">Back</a>
     </span>
     <th:block th:each="counter : ${#numbers.sequence(0,productPage.totalPages - 1)}">

@@ -29,8 +29,8 @@ public class ProductServiceImpl implements ProductService{
     private final ProductConverter productConverter;
 
     @Override
-    public Set<ProductDTO> getAvailableProducts() {
-        return Set.of();
+    public List<ProductDTO> getAvailableProducts() {
+        return null;
     }
 
     @Override
@@ -88,17 +88,20 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public Set<ProductDTO> findProductsByName(String name) {
-        return Set.of();
+    public List<ProductDTO> findProductsByName(String name) {
+        return productRepository.findAllByName(name).stream()
+                .map(productConverter::toProductDto)
+                .toList();
+
     }
 
     @Override
-    public Set<ProductDTO> getAllProducts() {
-        return Set.of();
+    public List<ProductDTO> getAllProducts() {
+        return null;
     }
 
     @Override
-    public Set<ProductDTO> getAllProductsFromCategory(CategoryDTO categoryDTO) throws SQLException {
-        return Set.of();
+    public List<ProductDTO> getAllProductsFromCategory(CategoryDTO categoryDTO) throws SQLException {
+        return null;
     }
 }

@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-
+<h1>Edit Product</h1>
 <div>
     <form th:action="@{/updateProduct(id=${product.id})}"
           th:object="${product}" method="post">
