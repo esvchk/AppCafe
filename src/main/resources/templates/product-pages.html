@@ -32,6 +32,7 @@
         <td>
             <a th:href="@{/deleteProduct(id=${product.id})}">Delete </a>
             <a th:href="@{/editProduct(id=${product.id})}">Edit </a>
+            <a th:href="@{/editLimit(id=${product.id})}">Set Limit </a>
         </td>
     </tr>
 
@@ -47,7 +48,8 @@
         <input type="text" th:field="*{info}"/>
         <br/>
         IsAvailable:
-        <input type="text" th:field="*{isAvailable}"/>
+        <input type="radio"  value="true" th:field="*{isAvailable}" required> Yes
+        <input type="radio" value="false" th:field="*{isAvailable}" required> No<br>
         <br/>
         Limit:
         <input type="number" th:field="*{productLimit}"/>

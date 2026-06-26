@@ -19,7 +19,7 @@ public class ProductController {
     private final ProductService productService;
 
     @RequestMapping(value = "/getProductPage", method = RequestMethod.GET)
-    public String paginatedProducts(@RequestParam(value = "offset", defaultValue = "1") int offset,
+    public String paginatedProducts(@RequestParam(value = "offset", defaultValue = "0") int offset,
                                     @RequestParam(value = "size", defaultValue = "5") int size, Model model) {
 
         Page<ProductDTO> productPage = productService.getPaginatedListOfProducts(offset, size);
@@ -67,6 +67,19 @@ public class ProductController {
     public String findById(@RequestParam("id")Long id,
                            Model model) throws SQLException {
         model.addAttribute("productById",productService.getProductById(id));
-        return "productById-results";
+        return "productById";
     }
+    @RequestMapping(value = "/setProductLimit",method = RequestMethod.POST)
+    public String setProductLimit(@RequestParam("id") Long id,
+                                  @RequestParam("productLimit") Integer limit) throws SQLException {
+        productService.setProductLimit(id,limit);
+        return "redirect:/getProductPage";
+    }
+    @RequestMapping(value = "/editLimit",method = RequestMethod.GET)
+    public String showLimitForm(@RequestParam("id")Long id,
+                                Model model) throws SQLException {
+        model.addAttribute("productWithLimit",productService.getProductById(id));
+        return "limit-form";
+    }
+
 }

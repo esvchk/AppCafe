@@ -49,8 +49,17 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public void setProductLimit(Long id, Integer limit) throws SQLException {
-
-
+        if (productRepository.existsById(id)) {
+            Product product = productRepository.getReferenceById(id);
+            if (limit == null) {
+                product.setProductLimit(null);
+            } else {
+                product.setProductLimit(limit);
+                product.setIsAvailable(!product.getProductLimit().equals(0));
+            }
+            productRepository.save(product);
+        }
+//        logger.info("Product limit has been successfully installed");
     }
 
     @Override

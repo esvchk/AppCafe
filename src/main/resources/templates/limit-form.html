@@ -1,0 +1,14 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<h1>Edit Product</h1>
+<div>
+    <form th:action="@{/setProductLimit(id=${productWithLimit.id})}"
+          th:object="${productWithLimit}" method="post">
+        Limit:
+        <input type="number" th:field="*{productLimit}"/>
+        <br/>
+        <input type="submit" value="Edit product"/>
+    </form>
+    <a th:href="@{/getProductPage}">Home</a>
+</div>
+</html>
