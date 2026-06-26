@@ -23,4 +23,6 @@ public class OrderDTO {
 
     private Boolean isBought;
 
+    private EmployeeDTO employeeDTO;
+
 }

@@ -16,6 +16,8 @@ public class OrderItemDTO {
 
     private ProductDTO productDTO;
 
+    private OrderDTO orderDTO;
+
     private Integer quantity;
 
     private Discount discount;

@@ -18,8 +18,8 @@ public class EmployeeDTO {
 
     private String login;
 
-    private RoleDTO roleDTO;
+    private List<RoleDTO> roleDTOS;
 
-    private List<OrderDTO> orderDTOs;
+    private List<OrderDTO> orderDTOS;
 
 }

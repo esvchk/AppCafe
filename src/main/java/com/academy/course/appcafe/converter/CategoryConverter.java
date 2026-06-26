@@ -4,22 +4,21 @@ import com.academy.course.appcafe.dto.CategoryDTO;
 import com.academy.course.appcafe.model.Category;
 import com.academy.course.appcafe.model.DataEntity;
 import lombok.RequiredArgsConstructor;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 
 import java.util.stream.Collectors;
 
-@Component
-@RequiredArgsConstructor
-public class CategoryConverter implements Converter<Category,CategoryDTO> {
+@Mapper(componentModel = "spring",uses = ProductConverter.class)
+public interface CategoryConverter {
 
+    @Mapping(source = "products",target = "productDTOS")
+    CategoryDTO toCategoryDTO(Category category);
 
-    @Override
-    public CategoryDTO convert(Category source) {
-        return CategoryDTO.builder()
-                .id(source.getId())
-                .name(source.getName())
-                .build();
-    }
+    @Mapping(source = "productDTOS",target = "products")
+    Category toCategoryEntity(CategoryDTO categoryDTO);
+
 }

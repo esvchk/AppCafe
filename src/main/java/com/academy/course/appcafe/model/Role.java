@@ -18,10 +18,10 @@ public class Role extends DataEntity{
     @Column
     private String name;
 
-    @OneToMany(mappedBy = "role",fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "roles",fetch = FetchType.EAGER)
     List<Employee> employees;
 
-    @OneToOne(mappedBy = "role",fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "role",fetch = FetchType.EAGER,cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.REMOVE})
     Discount discount;
 
 }

@@ -1,21 +1,21 @@
 package com.academy.course.appcafe.converter;
 
+import com.academy.course.appcafe.dto.OrderDTO;
 import com.academy.course.appcafe.dto.OrderItemDTO;
 import com.academy.course.appcafe.model.OrderItem;
 import lombok.RequiredArgsConstructor;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
-@RequiredArgsConstructor
-@Component
-public class OrderItemConverter implements Converter<OrderItem, OrderItemDTO> {
-    private final ProductConverter productConverter;
-    @Override
-    public OrderItemDTO convert(OrderItem source) {
-        return OrderItemDTO.builder()
-                .id(source.getId())
-//                .productDTO(productConverter.convert(source.getProduct()))
-                .quantity(source.getProductQuantity())
-                .discount(source.getDiscount())
-                .build();
-    }
+@Mapper(componentModel = "spring")
+public interface OrderItemConverter{
+
+    @Mapping(source = "product",target = "productDTO")
+    @Mapping(source = "order",target = "orderDTO")
+    OrderItemDTO toOrderItemDTO(OrderItem orderItem);
+
+    @Mapping(source = "productDTO",target = "product")
+    @Mapping(source = "orderDTO",target = "order")
+    OrderItem toOrderItemEntity(OrderItemDTO orderItemDTO);
 }
