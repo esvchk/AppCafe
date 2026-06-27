@@ -19,7 +19,7 @@ public class OrderDTO {
 
     private String paymentData;
 
-    private BigDecimal totalCost;
+    private Double totalCost;
 
     private Boolean isBought;
 

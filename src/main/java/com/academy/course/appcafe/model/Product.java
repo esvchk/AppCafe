@@ -22,7 +22,7 @@ public class Product extends DataEntity{
     private String name;
 
     @Column
-    private BigDecimal price;
+    private Double price;
 
     @Column
     private String info;

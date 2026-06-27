@@ -29,8 +29,17 @@ public class ProductServiceImpl implements ProductService{
     private final ProductConverter productConverter;
 
     @Override
-    public List<ProductDTO> getAvailableProducts() {
-        return null;
+    public Page<ProductDTO> getAvailableProducts(int page,int size) {
+        if (page < 0 || size < 1) {
+            return Page.empty();
+        }
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Product> availableProductsPage = productRepository.findAllByIsAvailableTrue(true,pageable);
+        List<ProductDTO> productDTOS = availableProductsPage.getContent().stream()
+                .map(productConverter::toProductDto)
+                .toList();
+
+        return new PageImpl<>(productDTOS,pageable,availableProductsPage.getTotalElements());
     }
 
     @Override
@@ -106,7 +115,9 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public List<ProductDTO> getAllProducts() {
-        return null;
+        return productRepository.findAll().stream()
+                .map(productConverter::toProductDto)
+                .toList();
     }
 
     @Override

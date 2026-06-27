@@ -23,7 +23,7 @@ public class Order extends DataEntity{
     private String paymentData;
 
     @Column
-    private BigDecimal totalCost;
+    private Double totalCost;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "employee_id")

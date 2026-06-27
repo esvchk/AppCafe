@@ -14,8 +14,8 @@ import java.util.Set;
 
 public interface ProductService {
 
-    List<ProductDTO> getAvailableProducts();
-    Page<ProductDTO> getPaginatedListOfProducts(int offset, int size);
+    Page<ProductDTO> getAvailableProducts(int page,int size);
+    Page<ProductDTO> getPaginatedListOfProducts(int page, int size);
     void setProductLimit(Long id,Integer limit) throws SQLException;
     void updateProduct(Long oldValueId,ProductDTO newValue) throws SQLException;
     void addProduct(ProductDTO productDTO) throws SQLException;

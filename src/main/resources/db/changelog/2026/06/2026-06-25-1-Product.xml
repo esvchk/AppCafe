@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-5.0.xsd"
         objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
-    <changeSet id="1782388622621-1" author="User">
+    <changeSet id="1782569237516-1" author="User">
         <createTable tableName="product">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_product"/>
@@ -13,41 +13,17 @@
             <column name="create_date_time" type="DATETIME"/>
             <column name="update_date_time" type="DATETIME"/>
             <column name="name" type="VARCHAR(255)"/>
-            <column name="price" type="DECIMAL"/>
+            <column name="price" type="DOUBLE"/>
             <column name="info" type="VARCHAR(255)"/>
-            <column name="is_available" type="BIT"/>
+            <column name="is_available" type="bit"/>
             <column name="product_limit" type="INT"/>
             <column name="category_id" type="BIGINT"/>
         </createTable>
     </changeSet>
-    <changeSet id="1782388622621-2" author="User">
+    <changeSet id="1782569237516-2" author="User">
         <addForeignKeyConstraint baseColumnNames="category_id" baseTableName="product"
                                  constraintName="FK_PRODUCT_ON_CATEGORY" referencedColumnNames="id"
                                  referencedTableName="category"/>
-    </changeSet>
-    <changeSet id="1782060719069-1" author="esvchk">
-        <sql> INSERT INTO product (id,name, price, info, is_available, product_limit)
-              VALUES (1,'Cappuccino', 8.4 , 'Small', true,null),
-                     (2,'Americano', 7.1 , 'Large', false,2),
-                     (3,'Latte', 7.8 , 'Small', true,null),
-                     (4,'Flat white', 9 , 'Small', false,null),
-                     (5,'Bumble', 9.5 , 'Small', false,10),
-                     (6,'Ice-latte', 10 , 'Large', true,20),
-                     (7,'Matcha-latte', 11 , 'Small', true,null),
-                     (8,'Espresso-tonic',11.5 , 'Large', true,null),
-                     (9,'Matcha-tonic', 12.2 , 'Small', true,null),
-                     (10,'Ice-matcha-latte', 13 , 'Large', true,3),
-                     (11,'Lemonade orange', 10.8 , 'Small', true,null),
-                     (12,'Lemonade cherry', 12.4 , 'Large', true,null),
-                     (13,'Lemonade grape', 14.4 , 'Large', false,12),
-                     (14,'Cacao', 7.5 , 'Small', true,null),
-                     (15,'Raf coffee', 9.9 , 'Large', false,null),
-                     (16,'Milkshake', 15.0 , 'Banana', true,3),
-                     (17,'Milkshake', 14.5 , 'Chocolate', false,0),
-                     (18,'Milkshake', 15.5 , 'Strawberry', true,7),
-                     (19,'Juice', 12.1 , 'Orange', true,1),
-                     (20,'Juice', 13.1 , 'Grapefruit', true,1);
-        </sql>
     </changeSet>
 
 </databaseChangeLog>
