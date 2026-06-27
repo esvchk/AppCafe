@@ -27,6 +27,7 @@ public class Employee extends DataEntity{
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
+    @Builder.Default
     @ManyToMany(cascade = {CascadeType.REFRESH,CascadeType.PERSIST,CascadeType.MERGE},
             fetch = FetchType.EAGER)
     @JoinTable(name = "employee_role",
@@ -34,7 +35,6 @@ public class Employee extends DataEntity{
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private List<Role> roles = new ArrayList<>();
 
-    @NotBlank
     @ToString.Exclude
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
@@ -60,6 +60,14 @@ public class Employee extends DataEntity{
         }
         this.orders.add(order);
         order.setEmployee(this);
+    }
+
+    public void addRole(Role role){
+        if (this.roles == null) {
+            this.roles = new ArrayList<>();
+        }
+        this.roles.add(role);
+        role.getEmployees().add(this);
     }
 
 

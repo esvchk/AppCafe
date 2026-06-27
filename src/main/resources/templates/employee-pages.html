@@ -48,6 +48,21 @@
 <!--        <input type="submit" value="Add product"/>-->
 <!--    </form>-->
 
+    <form th:action="@{/registerEmployee}"
+          th:object="${requestedEmployee}" method="post">
+        Login:
+        <input type="text" th:field="*{login}"/>
+        <br/>
+        Password:
+        <input type="text" th:field="*{password}"/>
+        <br/>
+        Roles:
+        <input type="text" th:field="*{roleNames}"/>
+        <br/>
+
+        <input type="submit" value="Register Employee"/>
+    </form>
+
     <br>
     <br>
     <br>

@@ -1,6 +1,7 @@
 package com.academy.course.appcafe.converter;
 
 import com.academy.course.appcafe.dto.EmployeeDTO;
+import com.academy.course.appcafe.dto.EmployeeRequest;
 import com.academy.course.appcafe.model.Employee;
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.Mapper;
@@ -23,8 +24,6 @@ public interface EmployeeConverter  {
     @Mapping(source = "roleDTOS",target = "roles")
     @Mapping(source = "orderDTOS",target = "orders")
     Employee toEntityEmployee(EmployeeDTO employeeDTO);
-
-
 
 
 }

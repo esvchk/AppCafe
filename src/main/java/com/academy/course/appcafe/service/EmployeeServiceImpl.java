@@ -1,14 +1,17 @@
 package com.academy.course.appcafe.service;
 
+import com.academy.course.appcafe.converter.DiscountConverter;
 import com.academy.course.appcafe.converter.EmployeeConverter;
 import com.academy.course.appcafe.converter.OrderConverter;
 import com.academy.course.appcafe.converter.RoleConverter;
 import com.academy.course.appcafe.dto.EmployeeDTO;
+import com.academy.course.appcafe.dto.EmployeeRequest;
 import com.academy.course.appcafe.dto.OrderDTO;
 import com.academy.course.appcafe.dto.RoleDTO;
 import com.academy.course.appcafe.model.Employee;
 import com.academy.course.appcafe.model.Order;
 import com.academy.course.appcafe.model.Product;
+import com.academy.course.appcafe.model.Role;
 import com.academy.course.appcafe.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -33,6 +36,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final RoleConverter roleConverter;
     private final OrderConverter orderConverter;
     private final OrderService orderService;
+    private final DiscountConverter discountConverter;
+    private final RoleService roleService;
 
 
     @Override
@@ -99,8 +104,39 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public boolean registerEmployee(String login, String pass, RoleDTO role) throws SQLException {
-        return false;
+    public boolean registerEmployee(EmployeeRequest employeeRequest) throws SQLException {
+
+        Employee employee = Employee.builder()
+                .login(employeeRequest.getLogin())
+                .password(PasswordEncoder.hashPass(employeeRequest.getPassword()))
+                .build();
+
+        Order order = Order.builder()
+                .employee(employee)
+                .isBought(false)
+                .build();
+
+        Role role = Role.builder()
+                .build();
+
+        List<RoleDTO> roleDTOS = roleService.findRolesByName(employeeRequest.getRoleNames());
+
+
+        for (String name: employeeRequest.getRoleNames()){
+            role.setName(name);
+        }
+
+        for (RoleDTO roleDTO : roleDTOS){
+            employee.addRole(roleConverter.toRoleEntity(roleDTO));
+        }
+
+        role.addEmployee(employee);
+        employee.addOrder(order);
+        employeeRepository.save(employee);
+
+//        logger.info("Employee {} successfully registered",login);
+        return true;
+
     }
 
     @Override

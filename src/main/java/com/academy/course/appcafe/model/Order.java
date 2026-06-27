@@ -45,13 +45,6 @@ public class Order extends DataEntity{
         return Objects.hash(getId());
     }
 
-    public void addItem(OrderItem orderItem){
-        if (this.getOrderItems()==null){
-            this.setOrderItems(new ArrayList<>());
-        }
-        this.orderItems.add(orderItem);
-        orderItem.setOrder(this);
-    }
 
 
 }

@@ -1,6 +1,7 @@
 package com.academy.course.appcafe.service;
 
 import com.academy.course.appcafe.dto.EmployeeDTO;
+import com.academy.course.appcafe.dto.EmployeeRequest;
 import com.academy.course.appcafe.dto.OrderDTO;
 import com.academy.course.appcafe.dto.RoleDTO;
 import org.springframework.data.domain.Page;
@@ -17,7 +18,7 @@ public interface EmployeeService {
     EmployeeDTO findEmployeeById(Long id) throws SQLException;
     EmployeeDTO findEmployeeByLogin(String login);
     void addNewOrderToEmployee(Long id) throws SQLException;
-    boolean registerEmployee(String login, String pass, RoleDTO role) throws SQLException;
+    boolean registerEmployee(EmployeeRequest employeeRequest) throws SQLException;
     void updateEmployee(Long oldValueId, EmployeeDTO newValue) throws SQLException;
     void deleteEmployee(Long employeeId) throws SQLException;
     boolean login(String login,String passWord) throws NoSuchFieldException, SQLException;
