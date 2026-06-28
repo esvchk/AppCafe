@@ -1,13 +1,12 @@
 package com.academy.course.appcafe.service;
 
-import com.academy.course.appcafe.converter.DiscountConverter;
 import com.academy.course.appcafe.converter.EmployeeConverter;
 import com.academy.course.appcafe.converter.OrderConverter;
 import com.academy.course.appcafe.converter.RoleConverter;
 import com.academy.course.appcafe.dto.EmployeeDTO;
 import com.academy.course.appcafe.dto.EmployeeRequest;
 import com.academy.course.appcafe.dto.OrderDTO;
-import com.academy.course.appcafe.dto.RoleDTO;
+
 import com.academy.course.appcafe.model.Employee;
 import com.academy.course.appcafe.model.Order;
 import com.academy.course.appcafe.model.Role;
@@ -59,17 +58,17 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Page<EmployeeDTO> getPaginatedListOfEmployees(int offset, int size) {
-        if (offset < 0 || size < 1) {
+    public Page<EmployeeDTO> getPaginatedListOfEmployees(int page, int size) {
+        if (page < 0 || size < 1) {
             return Page.empty();
         }
-        Pageable pageable = PageRequest.of(offset, size);
-        Page<Employee> page = employeeRepository.findAll(pageable);
-        List<EmployeeDTO> employeeDTOS = page.getContent().stream()
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Employee> employeePage = employeeRepository.findAll(pageable);
+        List<EmployeeDTO> employeeDTOS = employeePage.getContent().stream()
                 .map(employeeConverter::toEmployeeDTO)
                 .toList();
 
-        return new PageImpl<>(employeeDTOS, pageable, page.getTotalElements());
+        return new PageImpl<>(employeeDTOS, pageable, employeePage.getTotalElements());
     }
 
     @Override
@@ -154,7 +153,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Double getTotalAmountOfOrders() throws SQLException {
-        List<OrderDTO> orderDTOS = orderService.getAllOrdersWithItems();
+        List<OrderDTO> orderDTOS = orderService.getAllOrders();
         BigDecimal totalAmount = BigDecimal.ZERO;
         for (OrderDTO orderDTO : orderDTOS) {
             if (orderDTO.getIsBought()) {

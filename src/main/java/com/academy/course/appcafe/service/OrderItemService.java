@@ -13,7 +13,7 @@ import java.util.Set;
 public interface OrderItemService {
     OrderItemDTO getOrderItemById(Long orderItemId) throws SQLException;
     void deleteItem(Long orderItemId) throws SQLException;
-    Page<OrderItemDTO> getAllItems();
+    Page<OrderItemDTO> getPaginatedItems(int page,int size);
     Page<OrderItemDTO> getAllItemsFromOrder(int page,int size,Long orderId) throws SQLException;
-    void setDiscountOnItem(Long itemId, DiscountDTO discount) throws SQLException;
+    void setDiscountOnItem(Long itemId,Long discountId) throws SQLException;
 }
