@@ -20,5 +20,19 @@
         <addForeignKeyConstraint baseColumnNames="discount_id" baseTableName="role" constraintName="FK_ROLE_ON_DISCOUNT"
                                  referencedColumnNames="id" referencedTableName="discount"/>
     </changeSet>
+    <changeSet id="init_roles" author="User">
+        <insert tableName="role">
+            <column name="id" value="1"/>
+            <column name="name" value="ADMIN"/>
+        </insert>
+        <insert tableName="role">
+            <column name="id" value="2"/>
+            <column name="name" value="CASHIER"/>
+        </insert>
+        <insert tableName="role">
+            <column name="id" value="3"/>
+            <column name="name" value="MANAGER"/>
+        </insert>
+    </changeSet>
 
 </databaseChangeLog>

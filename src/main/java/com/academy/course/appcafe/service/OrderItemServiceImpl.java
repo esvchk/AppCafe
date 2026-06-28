@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -23,6 +24,7 @@ import java.sql.SQLException;
 import java.util.List;
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class OrderItemServiceImpl implements OrderItemService{
 
     private final OrderItemRepository orderItemRepository;

@@ -18,6 +18,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
@@ -135,7 +137,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             employee.setRoles(newValue.getRoleDTOS().stream()
                     .map(roleConverter::toRoleEntity)
                     .collect(Collectors.toSet()));
-            employeeRepository.save(employeeConverter.toEntityEmployee(newValue));
+            employeeRepository.save(employee);
         }
     }
 

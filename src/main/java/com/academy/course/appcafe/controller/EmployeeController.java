@@ -6,6 +6,7 @@ import com.academy.course.appcafe.dto.ProductDTO;
 import com.academy.course.appcafe.dto.RoleDTO;
 import com.academy.course.appcafe.repository.EmployeeRepository;
 import com.academy.course.appcafe.service.EmployeeService;
+import com.academy.course.appcafe.service.EmployeeWithRolesService;
 import com.academy.course.appcafe.service.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,6 +25,7 @@ public class EmployeeController {
 
     private final EmployeeService employeeService;
     private final RoleService roleService;
+    private final EmployeeWithRolesService employeeWithRolesService;
 
     @RequestMapping(value = "/getEmployeePage", method = RequestMethod.GET)
     public String paginatedEmployees(@RequestParam(value = "offset", defaultValue = "0") int offset,
@@ -50,6 +52,33 @@ public class EmployeeController {
         model.addAttribute("employeeRequest",new EmployeeRequest());
         model.addAttribute("availableRoles",roleService.findAll());
         return "register";
+    }
+
+    @RequestMapping(value = "/findEmployeeById",method = RequestMethod.GET)
+    public String findEmployeeById(@RequestParam("id")Long id,
+                           Model model) throws SQLException {
+        model.addAttribute("employeeById",employeeService.findEmployeeById(id));
+        return "employeeById";
+    }
+
+    @RequestMapping(value = "/findEmployeeByName",method = RequestMethod.GET)
+    public String findEmployeeByLogin(@RequestParam("login")String login,
+                             Model model){
+        model.addAttribute("employeeByLogin",employeeService.findEmployeeByLogin(login));
+        model.addAttribute("login",login);
+        return "employeeByLogin-results";
+    }
+
+    @RequestMapping(value = "/editEmployee", method = RequestMethod.GET)
+    public String showUpdateFormEmployee(@RequestParam("id") Long oldValueId, Model model) throws SQLException {
+        model.addAttribute("employeeWithRoles", employeeWithRolesService.getPairByEmployeeId(oldValueId));
+        return "editEmployee-form";
+    }
+
+    @RequestMapping(value = "/updateEmployee", method = RequestMethod.POST)
+    public String updateEmployee(EmployeeDTO newValue) throws SQLException {
+        employeeService.updateEmployee(newValue.getId(), newValue);
+        return "redirect:/getEmployeePage";
     }
 
 

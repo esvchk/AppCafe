@@ -27,59 +27,35 @@
                 <span th:if="${!counter.last}">, </span>
             </th:block>
         </td>
-        <!--        <td>-->
+                <td>
         <!--            <a th:href="@{/deleteProduct(id=${employee.id})}">Delete </a>-->
-        <!--            <a th:href="@{/editProduct(id=${prod.id})}">Edit </a>-->
+                    <a th:href="@{/editEmployee(id=${employee.id})}">Edit </a>
         <!--            <a th:href="@{/editLimit(id=${product.id})}">Set Limit </a>-->
-        <!--        </td>-->
+                </td>
     </tr>
 
-
-    <!--    <form th:action="@{/addProduct}"-->
-    <!--          th:object="${newProduct}" method="post">-->
-    <!--        Name:-->
-    <!--        <input type="text" th:field="*{name}"/>-->
-    <!--        <br/>-->
-    <!--        Price:-->
-    <!--        <input type="number" th:field="*{price}"/>-->
-    <!--        <br/>-->
-    <!--        Info:-->
-    <!--        <input type="text" th:field="*{info}"/>-->
-    <!--        <br/>-->
-    <!--        IsAvailable:-->
-    <!--        <input type="radio"  value="true" th:field="*{isAvailable}" required> Yes-->
-    <!--        <input type="radio" value="false" th:field="*{isAvailable}" required> No<br>-->
-    <!--        <br/>-->
-    <!--        Limit:-->
-    <!--        <input type="number" th:field="*{productLimit}"/>-->
-    <!--        <br/>-->
-
-    <!--        <input type="submit" value="Add product"/>-->
-    <!--    </form>-->
-
-
     <br>
     <br>
     <br>
 
-    <form th:action="@{/findById}"
+    <form th:action="@{/findEmployeeById}"
           method="get">
         Identifier:
         <input type="text" name="id"/>
         <br/>
-        <input type="submit" value="Find Product"/>
+        <input type="submit" value="Find Employee"/>
     </form>
 
     <br>
     <br>
     <br>
 
-    <form th:action="@{/findByName}"
+    <form th:action="@{/findEmployeeByName}"
           method="get">
         Name:
-        <input type="text" name="name"/>
+        <input type="text" name="login"/>
         <br/>
-        <input type="submit" value="Find Product"/>
+        <input type="submit" value="Find Employee"/>
     </form>
 
     <br>
