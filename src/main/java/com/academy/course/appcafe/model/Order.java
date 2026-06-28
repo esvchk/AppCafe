@@ -22,12 +22,15 @@ public class Order extends DataEntity{
     @Column
     private String paymentData;
 
-    @Column
-    private Double totalCost;
+    @Column(nullable = false)
+    private BigDecimal totalCost;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_id")
     private Employee employee;
+
+    @Column
+    BigDecimal orderDiscount;
 
     @Column
     private Boolean isBought;

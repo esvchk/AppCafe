@@ -3,6 +3,7 @@ package com.academy.course.appcafe.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 @Builder
@@ -13,12 +14,16 @@ import java.util.Objects;
 @Table
 public class OrderItem extends DataEntity {
 
-    @Column
+    @Column(nullable = false)
     private Integer productQuantity;
 
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "discount_id")
-    private Discount discount;
+    @JoinColumn(name = "applied_discount_id")
+    private Discount appliedDiscount;
+
+    @Column
+    private BigDecimal appliedPercent;
 
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -31,6 +36,11 @@ public class OrderItem extends DataEntity {
     private Order order;
 
 
+    @Column(nullable = false)
+    private BigDecimal priceBeforeDiscount;
+
+    @Column(nullable = false)
+    private BigDecimal totalPrice;
 
 
     @Override

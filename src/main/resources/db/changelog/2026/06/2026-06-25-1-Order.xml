@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-5.0.xsd"
         objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
-    <changeSet id="1782569213184-1" author="User">
+    <changeSet id="1782657897520-1" author="User">
         <createTable tableName="orders">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_orders"/>
@@ -13,12 +13,15 @@
             <column name="create_date_time" type="DATETIME"/>
             <column name="update_date_time" type="DATETIME"/>
             <column name="payment_data" type="VARCHAR(255)"/>
-            <column name="total_cost" type="DOUBLE"/>
+            <column name="total_cost" type="DECIMAL">
+                <constraints nullable="false"/>
+            </column>
             <column name="employee_id" type="BIGINT"/>
+            <column name="order_discount" type="DECIMAL"/>
             <column name="is_bought" type="bit"/>
         </createTable>
     </changeSet>
-    <changeSet id="1782569213184-2" author="User">
+    <changeSet id="1782657897520-2" author="User">
         <addForeignKeyConstraint baseColumnNames="employee_id" baseTableName="orders"
                                  constraintName="FK_ORDERS_ON_EMPLOYEE" referencedColumnNames="id"
                                  referencedTableName="employee"/>

@@ -23,8 +23,9 @@ public class Role extends DataEntity {
             @Builder.Default
     Set<Employee> employees = new HashSet<>();
 
-    @OneToOne(mappedBy = "role", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
-    Discount discount;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "discount_id",referencedColumnName = "id")
+    private Discount discount;
 
 
     public void addEmployee(Employee employee) {

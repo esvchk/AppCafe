@@ -16,13 +16,16 @@ import java.util.Set;
 @Table
 public class Discount extends DataEntity{
 
+    @Column
     private BigDecimal percentOfDiscount;
 
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    @OneToOne(fetch = FetchType.EAGER)
-    private Role role ;
+    @Column(nullable = false)
+    private String name;
 
-    @OneToMany(mappedBy = "discount",cascade = {CascadeType.MERGE,CascadeType.REFRESH})
+    @Column
+    Boolean isActive;
+
+
+    @OneToMany(mappedBy = "appliedDiscount",cascade = {CascadeType.MERGE,CascadeType.REFRESH})
     private List<OrderItem> orderItems;
 }

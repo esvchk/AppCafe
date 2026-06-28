@@ -1,6 +1,5 @@
 package com.academy.course.appcafe.dto;
 
-import com.academy.course.appcafe.model.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,7 +18,9 @@ public class DiscountDTO {
 
     private BigDecimal percentOfDiscount;
 
-    private RoleDTO roleDTO;
+    private String name;
+
+    private Boolean isActive;
 
     private List<OrderItemDTO> orderItemDTOS;
 

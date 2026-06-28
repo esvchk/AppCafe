@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-5.0.xsd"
         objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
-    <changeSet id="1782480631502-1" author="User">
+    <changeSet id="1782659317451-1" author="User">
         <createTable tableName="role">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_role"/>
@@ -13,21 +13,12 @@
             <column name="create_date_time" type="DATETIME"/>
             <column name="update_date_time" type="DATETIME"/>
             <column name="name" type="VARCHAR(255)"/>
+            <column name="discount_id" type="BIGINT"/>
         </createTable>
     </changeSet>
-    <changeSet id="init_roles" author="User">
-        <insert tableName="role">
-            <column name="id" value="1"/>
-            <column name="name" value="ADMIN"/>
-        </insert>
-        <insert tableName="role">
-            <column name="id" value="2"/>
-            <column name="name" value="CASHIER"/>
-        </insert>
-        <insert tableName="role">
-            <column name="id" value="3"/>
-            <column name="name" value="MANAGER"/>
-        </insert>
+    <changeSet id="1782659317451-2" author="User">
+        <addForeignKeyConstraint baseColumnNames="discount_id" baseTableName="role" constraintName="FK_ROLE_ON_DISCOUNT"
+                                 referencedColumnNames="id" referencedTableName="discount"/>
     </changeSet>
 
 </databaseChangeLog>

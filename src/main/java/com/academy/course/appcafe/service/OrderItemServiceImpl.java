@@ -67,7 +67,6 @@ public class OrderItemServiceImpl implements OrderItemService{
     public void setDiscountOnItem(Long itemId, DiscountDTO discount) throws SQLException {
         if (orderItemRepository.existsById(itemId)) {
             OrderItem item = orderItemRepository.getReferenceById(itemId);
-            item.setDiscount(discountConverter.toDiscountEntity(discount));
             orderItemRepository.save(item);
         }
 

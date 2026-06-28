@@ -12,11 +12,10 @@ import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring",uses = OrderItemConverter.class)
 public interface DiscountConverter {
-    @Mapping(source = "role",target = "roleDTO")
     @Mapping(source = "orderItems",target = "orderItemDTOS")
     DiscountDTO toDiscountDto(Discount discount);
 
-    @Mapping(source = "roleDTO",target = "role")
+
     @Mapping(source = "orderItemDTOS",target = "orderItems")
     Discount toDiscountEntity(DiscountDTO discountDTO);
 }

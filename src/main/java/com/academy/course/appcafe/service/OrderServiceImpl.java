@@ -56,7 +56,7 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public Double countAmountOfAllItems(Long orderId) throws SQLException {
+    public BigDecimal countAmountOfAllItems(Long orderId) throws SQLException {
         if (orderRepository.existsById(orderId)) {
             Order order = orderRepository.getReferenceById(orderId);
             List<OrderItemDTO> items = orderItemRepository.findAll().stream()
@@ -66,8 +66,9 @@ public class OrderServiceImpl implements OrderService{
             for (OrderItemDTO orderItemDTO : items){
                 BigDecimal itemAmount = BigDecimal.valueOf(orderItemDTO.getProductDTO().getPrice() * orderItemDTO.getQuantity());
                 totalPrice = totalPrice.add(itemAmount.multiply(orderItemDTO.getDiscount().getPercentOfDiscount()));
-                order.setTotalCost(totalPrice.doubleValue());
+
             }
+            order.setTotalCost(totalPrice);
             orderRepository.save(order);
             return order.getTotalCost();
         }

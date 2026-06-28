@@ -158,8 +158,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         BigDecimal totalAmount = BigDecimal.ZERO;
         for (OrderDTO orderDTO : orderDTOS) {
             if (orderDTO.getIsBought()) {
-                BigDecimal orderAmount = BigDecimal.valueOf(orderService.countAmountOfAllItems(orderDTO.getId()));
-                totalAmount = totalAmount.add(orderAmount);
+//                BigDecimal orderAmount = BigDecimal.valueOf(orderService.countAmountOfAllItems(orderDTO.getId()));
+//                totalAmount = totalAmount.add(orderAmount);
             }
         }
         return totalAmount.setScale(2, RoundingMode.HALF_UP).doubleValue();
