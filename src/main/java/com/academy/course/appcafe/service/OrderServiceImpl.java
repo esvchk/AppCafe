@@ -6,13 +6,11 @@ import com.academy.course.appcafe.dto.DiscountDTO;
 import com.academy.course.appcafe.dto.EmployeeDTO;
 import com.academy.course.appcafe.dto.OrderDTO;
 import com.academy.course.appcafe.dto.OrderItemDTO;
-import com.academy.course.appcafe.model.Discount;
-import com.academy.course.appcafe.model.Employee;
-import com.academy.course.appcafe.model.Order;
-import com.academy.course.appcafe.model.OrderItem;
+import com.academy.course.appcafe.model.*;
 import com.academy.course.appcafe.repository.DiscountRepository;
 import com.academy.course.appcafe.repository.OrderItemRepository;
 import com.academy.course.appcafe.repository.OrderRepository;
+import com.academy.course.appcafe.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.SecondaryRow;
 import org.springframework.data.domain.Page;
@@ -25,17 +23,18 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 @RequiredArgsConstructor
 @Service
 public class OrderServiceImpl implements OrderService{
 
     private final OrderItemRepository orderItemRepository;
-    private final OrderItemConverter orderItemConverter;
     private final OrderConverter orderConverter;
     private final OrderRepository orderRepository;
-    private final OrderItemService orderItemService;
     private final DiscountRepository discountRepository;
+    private final ProductRepository productRepository;
+    private final ProductService productService;
 
 
     @Override
@@ -71,7 +70,14 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public void buyOrder(Long orderId) throws SQLException {
+        if (orderRepository.existsById(orderId)) {
+            Order order = orderRepository.getReferenceById(orderId);
+            order.setIsBought(true);
+            countAmountOfOrder(orderId,order.getOrderDiscount().getId());
+            orderRepository.save(order);
+        }
 
+//        logger.info("Order {} has been successfully bought", orderDTO);
     }
 
     @Override
@@ -84,20 +90,60 @@ public class OrderServiceImpl implements OrderService{
     @Override
     public void addProductToOrder(Long productId, Long orderId, Integer quantity) throws SQLException {
 
+        Order order = orderRepository.getReferenceById(orderId);
+        Product product = productRepository.getReferenceById(productId);
+        Optional<OrderItem> items = order.getOrderItems().stream()
+                .filter(item1 -> item1.getProduct().getId().equals(product.getId()))
+                .findFirst();
+        if (items.isPresent()) {
+            items.get().setProductQuantity(items.get().getProductQuantity() + quantity);
+        } else {
+            OrderItem item = OrderItem.builder()
+                    .productQuantity(quantity)
+                    .product(product)
+                    .order(order)
+                    .build();
+            order.addOrderItem(item);
+        }
+
+        if (product.getProductLimit() != null)
+            productService.setProductLimit(product.getId(),
+                    product.getProductLimit() - quantity);
+
+
+
+        orderRepository.save(order);
+
+//        logger.info("Product {} has been successfully added to order {} with quantity {} "
+//                , product, order, quantity);
+
     }
 
     @Override
     public void deleteItemFromOrder(Long itemId, Long orderId, Integer quantity) throws SQLException {
+        boolean isOrderExists = orderRepository.existsById(orderId);
+        boolean isOrderItemExists = orderItemRepository.existsById(itemId);
+
+        if (isOrderItemExists && isOrderExists) {
+            Order order = orderRepository.getReferenceById(orderId);
+            OrderItem item = orderItemRepository.getReferenceById(itemId);
+            if (item.getProductQuantity().equals(quantity)) {
+                orderItemRepository.delete(item);
+            } else {
+                item.setProductQuantity(item.getProductQuantity() - quantity);
+            }
+            orderRepository.save(order);
+        }
 
     }
 
     @Override
-    public BigDecimal countAmountOfOrder(Long orderId) throws SQLException {
+    public BigDecimal countTotalAmountOfOrders() throws SQLException {
         return orderRepository.getTotalOrdersAmount();
     }
 
     @Override
-    public void setDiscountOnOrder(Long orderId, Long discountId) throws SQLException {
+    public void countAmountOfOrder(Long orderId, Long discountId) throws SQLException {
         boolean isOrderExists = orderRepository.existsById(orderId);
         boolean isDiscountExists = orderRepository.existsById(discountId);
         if (isOrderExists) {

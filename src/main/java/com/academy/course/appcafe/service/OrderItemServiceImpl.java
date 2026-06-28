@@ -27,7 +27,6 @@ public class OrderItemServiceImpl implements OrderItemService{
 
     private final OrderItemRepository orderItemRepository;
     private final OrderItemConverter orderItemConverter;
-    private final DiscountConverter discountConverter;
     private final DiscountRepository discountRepository;
     private final OrderRepository orderRepository;
 
@@ -76,7 +75,7 @@ public class OrderItemServiceImpl implements OrderItemService{
     }
 
     @Override
-    public void setDiscountOnItem(Long itemId, Long discountId) throws SQLException {
+    public void countAmountOfItem(Long itemId, Long discountId) throws SQLException {
         boolean orderItemIsExists = orderItemRepository.existsById(itemId); 
         boolean discountIsExists = discountRepository.existsById(discountId);
 

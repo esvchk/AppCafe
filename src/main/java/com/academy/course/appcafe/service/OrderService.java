@@ -17,6 +17,6 @@ public interface OrderService {
     void deleteOrder(Long id) throws SQLException;
     void addProductToOrder(Long productId,Long orderId, Integer quantity) throws SQLException;
     void deleteItemFromOrder(Long itemId,Long orderId,Integer quantity) throws SQLException;
-    BigDecimal countAmountOfOrder(Long orderId) throws SQLException;
-    void setDiscountOnOrder(Long orderId, Long discountId) throws SQLException;
+    BigDecimal countTotalAmountOfOrders() throws SQLException;
+    void countAmountOfOrder(Long orderId, Long discountId) throws SQLException;
 }
