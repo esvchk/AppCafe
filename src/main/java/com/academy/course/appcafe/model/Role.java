@@ -6,31 +6,31 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Entity
 @Table
-public class Role extends DataEntity{
+public class Role extends DataEntity {
     @Column
     private String name;
 
-    @ManyToMany(mappedBy = "roles",fetch = FetchType.EAGER)
-    List<Employee> employees;
+    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
+            @Builder.Default
+    Set<Employee> employees = new HashSet<>();
 
-    @OneToOne(mappedBy = "role",fetch = FetchType.EAGER,cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.REMOVE})
+    @OneToOne(mappedBy = "role", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     Discount discount;
 
 
-    public void addEmployee(Employee employee){
-        if (this.employees == null) {
-            this.employees = new ArrayList<>();
+    public void addEmployee(Employee employee) {
+        if (employee == null||this.employees.contains(employee)) {
+            return;
         }
         this.employees.add(employee);
-        employee.getRoles().add(this);
     }
 }

@@ -10,9 +10,9 @@ import com.academy.course.appcafe.dto.OrderDTO;
 import com.academy.course.appcafe.dto.RoleDTO;
 import com.academy.course.appcafe.model.Employee;
 import com.academy.course.appcafe.model.Order;
-import com.academy.course.appcafe.model.Product;
 import com.academy.course.appcafe.model.Role;
 import com.academy.course.appcafe.repository.EmployeeRepository;
+import com.academy.course.appcafe.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -24,7 +24,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.SQLException;
 import java.util.List;
-
+import java.util.stream.Collectors;
 
 
 @Service
@@ -32,23 +32,22 @@ import java.util.List;
 public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
+    private final RoleRepository roleRepository;
     private final EmployeeConverter employeeConverter;
     private final RoleConverter roleConverter;
     private final OrderConverter orderConverter;
     private final OrderService orderService;
-    private final DiscountConverter discountConverter;
-    private final RoleService roleService;
 
 
     @Override
     public void deleteOrderOfEmployee(Long id, OrderDTO orderDTO) throws SQLException {
         if (employeeRepository.existsById(id)) {
-        Employee employee = employeeRepository.getReferenceById(id);
-        Order orderToRemove = employee.getOrders().stream()
-                .filter(order -> order.getIsBought() == false)
-                .findFirst().orElse(null);
-        employee.getOrders().remove(orderToRemove);
-        employeeRepository.save(employee);
+            Employee employee = employeeRepository.getReferenceById(id);
+            Order orderToRemove = employee.getOrders().stream()
+                    .filter(order -> order.getIsBought() == false)
+                    .findFirst().orElse(null);
+            employee.getOrders().remove(orderToRemove);
+            employeeRepository.save(employee);
         }
     }
 
@@ -64,13 +63,13 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (offset < 0 || size < 1) {
             return Page.empty();
         }
-        Pageable pageable = PageRequest.of(offset,size);
+        Pageable pageable = PageRequest.of(offset, size);
         Page<Employee> page = employeeRepository.findAll(pageable);
         List<EmployeeDTO> employeeDTOS = page.getContent().stream()
                 .map(employeeConverter::toEmployeeDTO)
                 .toList();
 
-        return new PageImpl<>(employeeDTOS,pageable,page.getTotalElements());
+        return new PageImpl<>(employeeDTOS, pageable, page.getTotalElements());
     }
 
     @Override
@@ -111,27 +110,17 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .password(PasswordEncoder.hashPass(employeeRequest.getPassword()))
                 .build();
 
-        Order order = Order.builder()
-                .employee(employee)
-                .isBought(false)
-                .build();
+//        Order order = Order.builder()
+//                .employee(employee)
+//                .isBought(false)
+//                .build();
 
-        Role role = Role.builder()
-                .build();
+        List<Role> roles = roleRepository.findAllByNameIn(employeeRequest.getRoleNames());
 
-        List<RoleDTO> roleDTOS = roleService.findRolesByName(employeeRequest.getRoleNames());
+        roles.forEach(employee::addRole);
 
+//        employee.addOrder(order);
 
-        for (String name: employeeRequest.getRoleNames()){
-            role.setName(name);
-        }
-
-        for (RoleDTO roleDTO : roleDTOS){
-            employee.addRole(roleConverter.toRoleEntity(roleDTO));
-        }
-
-        role.addEmployee(employee);
-        employee.addOrder(order);
         employeeRepository.save(employee);
 
 //        logger.info("Employee {} successfully registered",login);
@@ -146,14 +135,14 @@ public class EmployeeServiceImpl implements EmployeeService {
             employee.setLogin(newValue.getLogin());
             employee.setRoles(newValue.getRoleDTOS().stream()
                     .map(roleConverter::toRoleEntity)
-                    .toList());
+                    .collect(Collectors.toSet()));
             employeeRepository.save(employeeConverter.toEntityEmployee(newValue));
         }
     }
 
     @Override
     public void deleteEmployee(Long employeeId) throws SQLException {
-        if(employeeRepository.existsById(employeeId)){
+        if (employeeRepository.existsById(employeeId)) {
             employeeRepository.deleteById(employeeId);
         }
     }
@@ -167,7 +156,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Double getTotalAmountOfOrders() throws SQLException {
         List<OrderDTO> orderDTOS = orderService.getAllOrdersWithItems();
         BigDecimal totalAmount = BigDecimal.ZERO;
-        for (OrderDTO orderDTO : orderDTOS){
+        for (OrderDTO orderDTO : orderDTOS) {
             if (orderDTO.getIsBought()) {
                 BigDecimal orderAmount = BigDecimal.valueOf(orderService.countAmountOfAllItems(orderDTO.getId()));
                 totalAmount = totalAmount.add(orderAmount);

@@ -8,18 +8,27 @@
 
 <h1>Registration</h1>
 
-
     <form th:action="@{/registerEmployee}"
           th:object="${employeeRequest}" method="post">
         Name:
-        <input type="text" th:value="*{login}"/>
+        <input type="text" th:field="*{login}"/>
         <br/>
         Price:
         <input type="text" th:field="*{password}"/>
         <br/>
+        Role:
+        <div>
+            <label>
+                <select th:field="*{roleNames}" multiple size="4">
+                    <option th:each="role : ${availableRoles}"
+                            th:value="${role.name}"
+                            th:text="${role.name}">
+                    </option>
+                </select>
+            </label>
+        </div>
 
-        <input type="submit" value="Add product"/>
+        <input type="submit" value="Add Employee"/>
     </form>
-
 
 </html>

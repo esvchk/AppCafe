@@ -2,11 +2,11 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Product List</title>
+    <title>Employee List</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
 </head>
 
-<h1>Product List</h1>
+<h1>Employee List</h1>
 
 <body>
 <table border="1">
@@ -14,54 +14,49 @@
     <tr>
         <th>Id</th>
         <th>Login</th>
+        <th>Roles</th>
     </tr>
+
 
     <tr th:each="employee : ${employeePage.getContent}">
         <td th:utext="${employee.id}">...</td>
         <td th:utext="${employee.login}">...</td>
-<!--        <td>-->
-<!--            <a th:href="@{/deleteProduct(id=${employee.id})}">Delete </a>-->
-<!--            <a th:href="@{/editProduct(id=${prod.id})}">Edit </a>-->
-<!--            <a th:href="@{/editLimit(id=${product.id})}">Set Limit </a>-->
-<!--        </td>-->
+        <td>
+            <th:block th:each="role, counter : ${employee.roleDTOS}">
+                <span th:text="${role.name}"></span>
+                <span th:if="${!counter.last}">, </span>
+            </th:block>
+        </td>
+        <!--        <td>-->
+        <!--            <a th:href="@{/deleteProduct(id=${employee.id})}">Delete </a>-->
+        <!--            <a th:href="@{/editProduct(id=${prod.id})}">Edit </a>-->
+        <!--            <a th:href="@{/editLimit(id=${product.id})}">Set Limit </a>-->
+        <!--        </td>-->
     </tr>
 
-<!--    <form th:action="@{/addProduct}"-->
-<!--          th:object="${newProduct}" method="post">-->
-<!--        Name:-->
-<!--        <input type="text" th:field="*{name}"/>-->
-<!--        <br/>-->
-<!--        Price:-->
-<!--        <input type="number" th:field="*{price}"/>-->
-<!--        <br/>-->
-<!--        Info:-->
-<!--        <input type="text" th:field="*{info}"/>-->
-<!--        <br/>-->
-<!--        IsAvailable:-->
-<!--        <input type="radio"  value="true" th:field="*{isAvailable}" required> Yes-->
-<!--        <input type="radio" value="false" th:field="*{isAvailable}" required> No<br>-->
-<!--        <br/>-->
-<!--        Limit:-->
-<!--        <input type="number" th:field="*{productLimit}"/>-->
-<!--        <br/>-->
 
-<!--        <input type="submit" value="Add product"/>-->
-<!--    </form>-->
+    <!--    <form th:action="@{/addProduct}"-->
+    <!--          th:object="${newProduct}" method="post">-->
+    <!--        Name:-->
+    <!--        <input type="text" th:field="*{name}"/>-->
+    <!--        <br/>-->
+    <!--        Price:-->
+    <!--        <input type="number" th:field="*{price}"/>-->
+    <!--        <br/>-->
+    <!--        Info:-->
+    <!--        <input type="text" th:field="*{info}"/>-->
+    <!--        <br/>-->
+    <!--        IsAvailable:-->
+    <!--        <input type="radio"  value="true" th:field="*{isAvailable}" required> Yes-->
+    <!--        <input type="radio" value="false" th:field="*{isAvailable}" required> No<br>-->
+    <!--        <br/>-->
+    <!--        Limit:-->
+    <!--        <input type="number" th:field="*{productLimit}"/>-->
+    <!--        <br/>-->
 
-    <form th:action="@{/registerEmployee}"
-          th:object="${requestedEmployee}" method="post">
-        Login:
-        <input type="text" th:field="*{login}"/>
-        <br/>
-        Password:
-        <input type="text" th:field="*{password}"/>
-        <br/>
-        Roles:
-        <input type="text" th:field="*{roleNames}"/>
-        <br/>
+    <!--        <input type="submit" value="Add product"/>-->
+    <!--    </form>-->
 
-        <input type="submit" value="Register Employee"/>
-    </form>
 
     <br>
     <br>

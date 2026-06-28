@@ -6,6 +6,7 @@ import com.academy.course.appcafe.dto.ProductDTO;
 import com.academy.course.appcafe.dto.RoleDTO;
 import com.academy.course.appcafe.repository.EmployeeRepository;
 import com.academy.course.appcafe.service.EmployeeService;
+import com.academy.course.appcafe.service.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -22,9 +23,10 @@ import java.sql.SQLException;
 public class EmployeeController {
 
     private final EmployeeService employeeService;
+    private final RoleService roleService;
 
     @RequestMapping(value = "/getEmployeePage", method = RequestMethod.GET)
-    public String paginatedProducts(@RequestParam(value = "offset", defaultValue = "0") int offset,
+    public String paginatedEmployees(@RequestParam(value = "offset", defaultValue = "0") int offset,
                                     @RequestParam(value = "size", defaultValue = "5") int size, Model model) {
 
         Page<EmployeeDTO> employeePage = employeeService.getPaginatedListOfEmployees(offset, size);
@@ -37,10 +39,17 @@ public class EmployeeController {
     }
 
     @RequestMapping(value = "/registerEmployee",method = RequestMethod.POST)
-    public String register(EmployeeRequest employeeRequest) throws SQLException {
+    public String register(@ModelAttribute EmployeeRequest employeeRequest) throws SQLException {
 
         employeeService.registerEmployee(employeeRequest);
         return "redirect:/getEmployeePage";
+    }
+
+    @RequestMapping(value = "/registerForm",method = RequestMethod.GET)
+    public String getRegisterForm(Model model){
+        model.addAttribute("employeeRequest",new EmployeeRequest());
+        model.addAttribute("availableRoles",roleService.findAll());
+        return "register";
     }
 
 

@@ -17,23 +17,22 @@ import java.util.Set;
 @Table
 public class Employee extends DataEntity{
 
-    @NotBlank
-    @Column
+
+    @Column(nullable = false,unique = true)
     private String login;
 
-    @NotBlank
-    @Column
+    @Column(nullable = false)
     private String password;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @Builder.Default
-    @ManyToMany(cascade = {CascadeType.REFRESH,CascadeType.PERSIST,CascadeType.MERGE},
-            fetch = FetchType.EAGER)
+    @ManyToMany(cascade = {CascadeType.REFRESH,CascadeType.MERGE},
+            fetch = FetchType.LAZY)
     @JoinTable(name = "employee_role",
             joinColumns = @JoinColumn(name = "employee_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private List<Role> roles = new ArrayList<>();
+    private Set<Role> roles = new HashSet<>();
 
     @ToString.Exclude
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -54,20 +53,20 @@ public class Employee extends DataEntity{
 //        return Objects.hash(getId());
 //    }
 
-    public void addOrder(Order order){
-        if (this.orders == null) {
-            this.orders = new ArrayList<>();
-        }
+    public void addOrder(Order order) {
+        if (order == null) return;
         this.orders.add(order);
         order.setEmployee(this);
     }
 
-    public void addRole(Role role){
-        if (this.roles == null) {
-            this.roles = new ArrayList<>();
+    public void addRole(Role role) {
+        if (role == null || this.roles.contains(role)) {
+            return;
         }
         this.roles.add(role);
-        role.getEmployees().add(this);
+        if (role.getEmployees() != null) {
+            role.getEmployees().add(this);
+        }
     }
 
 
