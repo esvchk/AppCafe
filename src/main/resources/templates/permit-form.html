@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Enter Payment Data</title></head>
+<body>
+
+
+<h3>Enter payment data for order #[[${orderId}]]</h3>
+
+<form th:action="@{/purchasingProcess/{orderId}(orderId=${orderId})}" method="post">
+    <!-- Скрытый orderId -->
+<!--    <input type="hidden" name="orderId" th:value="${orderId}"/>-->
+
+    <label for="paymentData">Payment data:</label>
+    <input id="paymentData" type="text" name="paymentData" required style="margin-right:8px;"/>
+
+    <button type="submit">Save Payment Data</button>
+</form>
+
+</body>
+</html>

@@ -49,13 +49,27 @@ public class OrderController {
         String loginEmployee = principal.getName();
         model.addAttribute("page",page);
         model.addAttribute("size",size);
-        model.addAttribute("orderWithProducts",pairService.getPairEntitiesByEmployeeLogin(loginEmployee,orderId,page,size));
+        model.addAttribute("orderWithProducts",
+                pairService.getPairEntitiesByEmployeeLogin(loginEmployee,orderId,page,size));
         return "productsToAddInOrder";
     }
-    @RequestMapping(value = "/buyOrder", method = RequestMethod.POST)
-    public String buyOrder(@RequestParam("id") Long orderId) throws SQLException {
-        orderService.buyOrder(orderId);
-        return "redirect:/addNewOrder";
+    @PostMapping(value = "/buyOrder")
+    public String buyOrder(@RequestParam("orderId") Long orderId) throws SQLException {
+         orderService.buyOrder(orderId);
+        return "redirect:/permitPurchase?orderId=" + orderId;
+    }
+    @GetMapping(value = "/permitPurchase")
+    public String showPermitForm(@RequestParam(value = "orderId")Long orderId,
+                                 Model model) throws SQLException {
+        model.addAttribute("orderId",orderId);
+        return "permit-form";
+    }
+
+    @PostMapping(value = "/purchasingProcess/{orderId}")
+    public String purchasingProcess(@PathVariable Long orderId,
+                                    @RequestParam("paymentData")String paymentData){
+        orderService.inputPaymentDataToOrder(paymentData,orderId);
+        return "redirect:/getOrderPage";
     }
 
     @PostMapping(value = "/addProductInOrder/{orderId}")
@@ -65,7 +79,5 @@ public class OrderController {
         orderService.addProductToOrder(productId,orderId,quantity);
         return "redirect:/newOrderPage/" + orderId;
     }
-
-
 
 }

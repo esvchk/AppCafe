@@ -2,8 +2,14 @@ package com.academy.course.appcafe.service;
 
 import com.academy.course.appcafe.converter.OrderConverter;
 import com.academy.course.appcafe.dto.OrderDTO;
-import com.academy.course.appcafe.model.*;
-import com.academy.course.appcafe.repository.*;
+import com.academy.course.appcafe.model.Employee;
+import com.academy.course.appcafe.model.Order;
+import com.academy.course.appcafe.model.OrderItem;
+import com.academy.course.appcafe.model.Product;
+import com.academy.course.appcafe.repository.EmployeeRepository;
+import com.academy.course.appcafe.repository.OrderItemRepository;
+import com.academy.course.appcafe.repository.OrderRepository;
+import com.academy.course.appcafe.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -16,7 +22,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -83,8 +88,12 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void buyOrder(Long orderId) throws SQLException {
         if (orderRepository.existsById(orderId)) {
+            Order order = orderRepository.findById(orderId).orElse(null);
+            countAmountOfOrder(orderId);
+            order.setIsBought(true);
+            orderRepository.save(order);
+//            logger.info("Order {} has been successfully bought", orderDTO);
         }
-
 //        logger.info("Order {} has been successfully bought", orderDTO);
     }
 
@@ -97,13 +106,34 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void addProductToOrder(Long productId, Long orderId, Integer quantity) throws SQLException {
+        Order order = orderRepository.findById(orderId).orElse(null);
+        Product product = productRepository.findById(productId).orElse(null);
+        Optional<OrderItem> items = order.getOrderItems().stream()
+                .filter(item1 -> item1.getProduct().getId().equals(product.getId()))
+                .findFirst();
+        if (items.isPresent()) {
+            items.get().setProductQuantity(items.get().getProductQuantity() + quantity);
+        } else {
+            OrderItem item = OrderItem.builder()
+                    .productQuantity(quantity)
+                    .product(product)
+                    .order(order)
+                    .build();
+            order.addOrderItem(item);
+        }
 
-
-    }
-
+        if (product.getProductLimit() != null) {
+            if (product.getProductLimit() >= 1 ) {
+                productService.setProductLimit(product.getId(),product.getProductLimit() - quantity);
+            } else {
+                throw new RuntimeException();
+            }
+        }
+        orderRepository.save(order);
 
 //        logger.info("Product {} has been successfully added to order {} with quantity {} "
 //                , product, order, quantity);
+    }
 
 
     @Override
@@ -133,19 +163,41 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderRepository.findById(orderId).orElse(null);
         if (order != null) {
             BigDecimal percent = BigDecimal.ZERO;
-            BigDecimal factor = BigDecimal.ONE.subtract(percent.divide(BigDecimal.valueOf(100),4,RoundingMode.HALF_UP));
+            BigDecimal factor = BigDecimal.ONE.subtract(percent.divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP));
             BigDecimal total = BigDecimal.ZERO;
+
             if (order.getPercentOfDiscount() != null) {
                 percent = order.getPercentOfDiscount();
             }
-            for (OrderItem item : order.getOrderItems()){
-                total.add(BigDecimal.valueOf(item.getProduct().getPrice()));
-            }
-            total = total.multiply(factor).setScale(2,RoundingMode.HALF_UP);
+
+                for (OrderItem item : order.getOrderItems()) {
+                    if (item != null && item.getProduct() != null) {
+                        BigDecimal price = BigDecimal.valueOf(item.getProduct().getPrice());
+                        Integer quantity = item.getProductQuantity();
+                        if (quantity == null) quantity = 1;
+                        total = total.add(price.multiply(BigDecimal.valueOf(quantity)));
+                    }
+
+                }
+
+            total = total.multiply(factor).setScale(2, RoundingMode.HALF_UP);
             order.setTotalCost(total);
-
-
         }
+        orderRepository.save(order);
+    }
+
+    @Override
+    public void setDiscountOnOrder(Long orderId, BigDecimal percent) {
+        Order order = orderRepository.findById(orderId).orElse(null);
+        order.setPercentOfDiscount(percent);
+        orderRepository.save(order);
+    }
+
+    @Override
+    public void inputPaymentDataToOrder(String paymentData, Long orderId) {
+        Order order = orderRepository.findById(orderId).orElse(null);
+        order.setPaymentData(paymentData);
+        orderRepository.save(order);
     }
 
 

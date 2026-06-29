@@ -13,12 +13,14 @@
             <column name="create_date_time" type="DATETIME"/>
             <column name="update_date_time" type="DATETIME"/>
             <column name="payment_data" type="VARCHAR(255)"/>
-            <column name="total_cost" type="DECIMAL">
+            <column name="total_cost" type="DECIMAL" defaultValue="0.0"/>
+            <column name="employee_id" type="BIGINT"/>
+            <column name="percent_of_discount" type="DECIMAL" defaultValue="0.0">
+            <constraints nullable="true" />
+            </column>
+            <column name="is_bought" type="bit">
                 <constraints nullable="false"/>
             </column>
-            <column name="employee_id" type="BIGINT"/>
-            <column name="percent_of_discount" type="DECIMAL"/>
-            <column name="is_bought" type="bit"/>
         </createTable>
     </changeSet>
     <changeSet id="1782751844796-2" author="User">

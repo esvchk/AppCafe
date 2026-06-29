@@ -22,7 +22,7 @@ public class Order extends DataEntity{
     @Column
     private String paymentData;
 
-    @Column(nullable = false)
+    @Column
     private BigDecimal totalCost;
 
     @ManyToOne(fetch = FetchType.LAZY)

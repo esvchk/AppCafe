@@ -18,4 +18,7 @@ public interface OrderService {
     void deleteItemFromOrder(Long itemId,Long orderId,Integer quantity) throws SQLException;
     BigDecimal countTotalAmountOfOrders() throws SQLException;
     void countAmountOfOrder(Long orderId) throws SQLException;
+    void setDiscountOnOrder(Long orderId,BigDecimal percent);
+    void inputPaymentDataToOrder(String paymentData,Long orderId);
+
 }

@@ -24,6 +24,7 @@
         <td th:utext="${order.id}">...</td>
         <td th:utext="${order.paymentData}">...</td>
         <td th:utext="${order.totalCost}">...</td>
+        <td th:utext="${order.percentOfDiscount}">...</td>
         <td th:utext="${order.isBought}">...</td>
 <!--        <td>-->
 <!--            <a th:href="@{/deleteEmployee(id=${employee.id})}">Delete </a>-->
@@ -40,24 +41,13 @@
         Identifier:
         <input type="text" name="id"/>
         <br/>
-        <input type="submit" value="Find Employee"/>
+        <input type="submit" value="Find Order"/>
     </form>
 
     <br>
     <br>
     <br>
 
-    <form th:action="@{/findEmployeeByName}"
-          method="get">
-        Name:
-        <input type="text" name="login"/>
-        <br/>
-        <input type="submit" value="Find Employee"/>
-    </form>
-
-    <br>
-    <br>
-    <br>
 
 
 </table>
@@ -78,7 +68,9 @@
 
 
 </div>
-<a th:href="@{/registerForm}">Add New Employee </a>
+<form th:action="@{/addNewOrder}" method="post">
+    <button type="submit">Create order</button>
+</form>
 
 
 </body>
