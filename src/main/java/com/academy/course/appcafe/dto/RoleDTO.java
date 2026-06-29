@@ -17,5 +17,5 @@ public class RoleDTO {
 
     private String name;
 
-    private DiscountDTO discountDTO;
+
 }

@@ -6,14 +6,11 @@
 
 
     <include file="db/changelog/2026/06/2026-24-06-1-hibernate-sequence.xml"/>
-    <include file="db/changelog/2026/06/2026-06-25-1-Discount.xml"/>
     <include file="db/changelog/2026/06/2026-06-25-1-Role.xml"/>
     <include file="db/changelog/2026/06/2026-06-25-1-Employee.xml"/>
     <include file="db/changelog/2026/06/2026-06-25-1-Category.xml"/>
     <include file="db/changelog/2026/06/2026-06-25-1-Order.xml"/>
     <include file="db/changelog/2026/06/2026-06-25-1-Product.xml"/>
     <include file="db/changelog/2026/06/2026-06-25-1-OrderItem.xml"/>
-
-
 
 </databaseChangeLog>

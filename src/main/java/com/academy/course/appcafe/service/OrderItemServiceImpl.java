@@ -1,13 +1,8 @@
 package com.academy.course.appcafe.service;
 
-import com.academy.course.appcafe.converter.DiscountConverter;
 import com.academy.course.appcafe.converter.OrderItemConverter;
-import com.academy.course.appcafe.dto.DiscountDTO;
-import com.academy.course.appcafe.dto.EmployeeDTO;
 import com.academy.course.appcafe.dto.OrderItemDTO;
-import com.academy.course.appcafe.dto.ProductDTO;
 import com.academy.course.appcafe.model.*;
-import com.academy.course.appcafe.repository.DiscountRepository;
 import com.academy.course.appcafe.repository.OrderItemRepository;
 import com.academy.course.appcafe.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +26,6 @@ public class OrderItemServiceImpl implements OrderItemService{
 
     private final OrderItemRepository orderItemRepository;
     private final OrderItemConverter orderItemConverter;
-    private final DiscountRepository discountRepository;
     private final OrderRepository orderRepository;
 
     @Override
@@ -78,40 +72,6 @@ public class OrderItemServiceImpl implements OrderItemService{
         return new PageImpl<>(orderItemDTOS,pageable,orderItemsPage.getTotalElements());
     }
 
-    @Override
-    public void countAmountOfItem(Long itemId, Long discountId) throws SQLException {
-        OrderItem orderItem = orderItemRepository.findById(itemId).orElse(null);
-
-        BigDecimal percent = BigDecimal.ZERO;
-
-        orderItem.setPriceBeforeDiscount(BigDecimal.valueOf(orderItem.getProduct().getPrice()));
-
-        if (discountId != null) {
-            Optional<Discount> discountOptional = discountRepository.findById(discountId);
-            if (discountOptional.isPresent()) {
-                Discount discount = discountOptional.get();
-                orderItem.setAppliedDiscount(discount);
-                if (discount.getPercentOfDiscount() != null) {
-                    percent = discount.getPercentOfDiscount();
-                }
-            }
-        }
-
-        orderItem.setAppliedPercent(percent);
-
-            BigDecimal factor = BigDecimal.ONE
-                    .subtract(percent.divide(BigDecimal.valueOf(100),4, RoundingMode.HALF_UP));
-
-            BigDecimal total = orderItem.getPriceBeforeDiscount()
-                    .multiply(factor)
-                    .multiply(BigDecimal.valueOf(orderItem.getProductQuantity()))
-                    .setScale(2,RoundingMode.HALF_UP);
-
-            orderItem.setTotalPrice(total);
-
-            orderItemRepository.save(orderItem);
-        }
 
 
-//        logger.info("Successful setting up discount on item with id {}",itemId);
 }

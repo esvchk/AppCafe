@@ -1,13 +1,11 @@
 package com.academy.course.appcafe.service;
 
-import com.academy.course.appcafe.dto.DiscountDTO;
 import com.academy.course.appcafe.dto.OrderDTO;
 import org.springframework.data.domain.Page;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Set;
 
 public interface OrderService {
     OrderDTO findOrderById(Long orderId) throws SQLException;
@@ -19,5 +17,5 @@ public interface OrderService {
     void addProductToOrder(Long productId,Long orderId, Integer quantity) throws SQLException;
     void deleteItemFromOrder(Long itemId,Long orderId,Integer quantity) throws SQLException;
     BigDecimal countTotalAmountOfOrders() throws SQLException;
-    void countAmountOfOrder(Long orderId, Long discountId) throws SQLException;
+    void countAmountOfOrder(Long orderId) throws SQLException;
 }

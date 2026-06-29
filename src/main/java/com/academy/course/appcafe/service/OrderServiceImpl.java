@@ -27,7 +27,6 @@ public class OrderServiceImpl implements OrderService {
     private final OrderItemRepository orderItemRepository;
     private final OrderConverter orderConverter;
     private final OrderRepository orderRepository;
-    private final DiscountRepository discountRepository;
     private final ProductRepository productRepository;
     private final ProductService productService;
     private final EmployeeRepository employeeRepository;
@@ -84,13 +83,6 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void buyOrder(Long orderId) throws SQLException {
         if (orderRepository.existsById(orderId)) {
-            Order order = orderRepository.findById(orderId).orElseThrow(() -> new NullPointerException());
-            order.setIsBought(true);
-
-            Long discountId = (order.getOrderDiscount() != null) ? order.getOrderDiscount().getId() : null;
-
-            countAmountOfOrder(orderId, discountId);
-            orderRepository.save(order);
         }
 
 //        logger.info("Order {} has been successfully bought", orderDTO);
@@ -105,56 +97,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void addProductToOrder(Long productId, Long orderId, Integer quantity) throws SQLException {
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new IllegalArgumentException("Заказ не найден: " + orderId));
 
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new IllegalArgumentException("Товар не найден: " + productId));
-
-        // Проверка лимита ДО любых изменений
-        Integer limit = product.getProductLimit();
-        if (limit != null && limit < quantity) {
-            throw new IllegalStateException("Недостаточно товара: требуется " + quantity + ", доступно " + limit);
-        }
-
-        // Поиск существующей позиции
-        Optional<OrderItem> existingItemOpt = order.getOrderItems().stream()
-                .filter(item -> item.getProduct() != null
-                        && item.getProduct().getId().equals(product.getId()))
-                .findFirst();
-
-        if (existingItemOpt.isPresent()) {
-            OrderItem item = existingItemOpt.get();
-            item.setProductQuantity(item.getProductQuantity() + quantity);
-        } else {
-            OrderItem item = OrderItem.builder()
-                    .productQuantity(quantity)
-                    .product(product)
-                    .order(order)
-                    .build();
-            order.addOrderItem(item);
-        }
-
-        // Обновляем лимит товара
-        if (limit != null) {
-            productService.setProductLimit(product.getId(), limit - quantity);
-        }
-
-        // Пересчитываем только изменённую позицию (или вообще вынести пересчёт на момент покупки)
-        // Если нужно пересчитать все — лучше сделать один вызов на уровне заказа, а не по каждой позиции
-        OrderItem updatedItem = existingItemOpt.orElseGet(() -> order.getOrderItems().stream()
-                        .filter(i -> i.getProduct() != null
-                                && i.getProduct().getId().equals(product.getId()))
-                        .findFirst()
-                        .orElse(null));
-
-        if (updatedItem != null) {
-
-            Long discountId = (updatedItem.getAppliedDiscount() != null)
-                    ? updatedItem.getAppliedDiscount().getId()
-                    : null;
-            orderItemService.countAmountOfItem(updatedItem.getId(), discountId);
-        }
 
     }
 
@@ -178,7 +121,6 @@ public class OrderServiceImpl implements OrderService {
             }
             orderRepository.save(order);
         }
-
     }
 
     @Override
@@ -187,35 +129,23 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void countAmountOfOrder(Long orderId, Long discountId) throws SQLException {
-        Order order = orderRepository.findWithDiscountAndItems(orderId).orElse(null);
-
-        BigDecimal percent = BigDecimal.ZERO;
-        if (discountId != null) {
-            Optional<Discount> discountOptional = discountRepository.findById(discountId);
-            if (discountOptional.isPresent()) {
-                Discount discount = discountOptional.get();
-                if (discount.getPercentOfDiscount() != null) {
-                    percent = discount.getPercentOfDiscount();
-                }
+    public void countAmountOfOrder(Long orderId) throws SQLException {
+        Order order = orderRepository.findById(orderId).orElse(null);
+        if (order != null) {
+            BigDecimal percent = BigDecimal.ZERO;
+            BigDecimal factor = BigDecimal.ONE.subtract(percent.divide(BigDecimal.valueOf(100),4,RoundingMode.HALF_UP));
+            BigDecimal total = BigDecimal.ZERO;
+            if (order.getPercentOfDiscount() != null) {
+                percent = order.getPercentOfDiscount();
             }
+            for (OrderItem item : order.getOrderItems()){
+                total.add(BigDecimal.valueOf(item.getProduct().getPrice()));
+            }
+            total = total.multiply(factor).setScale(2,RoundingMode.HALF_UP);
+            order.setTotalCost(total);
+
+
         }
-        order.setPercentOfDiscount(percent);
-
-        BigDecimal subTotal = order.getOrderItems().stream()
-                .map(OrderItem::getTotalPrice)
-                .filter(Objects::nonNull)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        BigDecimal factor = BigDecimal.ONE
-                .subtract(percent.divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP));
-
-        BigDecimal total = subTotal
-                .multiply(factor)
-                .setScale(2, RoundingMode.HALF_UP);
-
-        order.setTotalCost(total);
-        orderRepository.save(order);
     }
 
 

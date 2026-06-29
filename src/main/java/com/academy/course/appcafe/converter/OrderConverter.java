@@ -14,10 +14,10 @@ import java.util.stream.Collectors;
 public interface OrderConverter {
 
     @Mapping(source = "orderItems",target = "orderItemDTOS")
-//    @Mapping(source = "employee",target = "employeeDTO")
+    @Mapping(source = "employee",target = "employeeDTO")
     OrderDTO toOrderDTO(Order order);
 
     @Mapping(source = "orderItemDTOS",target = "orderItems")
-//    @Mapping(source = "employeeDTO",target = "employee")
+    @Mapping(source = "employeeDTO",target = "employee")
     Order toOrderEntity(OrderDTO orderDTO);
 }

@@ -21,11 +21,6 @@ public class OrderItemDTO {
 
     private Integer productQuantity;
 
-    private Discount appliedDiscount;
-
-    private BigDecimal appliedPercent;
-
-    private BigDecimal priceBeforeDiscount;
 
     private BigDecimal totalPrice;
 }

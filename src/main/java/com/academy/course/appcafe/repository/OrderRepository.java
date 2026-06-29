@@ -11,9 +11,4 @@ import java.util.Optional;
 public interface OrderRepository extends JpaRepository<Order,Long> {
     @Query("SELECT COALESCE(SUM(order.totalCost),0)from Order order")
     BigDecimal getTotalOrdersAmount();
-    @Query("SELECT o FROM Order o " +
-            "LEFT JOIN FETCH o.orderDiscount " +
-            "LEFT JOIN FETCH o.orderItems " +
-            "WHERE o.id = :id")
-    Optional<Order> findWithDiscountAndItems(@Param("id") Long id);
 }

@@ -24,7 +24,6 @@ public class Role extends DataEntity {
     Set<Employee> employees = new HashSet<>();
 
 
-
     public void addEmployee(Employee employee) {
         if (employee == null||this.employees.contains(employee)) {
             return;

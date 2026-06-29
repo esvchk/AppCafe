@@ -19,8 +19,6 @@ public class OrderDTO {
 
     private String paymentData;
 
-    private DiscountDTO orderDiscount;
-
     private BigDecimal discountPercent;
 
     private BigDecimal totalCost;
