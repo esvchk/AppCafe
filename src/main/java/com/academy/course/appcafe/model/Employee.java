@@ -28,7 +28,7 @@ public class Employee extends DataEntity{
     @EqualsAndHashCode.Exclude
     @Builder.Default
     @ManyToMany(cascade = {CascadeType.REFRESH,CascadeType.MERGE},
-            fetch = FetchType.LAZY)
+            fetch = FetchType.EAGER)
     @JoinTable(name = "employee_role",
             joinColumns = @JoinColumn(name = "employee_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
