@@ -15,5 +15,6 @@ import java.util.Set;
 public class EmployeeWithAllRolesToEdit {
 
     private EmployeeDTO employeeDTO;
+
     private Set<RoleDTO> roleDTOS = new HashSet<>();
 }

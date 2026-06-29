@@ -20,8 +20,8 @@ public class WebSecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth->auth
                         .requestMatchers("/getProductPage").permitAll()
-//                        .requestMatchers("/registerEmployee").hasAnyAuthority("MANAGER")
-//                        .requestMatchers("/getEmployeePage").hasAnyAuthority("ADMIN")
+                        .requestMatchers("/registerEmployee").permitAll()
+                        .requestMatchers("/getEmployeePage").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form->form

@@ -1,15 +1,10 @@
 package com.academy.course.appcafe.service;
 
 import com.academy.course.appcafe.converter.OrderConverter;
-import com.academy.course.appcafe.converter.OrderItemConverter;
-import com.academy.course.appcafe.dto.DiscountDTO;
-import com.academy.course.appcafe.dto.EmployeeDTO;
 import com.academy.course.appcafe.dto.OrderDTO;
-import com.academy.course.appcafe.dto.OrderItemDTO;
 import com.academy.course.appcafe.model.*;
 import com.academy.course.appcafe.repository.*;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.annotations.SecondaryRow;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -22,11 +17,11 @@ import java.math.RoundingMode;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
+
 @RequiredArgsConstructor
 @Service
 @Transactional
-public class OrderServiceImpl implements OrderService{
+public class OrderServiceImpl implements OrderService {
 
     private final OrderItemRepository orderItemRepository;
     private final OrderConverter orderConverter;
@@ -49,7 +44,12 @@ public class OrderServiceImpl implements OrderService{
     public OrderDTO addNewOrderToEmployeeByLogin(String login) {
         if (employeeRepository.existsByLogin(login)) {
             Employee employee = employeeRepository.findByLogin(login);
-
+//            Optional<Order> isExists = employee.getOrders().stream()
+//                    .filter(order -> order.getIsBought() == false)
+//                    .findFirst();
+//            if (isExists != null) {
+//                return null;
+//            }
             Order order = Order.builder()
                     .employee(employee)
                     .isBought(false)
@@ -63,7 +63,7 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public Page<OrderDTO> getPaginatedListOfOrders(int page,int size) {
+    public Page<OrderDTO> getPaginatedListOfOrders(int page, int size) {
         if (page < 0 || size < 1) {
             return Page.empty();
         }
@@ -90,7 +90,7 @@ public class OrderServiceImpl implements OrderService{
         if (orderRepository.existsById(orderId)) {
             Order order = orderRepository.getReferenceById(orderId);
             order.setIsBought(true);
-            countAmountOfOrder(orderId,order.getOrderDiscount().getId());
+            countAmountOfOrder(orderId, order.getOrderDiscount().getId());
             orderRepository.save(order);
         }
 
@@ -126,8 +126,6 @@ public class OrderServiceImpl implements OrderService{
         if (product.getProductLimit() != null)
             productService.setProductLimit(product.getId(),
                     product.getProductLimit() - quantity);
-
-
 
         orderRepository.save(order);
 
@@ -171,14 +169,14 @@ public class OrderServiceImpl implements OrderService{
 
             BigDecimal subTotal = order.getOrderItems().stream()
                     .map(OrderItem::getTotalPrice)
-                    .reduce(BigDecimal.ZERO,BigDecimal::add);
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
 
             BigDecimal factor = BigDecimal.ONE
-                    .subtract(percent.divide(BigDecimal.valueOf(100),4, RoundingMode.HALF_UP));
+                    .subtract(percent.divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP));
 
             BigDecimal total = subTotal
                     .multiply(factor)
-                    .setScale(2,RoundingMode.HALF_UP);
+                    .setScale(2, RoundingMode.HALF_UP);
 
             order.setTotalCost(total);
             orderRepository.save(order);

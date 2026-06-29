@@ -13,9 +13,7 @@
             <column name="create_date_time" type="DATETIME"/>
             <column name="update_date_time" type="DATETIME"/>
             <column name="payment_data" type="VARCHAR(255)"/>
-            <column name="total_cost" type="DECIMAL">
-                <constraints nullable="false"/>
-            </column>
+            <column name="total_cost" type="DECIMAL"/>
             <column name="employee_id" type="BIGINT"/>
             <column name="order_discount_id" type="BIGINT"/>
             <column name="percent_of_discount" type="DECIMAL"/>

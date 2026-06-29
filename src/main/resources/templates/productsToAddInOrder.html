@@ -1,0 +1,86 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+    <title>Current order</title>
+
+
+    <br>
+    <table border="1">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Info</th>
+            <th>Limit</th>
+            <th>Quantity</th>
+            <th>Discount</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item : ${orderWithProducts.orderDTO.orderItemDTOS}">
+            <td th:utext="${item.id}">...</td>
+            <td th:utext="${item.productDTO.name}">...</td>
+            <td th:utext="${item.productDTO.price}">...</td>
+            <td th:utext="${item.productDTO.info}">...</td>
+            <td th:utext="${item.productDTO.productLimit}">...</td>
+            <td th:utext="${item.productQuantity}">...</td>
+            <td th:utext="${item.appliedPercent}">...</td>
+            <td>
+<!--                <a th:href="@{/deleteProduct(id=${product.id})}">Delete </a>-->
+<!--                <a th:href="@{/editProduct(id=${product.id})}">Edit </a>-->
+
+            </td>
+        </tr>
+        </tbody>
+    </table>
+                    <a th:href="@{/buyOrder(id=${orderWithProducts.orderDTO.id})}">Buy Order </a>
+</head>
+
+
+<table border="1">
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Info</th>
+            <th>IsAvailable</th>
+            <th>Limit</th>
+            <th>Category</th>
+        </tr>
+
+        <tr th:each="product : ${orderWithProducts.productDTOPage.getContent}">
+            <td th:utext="${product.id}">...</td>
+            <td th:utext="${product.name}">...</td>
+            <td th:utext="${product.price}">...</td>
+            <td th:utext="${product.info}">...</td>
+            <td th:utext="${product.isAvailable}">...</td>
+            <td th:utext="${product.productLimit}">...</td>
+            <td th:utext="${product.categoryDTO != null ? product.categoryDTO.name : 'Without category' }">...</td>
+            <td>
+                <a th:href="@{/editLimit(id=${product.id})}">Set Limit </a>
+                <a th:href="@{/editLimit(id=${product.id})}">Add In Order </a>
+            </td>
+        </tr>
+
+</table>
+<div>
+    <span th:if="${orderWithProducts.productDTOPage.hasPrevious()}">
+        <a th:href="@{/newOrderPage/{id}(id=${orderWithProducts.orderDTO.id},page=${orderWithProducts.productDTOPage.number - 1},size=${orderWithProducts.productDTOPage.size})}">Back</a>
+    </span>
+    <th:block th:each="counter : ${#numbers.sequence(0,orderWithProducts.productDTOPage.totalPages - 1)}">
+        <span th:if="${orderWithProducts.productDTOPage.number == counter} " class="selected">[[${counter} + 1]] </span>
+        <span th:unless="${orderWithProducts.productDTOPage.number == counter}">
+        <a th:href="@{/newOrderPage/{id}(id=${orderWithProducts.orderDTO.id},page=${counter},size=${orderWithProducts.productDTOPage.size})}">[[${counter} + 1]] </a>
+        </span>
+    </th:block>
+    <span th:if="${orderWithProducts.productDTOPage.hasNext()}">
+        <a th:href="@{/newOrderPage/{id}(id=${orderWithProducts.orderDTO.id},page=${orderWithProducts.productDTOPage.number + 1},size = ${orderWithProducts.productDTOPage.size})}">Forward</a>
+    </span>
+
+
+</div>
+<body>
+
+</body>
+</html>

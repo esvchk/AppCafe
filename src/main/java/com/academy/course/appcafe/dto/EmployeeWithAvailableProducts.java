@@ -1,9 +1,11 @@
 package com.academy.course.appcafe.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -13,7 +15,8 @@ import java.util.List;
 @AllArgsConstructor
 public class EmployeeWithAvailableProducts {
 
+    @NotNull
     private OrderDTO orderDTO;
 
-    private List<ProductDTO> productDTOList;
+    private Page<ProductDTO> productDTOPage;
 }

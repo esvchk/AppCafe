@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class EmployeeDetailsImpl implements UserDetails {
+public class EmployeeDetailsImpl implements UserDetails{
 
     private final Employee employee;
 

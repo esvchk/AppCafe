@@ -35,7 +35,7 @@ public class Employee extends DataEntity{
     private Set<Role> roles = new HashSet<>();
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.MERGE, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private List<Order> orders = new ArrayList<>();
 

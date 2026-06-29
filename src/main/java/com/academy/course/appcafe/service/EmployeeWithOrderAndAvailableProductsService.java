@@ -4,5 +4,5 @@ import com.academy.course.appcafe.dto.EmployeeWithAvailableProducts;
 
 
 public interface EmployeeWithOrderAndAvailableProductsService {
-    EmployeeWithAvailableProducts getPairEntitiesByEmployeeLogin(String login);
+    EmployeeWithAvailableProducts getPairEntitiesByEmployeeLogin(String login,Long orderId,int page,int size);
 }
