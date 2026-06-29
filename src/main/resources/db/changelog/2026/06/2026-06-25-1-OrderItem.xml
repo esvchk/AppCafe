@@ -19,12 +19,8 @@
             <column name="applied_percent" type="DECIMAL"/>
             <column name="product_id" type="BIGINT"/>
             <column name="order_id" type="BIGINT"/>
-            <column name="price_before_discount" type="DECIMAL">
-                <constraints nullable="false"/>
-            </column>
-            <column name="total_price" type="DECIMAL">
-                <constraints nullable="false"/>
-            </column>
+            <column name="price_before_discount" type="DECIMAL"/>
+            <column name="total_price" type="DECIMAL"/>
         </createTable>
     </changeSet>
     <changeSet id="1782658621377-2" author="User">

@@ -14,7 +14,7 @@ import java.util.Objects;
 @Table
 public class OrderItem extends DataEntity {
 
-    @Column(nullable = false)
+    @Column
     private Integer productQuantity;
 
 
@@ -36,10 +36,10 @@ public class OrderItem extends DataEntity {
     private Order order;
 
 
-    @Column(nullable = false)
+    @Column
     private BigDecimal priceBeforeDiscount;
 
-    @Column(nullable = false)
+    @Column
     private BigDecimal totalPrice;
 
 

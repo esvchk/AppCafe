@@ -58,13 +58,13 @@ public class OrderController {
         return "redirect:/newOrder";
     }
 
-//    @RequestMapping(value = "/addProductInOrder/{orderId}",method = RequestMethod.GET)
-//    public String addProductInOrder(@RequestParam("orderId") Long orderId,
-//                                    @RequestParam("productId") Long productId,
-//                                    @RequestParam ("quantity") Integer quantity) throws SQLException {
-//        orderService.addProductToOrder(productId,orderId,quantity);
-//        return null;
-//    }
+    @PostMapping(value = "/addProductInOrder/{orderId}")
+    public String addProductInOrder(@RequestParam("orderId") Long orderId,
+                                    @RequestParam("productId") Long productId,
+                                    @RequestParam ("quantity") Integer quantity) throws SQLException {
+        orderService.addProductToOrder(productId,orderId,quantity);
+        return "redirect:/newOrderPage/" + orderId;
+    }
 
 
 

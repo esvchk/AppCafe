@@ -27,41 +27,52 @@
             <td th:utext="${item.productQuantity}">...</td>
             <td th:utext="${item.appliedPercent}">...</td>
             <td>
-<!--                <a th:href="@{/deleteProduct(id=${product.id})}">Delete </a>-->
-<!--                <a th:href="@{/editProduct(id=${product.id})}">Edit </a>-->
+                <!--                <a th:href="@{/deleteProduct(id=${product.id})}">Delete </a>-->
+                <!--                <a th:href="@{/editProduct(id=${product.id})}">Edit </a>-->
 
             </td>
         </tr>
         </tbody>
     </table>
-                    <a th:href="@{/buyOrder(id=${orderWithProducts.orderDTO.id})}">Buy Order </a>
+    <a th:href="@{/buyOrder(id=${orderWithProducts.orderDTO.id})}">Buy Order </a>
 </head>
 
 
 <table border="1">
-        <tr>
-            <th>Id</th>
-            <th>Name</th>
-            <th>Price</th>
-            <th>Info</th>
-            <th>IsAvailable</th>
-            <th>Limit</th>
-            <th>Category</th>
-        </tr>
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Info</th>
+        <th>IsAvailable</th>
+        <th>Limit</th>
+        <th>Category</th>
+    </tr>
 
-        <tr th:each="product : ${orderWithProducts.productDTOPage.getContent}">
-            <td th:utext="${product.id}">...</td>
-            <td th:utext="${product.name}">...</td>
-            <td th:utext="${product.price}">...</td>
-            <td th:utext="${product.info}">...</td>
-            <td th:utext="${product.isAvailable}">...</td>
-            <td th:utext="${product.productLimit}">...</td>
-            <td th:utext="${product.categoryDTO != null ? product.categoryDTO.name : 'Without category' }">...</td>
-            <td>
-                <a th:href="@{/editLimit(id=${product.id})}">Set Limit </a>
-                <a th:href="@{/editLimit(id=${product.id})}">Add In Order </a>
-            </td>
-        </tr>
+    <tr th:each="product : ${orderWithProducts.productDTOPage.getContent}">
+        <td th:utext="${product.id}">...</td>
+        <td th:utext="${product.name}">...</td>
+        <td th:utext="${product.price}">...</td>
+        <td th:utext="${product.info}">...</td>
+        <td th:utext="${product.isAvailable}">...</td>
+        <td th:utext="${product.productLimit}">...</td>
+        <td th:utext="${product.categoryDTO != null ? product.categoryDTO.name : 'Without category' }">...</td>
+        <td>
+            <a th:href="@{/editLimit(id=${product.id})}">Set Limit </a>
+            <form th:action="@{/addProductInOrder/{id}(orderId=${orderWithProducts.orderDTO.id})}"
+                  method="post"
+                  style="display:flex; gap:8px; align-items:center; margin-top:6px;">
+                <!-- Скрытое поле: передаём ID товара -->
+                <input type="hidden" name="productId" th:value="${product.id}"/>
+
+                <!-- Количество -->
+                <input type="number" name="quantity" value="1" min="1" style="width:60px;"/>
+
+                <!-- Кнопка -->
+                <button type="submit" style="padding: 4px 12px;">Добавить</button>
+            </form>
+        </td>
+    </tr>
 
 </table>
 <div>
