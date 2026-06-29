@@ -23,9 +23,6 @@ public class Role extends DataEntity {
             @Builder.Default
     Set<Employee> employees = new HashSet<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "discount_id",referencedColumnName = "id")
-    private Discount discount;
 
 
     public void addEmployee(Employee employee) {

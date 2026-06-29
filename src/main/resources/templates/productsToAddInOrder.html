@@ -12,7 +12,6 @@
             <th>Name</th>
             <th>Price</th>
             <th>Info</th>
-            <th>Limit</th>
             <th>Quantity</th>
             <th>Discount</th>
         </tr>
@@ -23,7 +22,6 @@
             <td th:utext="${item.productDTO.name}">...</td>
             <td th:utext="${item.productDTO.price}">...</td>
             <td th:utext="${item.productDTO.info}">...</td>
-            <td th:utext="${item.productDTO.productLimit}">...</td>
             <td th:utext="${item.productQuantity}">...</td>
             <td th:utext="${item.appliedPercent}">...</td>
             <td>
@@ -34,7 +32,15 @@
         </tr>
         </tbody>
     </table>
-    <a th:href="@{/buyOrder(id=${orderWithProducts.orderDTO.id})}">Buy Order </a>
+    <form th:action="@{/buyOrder/{id}(orderId=${orderWithProducts.orderDTO.id})}"
+          method="post"
+          style="display:flex; gap:8px; align-items:center; margin-top:6px;">
+        <!-- Скрытое поле: передаём ID товара -->
+        <input type="hidden" name="orderId" th:value="${orderWithProducts.orderDTO.id}"/>
+
+        <!-- Кнопка -->
+        <button type="submit" style="padding: 4px 12px;">Добавить</button>
+    </form>
 </head>
 
 

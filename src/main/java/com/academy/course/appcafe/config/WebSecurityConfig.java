@@ -20,6 +20,7 @@ public class WebSecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth->auth
                         .requestMatchers("/getProductPage").permitAll()
+                        .requestMatchers("/registerForm").permitAll()
                         .requestMatchers("/registerEmployee").permitAll()
                         .requestMatchers("/getEmployeePage").permitAll()
                         .anyRequest().authenticated()

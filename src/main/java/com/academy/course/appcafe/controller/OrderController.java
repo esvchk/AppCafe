@@ -52,10 +52,10 @@ public class OrderController {
         model.addAttribute("orderWithProducts",pairService.getPairEntitiesByEmployeeLogin(loginEmployee,orderId,page,size));
         return "productsToAddInOrder";
     }
-    @RequestMapping(value = "/buyOrder", method = RequestMethod.GET)
+    @RequestMapping(value = "/buyOrder", method = RequestMethod.POST)
     public String buyOrder(@RequestParam("id") Long orderId) throws SQLException {
         orderService.buyOrder(orderId);
-        return "redirect:/newOrder";
+        return "redirect:/addNewOrder";
     }
 
     @PostMapping(value = "/addProductInOrder/{orderId}")

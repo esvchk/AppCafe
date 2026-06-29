@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -30,6 +31,7 @@ public class OrderServiceImpl implements OrderService {
     private final ProductRepository productRepository;
     private final ProductService productService;
     private final EmployeeRepository employeeRepository;
+    private final OrderItemService orderItemService;
 
 
     @Override
@@ -44,12 +46,6 @@ public class OrderServiceImpl implements OrderService {
     public OrderDTO addNewOrderToEmployeeByLogin(String login) {
         if (employeeRepository.existsByLogin(login)) {
             Employee employee = employeeRepository.findByLogin(login);
-//            Optional<Order> isExists = employee.getOrders().stream()
-//                    .filter(order -> order.getIsBought() == false)
-//                    .findFirst();
-//            if (isExists != null) {
-//                return null;
-//            }
             Order order = Order.builder()
                     .employee(employee)
                     .isBought(false)
@@ -88,9 +84,12 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void buyOrder(Long orderId) throws SQLException {
         if (orderRepository.existsById(orderId)) {
-            Order order = orderRepository.getReferenceById(orderId);
+            Order order = orderRepository.findById(orderId).orElseThrow(() -> new NullPointerException());
             order.setIsBought(true);
-            countAmountOfOrder(orderId, order.getOrderDiscount().getId());
+
+            Long discountId = (order.getOrderDiscount() != null) ? order.getOrderDiscount().getId() : null;
+
+            countAmountOfOrder(orderId, discountId);
             orderRepository.save(order);
         }
 
@@ -106,14 +105,27 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void addProductToOrder(Long productId, Long orderId, Integer quantity) throws SQLException {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("Заказ не найден: " + orderId));
 
-        Order order = orderRepository.getReferenceById(orderId);
-        Product product = productRepository.getReferenceById(productId);
-        Optional<OrderItem> items = order.getOrderItems().stream()
-                .filter(item1 -> item1.getProduct().getId().equals(product.getId()))
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("Товар не найден: " + productId));
+
+        // Проверка лимита ДО любых изменений
+        Integer limit = product.getProductLimit();
+        if (limit != null && limit < quantity) {
+            throw new IllegalStateException("Недостаточно товара: требуется " + quantity + ", доступно " + limit);
+        }
+
+        // Поиск существующей позиции
+        Optional<OrderItem> existingItemOpt = order.getOrderItems().stream()
+                .filter(item -> item.getProduct() != null
+                        && item.getProduct().getId().equals(product.getId()))
                 .findFirst();
-        if (items.isPresent()) {
-            items.get().setProductQuantity(items.get().getProductQuantity() + quantity);
+
+        if (existingItemOpt.isPresent()) {
+            OrderItem item = existingItemOpt.get();
+            item.setProductQuantity(item.getProductQuantity() + quantity);
         } else {
             OrderItem item = OrderItem.builder()
                     .productQuantity(quantity)
@@ -123,16 +135,33 @@ public class OrderServiceImpl implements OrderService {
             order.addOrderItem(item);
         }
 
-        if (product.getProductLimit() != null)
-            productService.setProductLimit(product.getId(),
-                    product.getProductLimit() - quantity);
+        // Обновляем лимит товара
+        if (limit != null) {
+            productService.setProductLimit(product.getId(), limit - quantity);
+        }
 
-        orderRepository.save(order);
+        // Пересчитываем только изменённую позицию (или вообще вынести пересчёт на момент покупки)
+        // Если нужно пересчитать все — лучше сделать один вызов на уровне заказа, а не по каждой позиции
+        OrderItem updatedItem = existingItemOpt.orElseGet(() -> order.getOrderItems().stream()
+                        .filter(i -> i.getProduct() != null
+                                && i.getProduct().getId().equals(product.getId()))
+                        .findFirst()
+                        .orElse(null));
+
+        if (updatedItem != null) {
+
+            Long discountId = (updatedItem.getAppliedDiscount() != null)
+                    ? updatedItem.getAppliedDiscount().getId()
+                    : null;
+            orderItemService.countAmountOfItem(updatedItem.getId(), discountId);
+        }
+
+    }
+
 
 //        logger.info("Product {} has been successfully added to order {} with quantity {} "
 //                , product, order, quantity);
 
-    }
 
     @Override
     public void deleteItemFromOrder(Long itemId, Long orderId, Integer quantity) throws SQLException {
@@ -159,29 +188,35 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void countAmountOfOrder(Long orderId, Long discountId) throws SQLException {
-        boolean isOrderExists = orderRepository.existsById(orderId);
-        boolean isDiscountExists = orderRepository.existsById(discountId);
-        if (isOrderExists) {
-            Order order = orderRepository.getReferenceById(orderId);
-            Discount discount = discountRepository.getReferenceById(discountId);
-            BigDecimal percent = (isDiscountExists) ? discount.getPercentOfDiscount() : BigDecimal.ZERO;
-            order.setPercentOfDiscount(percent);
+        Order order = orderRepository.findWithDiscountAndItems(orderId).orElse(null);
 
-            BigDecimal subTotal = order.getOrderItems().stream()
-                    .map(OrderItem::getTotalPrice)
-                    .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-            BigDecimal factor = BigDecimal.ONE
-                    .subtract(percent.divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP));
-
-            BigDecimal total = subTotal
-                    .multiply(factor)
-                    .setScale(2, RoundingMode.HALF_UP);
-
-            order.setTotalCost(total);
-            orderRepository.save(order);
+        BigDecimal percent = BigDecimal.ZERO;
+        if (discountId != null) {
+            Optional<Discount> discountOptional = discountRepository.findById(discountId);
+            if (discountOptional.isPresent()) {
+                Discount discount = discountOptional.get();
+                if (discount.getPercentOfDiscount() != null) {
+                    percent = discount.getPercentOfDiscount();
+                }
+            }
         }
+        order.setPercentOfDiscount(percent);
 
+        BigDecimal subTotal = order.getOrderItems().stream()
+                .map(OrderItem::getTotalPrice)
+                .filter(Objects::nonNull)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
+        BigDecimal factor = BigDecimal.ONE
+                .subtract(percent.divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP));
+
+        BigDecimal total = subTotal
+                .multiply(factor)
+                .setScale(2, RoundingMode.HALF_UP);
+
+        order.setTotalCost(total);
+        orderRepository.save(order);
     }
+
+
 }

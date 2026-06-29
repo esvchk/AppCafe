@@ -2,9 +2,6 @@ package com.academy.course.appcafe.service;
 
 import com.academy.course.appcafe.converter.DiscountConverter;
 import com.academy.course.appcafe.dto.DiscountDTO;
-import com.academy.course.appcafe.dto.EmployeeDTO;
-import com.academy.course.appcafe.model.Discount;
-import com.academy.course.appcafe.model.Employee;
 import com.academy.course.appcafe.repository.DiscountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

@@ -22,6 +22,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -78,33 +80,38 @@ public class OrderItemServiceImpl implements OrderItemService{
 
     @Override
     public void countAmountOfItem(Long itemId, Long discountId) throws SQLException {
-        boolean orderItemIsExists = orderItemRepository.existsById(itemId); 
-        boolean discountIsExists = discountRepository.existsById(discountId);
+        OrderItem orderItem = orderItemRepository.findById(itemId).orElse(null);
 
-        if (orderItemIsExists) {
-            OrderItem item = orderItemRepository.getReferenceById(itemId);
+        BigDecimal percent = BigDecimal.ZERO;
 
-            Discount discount = discountRepository.getReferenceById(discountId);
+        orderItem.setPriceBeforeDiscount(BigDecimal.valueOf(orderItem.getProduct().getPrice()));
 
-            BigDecimal percent = (discountIsExists) ? discount.getPercentOfDiscount() : BigDecimal.ZERO;
+        if (discountId != null) {
+            Optional<Discount> discountOptional = discountRepository.findById(discountId);
+            if (discountOptional.isPresent()) {
+                Discount discount = discountOptional.get();
+                orderItem.setAppliedDiscount(discount);
+                if (discount.getPercentOfDiscount() != null) {
+                    percent = discount.getPercentOfDiscount();
+                }
+            }
+        }
 
-            item.setAppliedDiscount(discount);
-            item.setAppliedPercent(percent);
+        orderItem.setAppliedPercent(percent);
 
             BigDecimal factor = BigDecimal.ONE
                     .subtract(percent.divide(BigDecimal.valueOf(100),4, RoundingMode.HALF_UP));
 
-            BigDecimal total = item.getPriceBeforeDiscount()
+            BigDecimal total = orderItem.getPriceBeforeDiscount()
                     .multiply(factor)
-                    .multiply(BigDecimal.valueOf(item.getProductQuantity()))
+                    .multiply(BigDecimal.valueOf(orderItem.getProductQuantity()))
                     .setScale(2,RoundingMode.HALF_UP);
 
-            item.setTotalPrice(total);
+            orderItem.setTotalPrice(total);
 
-            orderItemRepository.save(item);
+            orderItemRepository.save(orderItem);
         }
 
 
 //        logger.info("Successful setting up discount on item with id {}",itemId);
-    }
 }

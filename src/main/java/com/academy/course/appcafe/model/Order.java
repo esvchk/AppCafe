@@ -29,10 +29,6 @@ public class Order extends DataEntity{
     @JoinColumn(name = "employee_id")
     private Employee employee;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "orderDiscount_id")
-    private Discount orderDiscount;
-
     @Column
     private BigDecimal percentOfDiscount;
 

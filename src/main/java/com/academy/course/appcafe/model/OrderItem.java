@@ -19,14 +19,6 @@ public class OrderItem extends DataEntity {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "applied_discount_id")
-    private Discount appliedDiscount;
-
-    @Column
-    private BigDecimal appliedPercent;
-
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Product product;
 
@@ -34,13 +26,6 @@ public class OrderItem extends DataEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;
-
-
-    @Column
-    private BigDecimal priceBeforeDiscount;
-
-    @Column
-    private BigDecimal totalPrice;
 
 
     @Override

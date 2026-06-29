@@ -33,7 +33,7 @@ public class EmployeeWithAvailableProductsServiceImpl implements EmployeeWithOrd
     public EmployeeWithAvailableProducts getPairEntitiesByEmployeeLogin(String login,Long orderId,int page,int size) {
         if (employeeRepository.existsByLogin(login)) {
             OrderDTO orderDTO = orderConverter.toOrderDTO(orderRepository.getReferenceById(orderId));
-                    Page<ProductDTO> productPage = productService.getPaginatedListOfProducts(page, size);
+                    Page<ProductDTO> productPage = productService.getAvailableProducts(page, size);
             return EmployeeWithAvailableProducts.builder()
                     .productDTOPage(productPage)
                     .orderDTO(orderDTO)
