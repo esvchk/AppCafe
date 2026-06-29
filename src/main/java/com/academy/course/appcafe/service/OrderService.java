@@ -11,6 +11,7 @@ import java.util.Set;
 
 public interface OrderService {
     OrderDTO findOrderById(Long orderId) throws SQLException;
+    OrderDTO addNewOrderToEmployeeByLogin(String login);
     Page<OrderDTO> getPaginatedListOfOrders(int page,int size);
     List<OrderDTO> getAllOrders();
     void buyOrder(Long orderId) throws SQLException;

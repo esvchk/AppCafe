@@ -7,10 +7,7 @@ import com.academy.course.appcafe.dto.EmployeeDTO;
 import com.academy.course.appcafe.dto.OrderDTO;
 import com.academy.course.appcafe.dto.OrderItemDTO;
 import com.academy.course.appcafe.model.*;
-import com.academy.course.appcafe.repository.DiscountRepository;
-import com.academy.course.appcafe.repository.OrderItemRepository;
-import com.academy.course.appcafe.repository.OrderRepository;
-import com.academy.course.appcafe.repository.ProductRepository;
+import com.academy.course.appcafe.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.SecondaryRow;
 import org.springframework.data.domain.Page;
@@ -37,12 +34,30 @@ public class OrderServiceImpl implements OrderService{
     private final DiscountRepository discountRepository;
     private final ProductRepository productRepository;
     private final ProductService productService;
+    private final EmployeeRepository employeeRepository;
 
 
     @Override
     public OrderDTO findOrderById(Long orderId) throws SQLException {
         if (orderRepository.existsById(orderId)) {
             return orderConverter.toOrderDTO(orderRepository.getReferenceById(orderId));
+        }
+        return null;
+    }
+
+    @Override
+    public OrderDTO addNewOrderToEmployeeByLogin(String login) {
+        if (employeeRepository.existsByLogin(login)) {
+            Employee employee = employeeRepository.findByLogin(login);
+
+            Order order = Order.builder()
+                    .employee(employee)
+                    .isBought(false)
+                    .build();
+            employee.addOrder(order);
+
+            orderRepository.save(order);
+            return orderConverter.toOrderDTO(order);
         }
         return null;
     }

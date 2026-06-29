@@ -15,7 +15,6 @@
         <label>Roles:</label><br/>
         <small>Удерживайте Ctrl (Cmd на Mac), чтобы выбрать несколько ролей.</small><br/><br/>
 
-
         <select name="roleIds" multiple size="5" style="width: 300px;">
             <option th:each="role : ${employeeWithRoles.roleDTOS}"
                     th:value="${role.id}"

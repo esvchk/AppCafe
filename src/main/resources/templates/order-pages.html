@@ -1,0 +1,86 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Employee List</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+</head>
+
+<h1>Order List</h1>
+
+<body>
+<table border="1">
+
+    <tr>
+        <th>Id</th>
+        <th>Payment Data</th>
+        <th>Total Cost</th>
+        <th>Percent Of Discount</th>
+        <th>IsBought</th>
+    </tr>
+
+
+    <tr th:each="order : ${orderPage.getContent}">
+        <td th:utext="${order.id}">...</td>
+        <td th:utext="${order.paymentData}">...</td>
+        <td th:utext="${order.totalCost}">...</td>
+        <td th:utext="${order.isBought}">...</td>
+<!--        <td>-->
+<!--            <a th:href="@{/deleteEmployee(id=${employee.id})}">Delete </a>-->
+<!--            <a th:href="@{/editEmployee(id=${employee.id})}">Edit </a>-->
+<!--        </td>-->
+    </tr>
+
+    <br>
+    <br>
+    <br>
+
+    <form th:action="@{/findEmployeeById}"
+          method="get">
+        Identifier:
+        <input type="text" name="id"/>
+        <br/>
+        <input type="submit" value="Find Employee"/>
+    </form>
+
+    <br>
+    <br>
+    <br>
+
+    <form th:action="@{/findEmployeeByName}"
+          method="get">
+        Name:
+        <input type="text" name="login"/>
+        <br/>
+        <input type="submit" value="Find Employee"/>
+    </form>
+
+    <br>
+    <br>
+    <br>
+
+
+</table>
+
+<div>
+    <span th:if="${orderPage.hasPrevious()}">
+        <a th:href="@{/getOrderPage(offset=${orderPage.number - 1},size=${orderPage.size})}">Back</a>
+    </span>
+    <th:block th:each="counter : ${#numbers.sequence(0,orderPage.totalPages - 1)}">
+        <span th:if="${orderPage.number == counter} ">[[${counter} + 1]] </span>
+        <span th:unless="${orderPage.number == counter}">
+        <a th:href="@{/getOrderPage(offset=${counter},size=${orderPage.size})}">[[${counter} + 1]] </a>
+        </span>
+    </th:block>
+    <span th:if="${orderPage.hasNext()}">
+        <a th:href="@{/getOrderPage(offset=${orderPage.number + 1},size = ${orderPage.size})}">Forward</a>
+    </span>
+
+
+</div>
+<a th:href="@{/registerForm}">Add New Employee </a>
+
+
+</body>
+
+</html>

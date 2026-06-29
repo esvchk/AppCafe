@@ -5,7 +5,7 @@
     <form th:action="@{/setProductLimit(id=${productWithLimit.id})}"
           th:object="${productWithLimit}" method="post">
         Limit:
-        <input type="number" th:field="*{productLimit}"/>
+        <input type="number"  th:field="*{productLimit}" />
         <br/>
         <input type="submit" value="Edit product"/>
     </form>

@@ -14,4 +14,6 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
     List<Product> findAllByName(String name);
 
     Page<Product> findAllByIsAvailableTrue(Boolean isAvailable, Pageable pageable);
+
+    List<Product> findAllByIsAvailable(Boolean isAvailable);
 }

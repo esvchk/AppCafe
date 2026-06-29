@@ -28,9 +28,8 @@
             </th:block>
         </td>
                 <td>
-        <!--            <a th:href="@{/deleteProduct(id=${employee.id})}">Delete </a>-->
+                    <a th:href="@{/deleteEmployee(id=${employee.id})}">Delete </a>
                     <a th:href="@{/editEmployee(id=${employee.id})}">Edit </a>
-        <!--            <a th:href="@{/editLimit(id=${product.id})}">Set Limit </a>-->
                 </td>
     </tr>
 
@@ -81,6 +80,7 @@
 
 
 </div>
+<a th:href="@{/registerForm}">Add New Employee </a>
 
 
 </body>

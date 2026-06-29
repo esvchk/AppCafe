@@ -78,5 +78,11 @@ public class EmployeeController {
         return "redirect:/getEmployeePage";
     }
 
+    @RequestMapping(value = "/deleteEmployee",method = RequestMethod.GET)
+    public String deleteEmployee(@RequestParam("id")Long id) throws SQLException {
+        employeeService.deleteEmployee(id);
+        return "redirect:/getEmployeePage";
+    }
+
 
 }

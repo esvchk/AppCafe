@@ -1,5 +1,6 @@
 package com.academy.course.appcafe.dto;
 
+import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,6 +21,7 @@ public class ProductDTO {
 
     private String info;
 
+    @Nullable
     private Integer productLimit;
 
     private Boolean isAvailable;
