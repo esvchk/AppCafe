@@ -1,14 +1,11 @@
 package com.academy.course.appcafe.dto;
 
-import com.academy.course.appcafe.model.Employee;
-import com.academy.course.appcafe.model.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -18,5 +15,5 @@ import java.util.Set;
 public class EmployeeWithAllRolesToEdit {
 
     private EmployeeDTO employeeDTO;
-    private Set<RoleDTO> allRolesDTOSToChoose;
+    private Set<RoleDTO> roleDTOS = new HashSet<>();
 }

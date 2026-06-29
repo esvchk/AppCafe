@@ -4,6 +4,7 @@ import com.academy.course.appcafe.converter.EmployeeConverter;
 import com.academy.course.appcafe.converter.OrderConverter;
 import com.academy.course.appcafe.converter.RoleConverter;
 import com.academy.course.appcafe.dto.EmployeeDTO;
+import com.academy.course.appcafe.dto.EmployeeEdit;
 import com.academy.course.appcafe.dto.EmployeeRequest;
 import com.academy.course.appcafe.dto.OrderDTO;
 
@@ -23,7 +24,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -130,13 +133,14 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public void updateEmployee(Long oldValueId, EmployeeDTO newValue) throws SQLException {
+    public void updateEmployee(Long oldValueId, EmployeeEdit employeeEdit) throws SQLException {
         if (employeeRepository.existsById(oldValueId)) {
             Employee employee = employeeRepository.getReferenceById(oldValueId);
-            employee.setLogin(newValue.getLogin());
-            employee.setRoles(newValue.getRoleDTOS().stream()
-                    .map(roleConverter::toRoleEntity)
-                    .collect(Collectors.toSet()));
+            employee.setLogin(employeeEdit.getLogin());
+            if (!employeeEdit.getRoleIds().isEmpty()) {
+                List<Role> roles = roleRepository.findAllById(employeeEdit.getRoleIds());
+                employee.setRoles(new HashSet<>(roles));
+            }
             employeeRepository.save(employee);
         }
     }

@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -33,7 +32,7 @@ public class EmployeeWithRolesServiceImpl implements EmployeeWithRolesService{
         EmployeeDTO employeeDTO = employeeConverter.toEmployeeDTO(employeeRepository.getReferenceById(id));
         return EmployeeWithAllRolesToEdit.builder()
                 .employeeDTO(employeeDTO)
-                .allRolesDTOSToChoose(roles)
+                .roleDTOS(roles)
                 .build();
     }
 }

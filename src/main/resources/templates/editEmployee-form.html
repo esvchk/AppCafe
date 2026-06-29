@@ -1,17 +1,14 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <h1>Edit Product</h1>
-<form th:action="@{/updateEmployee}"
-      th:object="${employeeWithRoles}"
-      method="post">
-
+<form th:action="@{/updateEmployee}" method="post">
 
     <input type="hidden" name="id" th:value="${employeeWithRoles.employeeDTO.id}" />
 
     <div style="margin-bottom: 15px;">
-        <label for="login">Login:</label><br/>
+        <label>Login:</label><br/>
 
-        <input type="text" id="login" th:field="*{employeeDTO.login}" required />
+        <input type="text" name="login" th:value="${employeeWithRoles.employeeDTO.login}" required />
     </div>
 
     <div style="margin-bottom: 15px;">
@@ -20,7 +17,7 @@
 
 
         <select name="roleIds" multiple size="5" style="width: 300px;">
-            <option th:each="role : ${employeeWithRoles.allRolesDTOSToChoose}"
+            <option th:each="role : ${employeeWithRoles.roleDTOS}"
                     th:value="${role.id}"
                     th:text="${role.name}">
             </option>

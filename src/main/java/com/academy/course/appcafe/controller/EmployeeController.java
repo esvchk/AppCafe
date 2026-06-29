@@ -1,9 +1,6 @@
 package com.academy.course.appcafe.controller;
 
-import com.academy.course.appcafe.dto.EmployeeDTO;
-import com.academy.course.appcafe.dto.EmployeeRequest;
-import com.academy.course.appcafe.dto.ProductDTO;
-import com.academy.course.appcafe.dto.RoleDTO;
+import com.academy.course.appcafe.dto.*;
 import com.academy.course.appcafe.repository.EmployeeRepository;
 import com.academy.course.appcafe.service.EmployeeService;
 import com.academy.course.appcafe.service.EmployeeWithRolesService;
@@ -76,8 +73,8 @@ public class EmployeeController {
     }
 
     @RequestMapping(value = "/updateEmployee", method = RequestMethod.POST)
-    public String updateEmployee(EmployeeDTO newValue) throws SQLException {
-        employeeService.updateEmployee(newValue.getId(), newValue);
+    public String updateEmployee(EmployeeEdit employeeEdit) throws SQLException {
+        employeeService.updateEmployee(employeeEdit.getId(), employeeEdit);
         return "redirect:/getEmployeePage";
     }
 
