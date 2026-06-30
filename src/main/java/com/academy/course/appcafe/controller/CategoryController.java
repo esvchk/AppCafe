@@ -69,8 +69,13 @@ public class CategoryController {
     @RequestMapping(value = "/setIsAvailableInEditor", method = RequestMethod.POST)
     public String setIsAvailableInEditor(@RequestParam(name = "productId") Long productId,
                                          @RequestParam(name = "isAvailable", required = false) boolean isAvailable,
-                                         @RequestParam(name = "categoryId") Long categoryId) throws SQLException {
+                                         @RequestParam(name = "categoryId") Long categoryId) {
         productService.setIsAvailableToProduct(productId, isAvailable);
         return "redirect:showCategoryPage/" + categoryId;
+    }
+    @RequestMapping(value = "/deleteCategory",method = RequestMethod.GET)
+    public String deleteCategory(@RequestParam("categoryId") Long categoryId) throws SQLException {
+        categoryService.deleteCategory(categoryId);
+        return "redirect:/getCategoryPage";
     }
 }

@@ -20,9 +20,8 @@
         <td th:utext="${category.id}">...</td>
         <td th:utext="${category.name}">...</td>
         <td>
-<!--            <a th:href="@{/deleteProduct(id=${product.id})}">Delete </a>-->
+            <a th:href="@{/deleteCategory(categoryId=${category.id})}">Delete </a>
             <a th:href="@{/showCategoryPage/{cid}(cid=${category.id})}">Edit Category</a>
-<!--            <a th:href="@{/editLimit(id=${product.id})}">Set Limit </a>-->
         </td>
     </tr>
 

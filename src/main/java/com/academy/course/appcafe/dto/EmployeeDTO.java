@@ -19,7 +19,6 @@ import java.util.Set;
 @AllArgsConstructor
 
 public class EmployeeDTO {
-    @NotNull(message = "Id required")
     @Min(value = 1,message = "Id must be positive and not equal 0")
     private Long id;
 

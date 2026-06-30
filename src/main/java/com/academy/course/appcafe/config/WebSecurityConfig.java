@@ -19,16 +19,30 @@ public class WebSecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth->auth
-                        .requestMatchers("/getProductPage").permitAll()
-                        .requestMatchers("/registerForm").permitAll()
-                        .requestMatchers("/registerEmployee").permitAll()
-                        .requestMatchers("/getEmployeePage").permitAll()
-                        .requestMatchers("/").permitAll()
+                        .requestMatchers("/registerForm","/getEmployeePage"
+                                ,"/getCategoryPage", "/manager",
+                                "/registerEmployee","/removeProductFromCategory","/addCategory",
+                                "/addProductInCategory","/updateEmployee","/deleteEmployee","/deleteCategory","/deleteProduct","/findEmployeeById","/findEmployeeByName"
+                        )
+                        .hasAnyAuthority("MANAGER")
+
+                        .requestMatchers("/getProductPage","/addProduct",
+                                "/setIsAvailable","/admin","/addProduct","/editLimit",
+                                "/editProduct","/setIsAvailableInEditor","/updateProduct",
+                                "/findProductByName","/findProductById")
+                        .hasAnyAuthority("MANAGER","ADMIN")
+
+                        .requestMatchers("/cashier","/getOrderPage","/removeProductFromOrder",
+                                "/permitPurchase","/editLimit","/addProductInOrder/",
+                                "/buyOrder","/addNewOrder","/newOrderPage/",
+                                "/purchasingProcess/","/setProductLimit","/main","/getOrderPage")
+                        .hasAnyAuthority("MANAGER","ADMIN","CASHIER")
+                        .requestMatchers("/login").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form->form
                         .permitAll()
-                        .defaultSuccessUrl("/getProductPage",true)
+                        .defaultSuccessUrl("/main",true)
                 )
                 .logout(logout->logout
                         .permitAll()
@@ -36,4 +50,5 @@ public class WebSecurityConfig {
                 );
         return http.build();
     }
+
 }
