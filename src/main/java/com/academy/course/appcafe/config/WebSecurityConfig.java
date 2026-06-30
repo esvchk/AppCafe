@@ -23,6 +23,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/registerForm").permitAll()
                         .requestMatchers("/registerEmployee").permitAll()
                         .requestMatchers("/getEmployeePage").permitAll()
+                        .requestMatchers("/").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form->form

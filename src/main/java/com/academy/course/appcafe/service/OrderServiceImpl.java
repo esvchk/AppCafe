@@ -129,6 +129,7 @@ public class OrderServiceImpl implements OrderService {
                 throw new RuntimeException();
             }
         }
+        countAmountOfOrder(orderId);
         orderRepository.save(order);
 
 //        logger.info("Product {} has been successfully added to order {} with quantity {} "
@@ -138,19 +139,18 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void deleteItemFromOrder(Long itemId, Long orderId, Integer quantity) throws SQLException {
-        boolean isOrderExists = orderRepository.existsById(orderId);
-        boolean isOrderItemExists = orderItemRepository.existsById(itemId);
 
-        if (isOrderItemExists && isOrderExists) {
-            Order order = orderRepository.getReferenceById(orderId);
-            OrderItem item = orderItemRepository.getReferenceById(itemId);
+            Order order = orderRepository.findById(orderId).orElse(null);
+            OrderItem item = orderItemRepository.findById(itemId).orElse(null);
             if (item.getProductQuantity().equals(quantity)) {
-                orderItemRepository.delete(item);
+                order.getOrderItems().remove(item);
             } else {
                 item.setProductQuantity(item.getProductQuantity() - quantity);
             }
+
+            order.setTotalCost(countAmountOfOrder(orderId));
             orderRepository.save(order);
-        }
+
     }
 
     @Override
@@ -159,13 +159,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void countAmountOfOrder(Long orderId) throws SQLException {
+    public BigDecimal countAmountOfOrder(Long orderId) throws SQLException {
         Order order = orderRepository.findById(orderId).orElse(null);
+        BigDecimal percent = BigDecimal.ZERO;
+        BigDecimal factor = BigDecimal.ONE.subtract(percent.divide(BigDecimal.valueOf(100), 4, RoundingMode.UP));
+        BigDecimal total = BigDecimal.ZERO;
         if (order != null) {
-            BigDecimal percent = BigDecimal.ZERO;
-            BigDecimal factor = BigDecimal.ONE.subtract(percent.divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP));
-            BigDecimal total = BigDecimal.ZERO;
-
             if (order.getPercentOfDiscount() != null) {
                 percent = order.getPercentOfDiscount();
             }
@@ -180,10 +179,11 @@ public class OrderServiceImpl implements OrderService {
 
                 }
 
-            total = total.multiply(factor).setScale(2, RoundingMode.HALF_UP);
+            total = total.multiply(factor).setScale(4, RoundingMode.UP);
             order.setTotalCost(total);
         }
         orderRepository.save(order);
+        return total;
     }
 
     @Override

@@ -21,20 +21,33 @@
             <td th:utext="${item.productDTO.price}">...</td>
             <td th:utext="${item.productDTO.info}">...</td>
             <td th:utext="${item.productQuantity}">...</td>
+
+
             <td>
-                <!--                <a th:href="@{/deleteProduct(id=${product.id})}">Delete </a>-->
-                <!--                <a th:href="@{/editProduct(id=${product.id})}">Edit </a>-->
+                <form th:action="@{/removeProductFromOrder}" method="post" style="display:inline;">
+                    <input type="hidden" name="itemId" th:value="${item.id}"/>
+                    <input type="hidden" name="orderId" th:value="${orderWithProducts.orderDTO.id}"/>
+                    <label>Кол-во:</label>
+                    <!-- min="0" запрещает вводить отрицательные числа -->
+                    <input type="number" name="quantity" th:value="${item.productQuantity}" min="0"
+                           style="width:60px;"/>
+
+                    <button type="submit">Remove</button>
+                </form>
 
             </td>
         </tr>
         </tbody>
+        <td th:utext="${orderWithProducts.orderDTO.totalCost}"></td>
     </table>
+
     <form th:action="@{/buyOrder}"
           method="post"
           style="display:flex; gap:8px; align-items:center; margin-top:16px;">
         <input type="hidden" name="orderId" th:value="${orderWithProducts.orderDTO.id}"/>
         <button type="submit" style="padding: 6px 16px; font-size: 14px;">Buy Order</button>
     </form>
+
 </head>
 
 

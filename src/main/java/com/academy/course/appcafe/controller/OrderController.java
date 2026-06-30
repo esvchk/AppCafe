@@ -1,9 +1,7 @@
 package com.academy.course.appcafe.controller;
 
-import com.academy.course.appcafe.dto.EmployeeDTO;
-import com.academy.course.appcafe.dto.EmployeeRequest;
 import com.academy.course.appcafe.dto.OrderDTO;
-import com.academy.course.appcafe.service.EmployeeWithOrderAndAvailableProductsService;
+import com.academy.course.appcafe.service.OrderOfEmployeeWithAvailableProductsService;
 import com.academy.course.appcafe.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,7 +16,7 @@ import java.sql.SQLException;
 @RequiredArgsConstructor
 public class OrderController {
     private final OrderService orderService;
-    private final EmployeeWithOrderAndAvailableProductsService pairService;
+    private final OrderOfEmployeeWithAvailableProductsService pairService;
 
     @RequestMapping(value = "/getOrderPage", method = RequestMethod.GET)
     public String paginatedOrders(@RequestParam(value = "offset", defaultValue = "0") int offset,
@@ -77,6 +75,13 @@ public class OrderController {
                                     @RequestParam("productId") Long productId,
                                     @RequestParam ("quantity") Integer quantity) throws SQLException {
         orderService.addProductToOrder(productId,orderId,quantity);
+        return "redirect:/newOrderPage/" + orderId;
+    }
+    @PostMapping(value = "/removeProductFromOrder")
+    public String removeProductFromOrder(@RequestParam("orderId") Long orderId,
+                                         @RequestParam("itemId") Long itemId,
+                                         @RequestParam ("quantity") Integer quantity) throws SQLException {
+        orderService.deleteItemFromOrder(itemId,orderId,quantity);
         return "redirect:/newOrderPage/" + orderId;
     }
 

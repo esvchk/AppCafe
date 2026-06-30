@@ -26,17 +26,14 @@
         <td th:utext="${order.totalCost}">...</td>
         <td th:utext="${order.percentOfDiscount}">...</td>
         <td th:utext="${order.isBought}">...</td>
-<!--        <td>-->
-<!--            <a th:href="@{/deleteEmployee(id=${employee.id})}">Delete </a>-->
-<!--            <a th:href="@{/editEmployee(id=${employee.id})}">Edit </a>-->
-<!--        </td>-->
+
     </tr>
 
     <br>
     <br>
     <br>
 
-    <form th:action="@{/findEmployeeById}"
+    <form th:action="@{/findOrderById}"
           method="get">
         Identifier:
         <input type="text" name="id"/>
