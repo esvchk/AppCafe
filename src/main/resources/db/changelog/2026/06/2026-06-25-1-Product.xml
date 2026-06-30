@@ -16,7 +16,9 @@
             <column name="price" type="DOUBLE"/>
             <column name="info" type="VARCHAR(255)"/>
             <column name="is_available" type="bit"/>
-            <column name="product_limit" type="INT"/>
+            <column name="product_limit" type="INT">
+                <constraints nullable="true"/>
+            </column>
             <column name="category_id" type="BIGINT"/>
         </createTable>
     </changeSet>

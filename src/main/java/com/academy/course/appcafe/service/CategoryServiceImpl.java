@@ -6,7 +6,9 @@ import com.academy.course.appcafe.dto.OrderItemDTO;
 import com.academy.course.appcafe.model.Category;
 import com.academy.course.appcafe.model.Order;
 import com.academy.course.appcafe.model.OrderItem;
+import com.academy.course.appcafe.model.Product;
 import com.academy.course.appcafe.repository.CategoryRepository;
+import com.academy.course.appcafe.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -25,6 +27,7 @@ import java.util.Set;
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryConverter categoryConverter;
+    private final ProductRepository productRepository;
 
 
     @Override
@@ -34,7 +37,10 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void addProductToCategory(Long categoryId, Long productId) throws SQLException {
-
+        Product product = productRepository.findById(productId).orElse(null);
+        Category category = categoryRepository.findById(categoryId).orElse(null);
+        category.addProduct(product);
+        categoryRepository.save(category);
     }
 
     @Override

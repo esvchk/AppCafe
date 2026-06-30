@@ -30,7 +30,7 @@ public class Product extends DataEntity{
     @Column
     private Boolean isAvailable;
 
-    @Column
+    @Column(nullable = true)
     private Integer productLimit;
 
     @ManyToOne(fetch = FetchType.LAZY)

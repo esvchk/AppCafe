@@ -4,23 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Page;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-@Builder
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CategoryDTO {
-
-    private Long id;
-
-    private String name;
-
-    private List<ProductDTO> productDTOS = new ArrayList<>();
-
-
-
+public class CategoryWithProducts {
+    private Page<ProductDTO> productPage;
+    private CategoryDTO categoryDTO;
 }

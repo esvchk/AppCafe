@@ -71,7 +71,7 @@ public class ProductController {
     }
     @RequestMapping(value = "/setProductLimit",method = RequestMethod.POST)
     public String setProductLimit(@RequestParam("id") Long id,
-                                  @RequestParam("productLimit") Integer limit) throws SQLException {
+                                  @RequestParam(name = "productLimit",required = false) Integer limit) throws SQLException {
         productService.setProductLimit(id,limit);
         return "redirect:/getProductPage";
     }

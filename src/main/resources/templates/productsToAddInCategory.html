@@ -1,0 +1,90 @@
+<html>
+<head>
+    <title>Current o</title>
+
+    <h2 th:text="${categoryWithProducts.categoryDTO.name}"></h2>
+    <table border="1">
+
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Info</th>
+            <th>Quantity</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="product : ${categoryWithProducts.categoryDTO.getProductDTOS()}">
+            <td th:utext="${product.id}">...</td>
+            <td th:utext="${product.name}">...</td>
+            <td th:utext="${product.price}">...</td>
+            <td th:utext="${product.info}">...</td>
+            <td th:utext="${product.isAvailable}">...</td>
+            <td th:utext="${product.productLimit}">...</td>
+            <td>
+                <!--                <a th:href="@{/deleteProduct(id=${product.id})}">Delete </a>-->
+                <!--                <a th:href="@{/editProduct(id=${product.id})}">Edit </a>-->
+
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</head>
+
+
+<table border="1">
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Info</th>
+        <th>IsAvailable</th>
+        <th>Limit</th>
+        <th>Category</th>
+    </tr>
+
+    <tr th:each="product : ${categoryWithProducts.productPage.content}">
+        <td th:utext="${product.id}">...</td>
+        <td th:utext="${product.name}">...</td>
+        <td th:utext="${product.price}">...</td>
+        <td th:utext="${product.info}">...</td>
+        <td th:utext="${product.isAvailable}">...</td>
+        <td th:utext="${product.productLimit}">...</td>
+        <td th:utext="${product.categoryDTO != null ? product.categoryDTO.name : 'Without category' }">...</td>
+        <td>
+            <a th:href="@{/editLimit(id=${product.id})}">Set Limit </a>
+            <form th:action="@{/addProductInCategory}"
+                  method="post"
+                  style="display:flex; gap:8px; align-items:center; margin-top:6px;">
+                <!-- Скрытое поле: передаём ID товара -->
+                <input type="hidden" name="productId" th:value="${product.id}"/>
+                <input type="hidden" name="categoryId" th:value="${categoryWithProducts.categoryDTO.id}"/>
+
+                <!-- Кнопка -->
+                <button type="submit" style="padding: 4px 12px;">Добавить</button>
+            </form>
+        </td>
+    </tr>
+
+</table>
+<div>
+    <span th:if="${categoryWithProducts.productPage.hasPrevious()}">
+        <a th:href="@{/showCategoryPage/{categoryId}(categoryId=${categoryWithProducts.categoryDTO.id},page=${categoryWithProducts.productPage.number - 1},size=${categoryWithProducts.productPage.size})}">Back</a>
+    </span>
+    <th:block th:each="counter : ${#numbers.sequence(0,categoryWithProducts.productPage.totalPages - 1)}">
+        <span th:if="${categoryWithProducts.productPage.number == counter} " class="selected">[[${counter} + 1]] </span>
+        <span th:unless="${categoryWithProducts.productPage.number == counter}">
+        <a th:href="@{/showCategoryPage/{categoryId}(categoryId=${categoryWithProducts.categoryDTO.id},page=${counter},size=${categoryWithProducts.productPage.size})}">[[${counter} + 1]] </a>
+        </span>
+    </th:block>
+    <span th:if="${categoryWithProducts.productPage.hasNext()}">
+        <a th:href="@{/showCategoryPage/{categoryId}(categoryId=${categoryWithProducts.categoryDTO.id},page=${categoryWithProducts.productPage.number + 1},size = ${categoryWithProducts.productPage.size})}">Forward</a>
+    </span>
+
+
+</div>
+<body>
+
+</body>
+</html>

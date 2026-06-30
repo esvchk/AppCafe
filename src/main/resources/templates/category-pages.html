@@ -1,0 +1,89 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Product List</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+</head>
+
+<h1>Product List</h1>
+
+<body>
+<table border="1">
+
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+    </tr>
+
+    <tr th:each="category : ${categoryPage.getContent}">
+        <td th:utext="${category.id}">...</td>
+        <td th:utext="${category.name}">...</td>
+        <td>
+<!--            <a th:href="@{/deleteProduct(id=${product.id})}">Delete </a>-->
+            <a th:href="@{/showCategoryPage/{cid}(cid=${category.id})}">Edit Category</a>
+<!--            <a th:href="@{/editLimit(id=${product.id})}">Set Limit </a>-->
+        </td>
+    </tr>
+
+    <form th:action="@{/addCategory}"
+          th:object="${category}" method="post">
+        Name:
+        <input type="text" th:field="*{name}"/>
+        <br/>
+        <input type="submit" value="Add Category"/>
+    </form>
+
+    <br>
+    <br>
+    <br>
+
+    <form th:action="@{/findCategoryById}"
+          method="get">
+        Identifier:
+        <input type="text" name="id"/>
+        <br/>
+        <input type="submit" value="Find Category By Id"/>
+    </form>
+
+    <br>
+    <br>
+    <br>
+
+    <form th:action="@{/findCategoryByName}"
+          method="get">
+        Name:
+        <input type="text" name="name"/>
+        <br/>
+        <input type="submit" value="Find Category By Name"/>
+    </form>
+
+    <br>
+    <br>
+    <br>
+
+
+</table>
+
+<div>
+    <span th:if="${categoryPage.hasPrevious()}">
+        <a th:href="@{/getCategoryPage(offset=${categoryPage.number - 1},size=${categoryPage.size})}">Back</a>
+    </span>
+    <th:block th:each="counter : ${#numbers.sequence(0,categoryPage.totalPages - 1)}">
+        <span th:if="${categoryPage.number == counter} " class="selected">[[${counter} + 1]] </span>
+        <span th:unless="${categoryPage.number == counter}">
+        <a th:href="@{/getCategoryPage(offset=${counter},size=${categoryPage.size})}">[[${counter} + 1]] </a>
+        </span>
+    </th:block>
+    <span th:if="${categoryPage.hasNext()}">
+        <a th:href="@{/getCategoryPage(offset=${categoryPage.number + 1},size = ${categoryPage.size})}">Forward</a>
+    </span>
+
+
+</div>
+
+</body>
+
+
+
+</html>
