@@ -2,6 +2,7 @@ package com.academy.course.appcafe.controller;
 
 import com.academy.course.appcafe.dto.ProductDTO;
 import com.academy.course.appcafe.service.ProductService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -32,7 +33,7 @@ public class ProductController {
     }
 
     @RequestMapping(value = "/addProduct", method = RequestMethod.POST)
-    public String addProduct(Model model, ProductDTO productDTO) throws SQLException {
+    public String addProduct(Model model,@Valid ProductDTO productDTO) throws SQLException {
         productService.addProduct(productDTO);
         model.addAttribute("newProduct", new ProductDTO());
         return "redirect:/getProductPage";

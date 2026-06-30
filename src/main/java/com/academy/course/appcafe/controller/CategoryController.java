@@ -4,6 +4,7 @@ import com.academy.course.appcafe.dto.CategoryDTO;
 import com.academy.course.appcafe.service.CategoryService;
 import com.academy.course.appcafe.service.CategoryWithProductsService;
 import com.academy.course.appcafe.service.ProductService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -33,7 +34,7 @@ public class CategoryController {
     }
 
     @RequestMapping(value = "/addCategory", method = RequestMethod.POST)
-    public String addCategory(Model model, CategoryDTO categoryDTO) throws SQLException {
+    public String addCategory(Model model, @Valid CategoryDTO categoryDTO) throws SQLException {
         categoryService.createCategory(categoryDTO);
         model.addAttribute("category", new CategoryDTO());
         return "redirect:/getCategoryPage";

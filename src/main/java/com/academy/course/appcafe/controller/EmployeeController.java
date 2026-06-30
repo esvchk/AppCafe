@@ -5,6 +5,7 @@ import com.academy.course.appcafe.repository.EmployeeRepository;
 import com.academy.course.appcafe.service.EmployeeService;
 import com.academy.course.appcafe.service.EmployeeWithRolesService;
 import com.academy.course.appcafe.service.RoleService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -38,7 +39,7 @@ public class EmployeeController {
     }
 
     @RequestMapping(value = "/registerEmployee",method = RequestMethod.POST)
-    public String register(@ModelAttribute EmployeeRequest employeeRequest) throws SQLException {
+    public String register(@ModelAttribute @Valid EmployeeRequest employeeRequest) throws SQLException {
 
         employeeService.registerEmployee(employeeRequest);
         return "redirect:/getEmployeePage";

@@ -17,6 +17,7 @@ import java.util.Set;
 @Entity
 @Table
 public class Role extends DataEntity {
+
     @Column(nullable = false)
     private String name;
 
