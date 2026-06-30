@@ -2,7 +2,6 @@ package com.academy.course.appcafe.service;
 
 import com.academy.course.appcafe.converter.OrderConverter;
 import com.academy.course.appcafe.dto.OrderDTO;
-import com.academy.course.appcafe.exception.EmptyFieldException;
 import com.academy.course.appcafe.exception.EntityNotFoundByIdException;
 import com.academy.course.appcafe.exception.EntityNotFoundByNameException;
 import com.academy.course.appcafe.exception.WrongValueException;
@@ -44,7 +43,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(readOnly = true)
-    public OrderDTO findOrderById(Long orderId) throws SQLException {
+    public OrderDTO findOrderById(Long orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new EntityNotFoundByIdException(orderId));
         return orderConverter.toOrderDTO(order);
 
@@ -97,13 +96,12 @@ public class OrderServiceImpl implements OrderService {
         countAmountOfOrder(orderId);
         order.setIsBought(true);
         orderRepository.save(order);
-//            logger.info("Order {} has been successfully bought", orderDTO);
-//        logger.info("Order {} has been successfully bought", orderDTO);
+
     }
 
 
     @Override
-    public void addProductToOrder(Long productId, Long orderId, Integer quantity) throws SQLException {
+    public void addProductToOrder(Long productId, Long orderId, Integer quantity) {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new EntityNotFoundByIdException(orderId));
         Product product = productRepository.findById(productId).orElseThrow(() -> new EntityNotFoundByIdException(productId));
         Optional<OrderItem> items = order.getOrderItems().stream()
@@ -118,16 +116,20 @@ public class OrderServiceImpl implements OrderService {
                     .order(order)
                     .build();
             order.addOrderItem(item);
+
         }
 
         if (product.getProductLimit() != null) {
             if (product.getProductLimit() >= 1) {
-                productService.setProductLimit(product.getId(), product.getProductLimit() - quantity);
+                try {
+                    productService.setProductLimit(product.getId(), product.getProductLimit() - quantity);
+                } catch (SQLException e) {
+                    throw new EntityNotFoundByIdException(productId);
+                }
+
             } else {
-                throw new WrongValueException("Quantity cannot be bigger than limit");
+                throw new WrongValueException("Quantity cannot be bigger than limit", String.valueOf(product.getProductLimit()));
             }
-        } else {
-            throw new EmptyFieldException("Empty limit");
         }
         countAmountOfOrder(orderId);
         orderRepository.save(order);
@@ -136,8 +138,7 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
-    public void deleteItemFromOrder(Long itemId, Long orderId, Integer quantity) throws SQLException {
-
+    public void deleteItemFromOrder(Long itemId, Long orderId, Integer quantity) {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new EntityNotFoundByIdException(orderId));
         OrderItem item = orderItemRepository.findById(itemId).orElseThrow(() -> new EntityNotFoundByIdException(itemId));
         if (item.getProductQuantity().equals(quantity)) {
@@ -147,17 +148,19 @@ public class OrderServiceImpl implements OrderService {
         }
 
         order.setTotalCost(countAmountOfOrder(orderId));
+
+
         orderRepository.save(order);
 
     }
 
     @Override
-    public BigDecimal countTotalAmountOfOrders() throws SQLException {
+    public BigDecimal countTotalAmountOfOrders() {
         return orderRepository.getTotalOrdersAmount();
     }
 
     @Override
-    public BigDecimal countAmountOfOrder(Long orderId) throws SQLException {
+    public BigDecimal countAmountOfOrder(Long orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new EntityNotFoundByIdException(orderId));
         BigDecimal percent = BigDecimal.ZERO;
         BigDecimal factor = BigDecimal.ONE.subtract(percent.divide(BigDecimal.valueOf(100), 4, RoundingMode.UP));

@@ -23,7 +23,6 @@ public interface ProductService {
     ProductDTO getProductById(Long id) throws SQLException;
     List<ProductDTO> findProductsByName(String name);
     List<ProductDTO> getAllProducts();
-    List<ProductDTO> getAllProductsFromCategory(CategoryDTO categoryDTO) throws SQLException;
     void setIsAvailableToProduct(Long productId,Boolean isAvailable);
 
 }

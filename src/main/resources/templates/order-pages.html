@@ -15,7 +15,6 @@
         <th>Id</th>
         <th>Payment Data</th>
         <th>Total Cost</th>
-        <th>Percent Of Discount</th>
         <th>IsBought</th>
     </tr>
 
@@ -24,7 +23,6 @@
         <td th:utext="${order.id}">...</td>
         <td th:utext="${order.paymentData}">...</td>
         <td th:utext="${order.totalCost}">...</td>
-        <td th:utext="${order.percentOfDiscount}">...</td>
         <td th:utext="${order.isBought}">...</td>
 
     </tr>
@@ -69,6 +67,13 @@
     <button type="submit">Create order</button>
 </form>
 
+<a th:href="@{/manager}"> To Manager menu </a>
+<br>
+<br>
+<a th:href="@{/admin}"> To Admin menu </a>
+<br>
+<br>
+<a th:href="@{/cashier}"> To Cashier menu </a>
 
 </body>
 

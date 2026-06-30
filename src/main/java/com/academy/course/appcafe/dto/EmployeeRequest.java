@@ -15,7 +15,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EmployeeRequest {
-    @NotNull(message = "Id employeeRequest required")
     @Min(value = 1,message = "Id employeeRequest must be positive and not equal 0")
     private Long id;
 
@@ -26,11 +25,11 @@ public class EmployeeRequest {
 
     @NotBlank
     @Size(min = 6,max = 16,message = "Password must have length from 6 to 16 symbols")
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)",
+    @Pattern(regexp = "(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}",
             message = "Password must contain at least one figure,upper and lower case letter")
     private String password;
 
-    @NotBlank(message = "Employee must have roles")
+
     private List<String> roleNames = new ArrayList<>();
 
 

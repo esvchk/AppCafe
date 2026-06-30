@@ -29,7 +29,7 @@ public class CategoryServiceImpl implements CategoryService {
 
 
     @Override
-    public void createCategory(CategoryDTO categoryDTO) throws SQLException {
+    public void createCategory(CategoryDTO categoryDTO)  {
         if (categoryDTO != null) {
             categoryRepository.save(categoryConverter.toCategoryEntity(categoryDTO));
         } else {
@@ -39,7 +39,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void addProductToCategory(Long categoryId, Long productId) throws SQLException {
+    public void addProductToCategory(Long categoryId, Long productId)  {
         Product product = productRepository.findById(productId).orElseThrow(() -> new EntityNotFoundByIdException(productId));
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new EntityNotFoundByIdException(categoryId));
         category.addProduct(product);
@@ -47,7 +47,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void updateCategory(Long oldValueId, CategoryDTO newValue) throws SQLException {
+    public void updateCategory(Long oldValueId, CategoryDTO newValue)  {
         Category category = categoryRepository.findById(oldValueId).orElseThrow(() -> new EntityNotFoundByIdException(oldValueId));
         if (newValue != null) {
             category.setName(newValue.getName());
@@ -60,7 +60,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void deleteCategory(Long categoryId) throws SQLException {
+    public void deleteCategory(Long categoryId)  {
         if (categoryRepository.existsById(categoryId)) {
             categoryRepository.deleteById(categoryId);
         } else {
@@ -70,7 +70,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional(readOnly = true)
-    public CategoryDTO getCategoryById(Long categoryId) throws SQLException {
+    public CategoryDTO getCategoryById(Long categoryId) {
         if (categoryRepository.existsById(categoryId)) {
             return categoryConverter.toCategoryDTO(categoryRepository.getReferenceById(categoryId));
         } else {

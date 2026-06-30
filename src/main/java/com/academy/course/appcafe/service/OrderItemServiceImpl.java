@@ -30,13 +30,13 @@ public class OrderItemServiceImpl implements OrderItemService{
     private final OrderRepository orderRepository;
 
     @Override
-    public OrderItemDTO getOrderItemById(Long orderItemId) throws SQLException {
+    public OrderItemDTO getOrderItemById(Long orderItemId) {
         return orderItemConverter.toOrderItemDTO(orderItemRepository.findById
                 (orderItemId).orElseThrow(() -> new EntityNotFoundByIdException(orderItemId)));
      }
 
     @Override
-    public void deleteItem(Long orderItemId) throws SQLException {
+    public void deleteItem(Long orderItemId)  {
        OrderItem orderItem = orderItemRepository.findById(orderItemId).orElseThrow(() -> new EntityNotFoundByIdException(orderItemId));
             orderRepository.deleteById(orderItem.getId());
 
@@ -59,7 +59,7 @@ public class OrderItemServiceImpl implements OrderItemService{
 
     @Override
     @Transactional(readOnly = true)
-    public Page<OrderItemDTO> getAllItemsFromOrder(int page,int size,Long orderId) throws SQLException {
+    public Page<OrderItemDTO> getAllItemsFromOrder(int page,int size,Long orderId) {
         if (page < 0 || size < 1) {
             return Page.empty();
         }

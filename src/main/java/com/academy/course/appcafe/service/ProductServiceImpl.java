@@ -61,7 +61,7 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public void setProductLimit(Long id, Integer limit) throws SQLException {
+    public void setProductLimit(Long id, Integer limit){
         Product product = productRepository.findById(id).orElseThrow(() -> new EntityNotFoundByIdException(id));
             if (limit == null) {
                 product.setProductLimit(null);
@@ -75,7 +75,7 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public void updateProduct(Long oldValueId,ProductDTO newValue) throws SQLException {
+    public void updateProduct(Long oldValueId,ProductDTO newValue) {
         Product oldProduct = productRepository.findById(oldValueId).orElseThrow(() -> new EntityNotFoundByIdException(oldValueId));
         if (newValue != null) {
             oldProduct.setName(newValue.getName());
@@ -103,7 +103,7 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public void deleteProduct(Long id) throws SQLException {
+    public void deleteProduct(Long id) {
         if (productRepository.existsById(id)) {
             productRepository.deleteById(id);
         } else {
@@ -114,7 +114,7 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     @Transactional(readOnly = true)
-    public ProductDTO getProductById(Long id) throws SQLException {
+    public ProductDTO getProductById(Long id) {
         if (productRepository.existsById(id)) {
             return productConverter.toProductDto(productRepository.getReferenceById(id));
         } else {
@@ -139,10 +139,6 @@ public class ProductServiceImpl implements ProductService{
                 .toList();
     }
 
-    @Override
-    public List<ProductDTO> getAllProductsFromCategory(CategoryDTO categoryDTO) throws SQLException {
-        return null;
-    }
 
     @Override
     public void setIsAvailableToProduct(Long productId,Boolean isAvailable) {

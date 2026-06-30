@@ -6,9 +6,6 @@ public class WrongValueException extends ValidationException {
         this.value = value;
     }
 
-    public WrongValueException(String value) {
-        this.value = value;
-    }
 
     private final String value;
 }

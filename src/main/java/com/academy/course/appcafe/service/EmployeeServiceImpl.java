@@ -34,7 +34,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final RoleRepository roleRepository;
     private final EmployeeConverter employeeConverter;
-    private final OrderRepository orderRepository;
 
 
     @Override
