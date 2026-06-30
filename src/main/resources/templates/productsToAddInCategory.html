@@ -11,11 +11,12 @@
             <th>Name</th>
             <th>Price</th>
             <th>Info</th>
-            <th>Quantity</th>
+            <th>IsAvailable</th>
+            <th>Limit</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="product : ${categoryWithProducts.categoryDTO.getProductDTOS()}">
+        <tr th:each="product : ${categoryWithProducts.categoryDTO.productDTOS}">
             <td th:utext="${product.id}">...</td>
             <td th:utext="${product.name}">...</td>
             <td th:utext="${product.price}">...</td>
@@ -23,7 +24,25 @@
             <td th:utext="${product.isAvailable}">...</td>
             <td th:utext="${product.productLimit}">...</td>
             <td>
-                <!--                <a th:href="@{/deleteProduct(id=${product.id})}">Delete </a>-->
+                <form th:action="@{/removeProductFromCategory}" method="post" style="display:inline;">
+                    <input type="hidden" name="productId" th:value="${product.id}"/>
+                    <input type="hidden" name="categoryId" th:value="${categoryWithProducts.categoryDTO.id}"/>
+                    <button type="submit" style="color:red; background:none; border:none; cursor:pointer; text-decoration:underline;">Delete</button>
+                </form>
+                <form th:action="@{/setIsAvailableInEditor}" method="post" style="display:inline;">
+                    <input type="hidden" name="productId" th:value="${product.id}"/>
+                    <input type="hidden" name="categoryId" th:value="${categoryWithProducts.categoryDTO.id}"/>
+
+                    <label>
+                        <input type="checkbox"
+                               name="isAvailable"
+                               value="true"
+                               th:checked="${product.isAvailable}"/>
+                        IsAvailable
+                    </label>
+
+                    <button type="submit" style="margin-left:8px; padding:2px 8px;">OK</button>
+                </form>
                 <!--                <a th:href="@{/editProduct(id=${product.id})}">Edit </a>-->
 
             </td>
@@ -85,6 +104,7 @@
 
 </div>
 <body>
+<a th:href="@{/getCategoryPage}">To Categories </a>
 
 </body>
 </html>

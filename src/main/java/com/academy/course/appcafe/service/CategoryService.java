@@ -15,4 +15,5 @@ public interface CategoryService {
     void deleteCategory(Long categoryId) throws SQLException;
     CategoryDTO getCategoryById(Long id) throws SQLException;
     Page<CategoryDTO> getPaginatedCategories(int page,int size);
+    void removeProductFromCategory(Long categoryId,Long productId);
 }

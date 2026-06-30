@@ -81,4 +81,13 @@ public class CategoryServiceImpl implements CategoryService {
         return new PageImpl<>(categoryDTOS,pageable,categoryPage.getTotalElements());
     }
 
+    @Override
+    public void removeProductFromCategory(Long categoryId, Long productId) {
+        Product product = productRepository.findById(productId).orElse(null);
+        Category category = categoryRepository.findById(categoryId).orElse(null);
+        category.removeProduct(product);
+        categoryRepository.save(category);
+
+    }
+
 }

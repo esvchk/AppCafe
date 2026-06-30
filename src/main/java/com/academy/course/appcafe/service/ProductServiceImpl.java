@@ -124,4 +124,11 @@ public class ProductServiceImpl implements ProductService{
     public List<ProductDTO> getAllProductsFromCategory(CategoryDTO categoryDTO) throws SQLException {
         return null;
     }
+
+    @Override
+    public void setIsAvailableToProduct(Long productId,Boolean isAvailable) {
+        Product product = productRepository.findById(productId).orElse(null);
+        product.setIsAvailable(isAvailable);
+        productRepository.save(product);
+    }
 }

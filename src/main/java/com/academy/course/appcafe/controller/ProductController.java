@@ -81,5 +81,12 @@ public class ProductController {
         model.addAttribute("productWithLimit",productService.getProductById(id));
         return "limit-form";
     }
+    @RequestMapping(value = "/setIsAvailable",method = RequestMethod.POST)
+    public String setIsAvailable(@RequestParam("id") Long id,
+                                  @RequestParam(name = "isAvailable",required = true) Boolean isAvailable) throws SQLException {
+        productService.setIsAvailableToProduct(id, isAvailable);
+        return "redirect:/getProductPage";
+    }
+
 
 }
