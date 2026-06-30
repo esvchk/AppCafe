@@ -26,7 +26,6 @@ public class EmployeeEdit {
         private String login;
 
         @NotBlank(message = "Employee must have roles")
-        @Valid
         private List<Long> roleIds = new ArrayList<>();
 
     }

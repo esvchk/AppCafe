@@ -2,10 +2,9 @@ package com.academy.course.appcafe.service;
 
 import com.academy.course.appcafe.converter.CategoryConverter;
 import com.academy.course.appcafe.dto.CategoryDTO;
-import com.academy.course.appcafe.dto.OrderItemDTO;
+import com.academy.course.appcafe.exception.EmptyEntityException;
+import com.academy.course.appcafe.exception.EntityNotFoundByIdException;
 import com.academy.course.appcafe.model.Category;
-import com.academy.course.appcafe.model.Order;
-import com.academy.course.appcafe.model.OrderItem;
 import com.academy.course.appcafe.model.Product;
 import com.academy.course.appcafe.repository.CategoryRepository;
 import com.academy.course.appcafe.repository.ProductRepository;
@@ -19,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -32,30 +30,41 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void createCategory(CategoryDTO categoryDTO) throws SQLException {
-        categoryRepository.save(categoryConverter.toCategoryEntity(categoryDTO));
+        if (categoryDTO != null) {
+            categoryRepository.save(categoryConverter.toCategoryEntity(categoryDTO));
+        } else {
+            throw new EmptyEntityException(categoryDTO);
+        }
+
     }
 
     @Override
     public void addProductToCategory(Long categoryId, Long productId) throws SQLException {
-        Product product = productRepository.findById(productId).orElse(null);
-        Category category = categoryRepository.findById(categoryId).orElse(null);
+        Product product = productRepository.findById(productId).orElseThrow(() -> new EntityNotFoundByIdException(productId));
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new EntityNotFoundByIdException(categoryId));
         category.addProduct(product);
         categoryRepository.save(category);
     }
 
     @Override
     public void updateCategory(Long oldValueId, CategoryDTO newValue) throws SQLException {
-        if (categoryRepository.existsById(oldValueId)) {
-            Category category = categoryRepository.getReferenceById(oldValueId);
+        Category category = categoryRepository.findById(oldValueId).orElseThrow(() -> new EntityNotFoundByIdException(oldValueId));
+        if (newValue != null) {
             category.setName(newValue.getName());
             categoryRepository.save(category);
+        } else {
+            throw new EmptyEntityException(newValue);
         }
+
+
     }
 
     @Override
     public void deleteCategory(Long categoryId) throws SQLException {
         if (categoryRepository.existsById(categoryId)) {
             categoryRepository.deleteById(categoryId);
+        } else {
+            throw new EntityNotFoundByIdException(categoryId);
         }
     }
 
@@ -64,13 +73,14 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDTO getCategoryById(Long categoryId) throws SQLException {
         if (categoryRepository.existsById(categoryId)) {
             return categoryConverter.toCategoryDTO(categoryRepository.getReferenceById(categoryId));
+        } else {
+            throw new EntityNotFoundByIdException(categoryId);
         }
-        return null;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<CategoryDTO> getPaginatedCategories(int page,int size) {
+    public Page<CategoryDTO> getPaginatedCategories(int page, int size) {
         if (page < 0 || size < 1) {
             return Page.empty();
         }
@@ -80,13 +90,13 @@ public class CategoryServiceImpl implements CategoryService {
                 .map(categoryConverter::toCategoryDTO)
                 .toList();
 
-        return new PageImpl<>(categoryDTOS,pageable,categoryPage.getTotalElements());
+        return new PageImpl<>(categoryDTOS, pageable, categoryPage.getTotalElements());
     }
 
     @Override
     public void removeProductFromCategory(Long categoryId, Long productId) {
-        Product product = productRepository.findById(productId).orElse(null);
-        Category category = categoryRepository.findById(categoryId).orElse(null);
+        Product product = productRepository.findById(productId).orElseThrow(() -> new EntityNotFoundByIdException(productId));
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new EntityNotFoundByIdException(categoryId));
         category.removeProduct(product);
         categoryRepository.save(category);
 

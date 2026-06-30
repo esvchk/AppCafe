@@ -31,7 +31,6 @@ public class EmployeeRequest {
     private String password;
 
     @NotBlank(message = "Employee must have roles")
-    @Valid
     private List<String> roleNames = new ArrayList<>();
 
 

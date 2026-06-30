@@ -3,6 +3,8 @@ package com.academy.course.appcafe.service;
 import com.academy.course.appcafe.converter.ProductConverter;
 import com.academy.course.appcafe.dto.CategoryDTO;
 import com.academy.course.appcafe.dto.ProductDTO;
+import com.academy.course.appcafe.exception.EmptyEntityException;
+import com.academy.course.appcafe.exception.EntityNotFoundByIdException;
 import com.academy.course.appcafe.model.Product;
 import com.academy.course.appcafe.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -60,8 +62,7 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public void setProductLimit(Long id, Integer limit) throws SQLException {
-        if (productRepository.existsById(id)) {
-            Product product = productRepository.getReferenceById(id);
+        Product product = productRepository.findById(id).orElseThrow(() -> new EntityNotFoundByIdException(id));
             if (limit == null) {
                 product.setProductLimit(null);
             } else {
@@ -69,20 +70,22 @@ public class ProductServiceImpl implements ProductService{
                 product.setIsAvailable(!product.getProductLimit().equals(0));
             }
             productRepository.save(product);
-        }
+
 //        logger.info("Product limit has been successfully installed");
     }
 
     @Override
     public void updateProduct(Long oldValueId,ProductDTO newValue) throws SQLException {
-        if (productRepository.existsById(oldValueId)) {
-            Product oldProduct = productRepository.getReferenceById(oldValueId);
+        Product oldProduct = productRepository.findById(oldValueId).orElseThrow(() -> new EntityNotFoundByIdException(oldValueId));
+        if (newValue != null) {
             oldProduct.setName(newValue.getName());
             oldProduct.setPrice(newValue.getPrice());
             oldProduct.setInfo(newValue.getInfo());
             oldProduct.setIsAvailable(newValue.getIsAvailable());
             oldProduct.setProductLimit(newValue.getProductLimit());
             productRepository.save(productConverter.toEntityProduct(newValue));
+        } else {
+            throw new EmptyEntityException(newValue);
         }
 //              logger.info("Product with id {} has been successfully updated", oldValueId);
 
@@ -90,13 +93,23 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public void addProduct(ProductDTO productDTO) {
-        productRepository.save(productConverter.toEntityProduct(productDTO));
+        if (productDTO != null) {
+            productRepository.save(productConverter.toEntityProduct(productDTO));
+        } else {
+            throw new EmptyEntityException(productDTO);
+        }
+
 //        logger.info("New product {} has been successfully added", productDTO);
     }
 
     @Override
     public void deleteProduct(Long id) throws SQLException {
-        productRepository.deleteById(id);
+        if (productRepository.existsById(id)) {
+            productRepository.deleteById(id);
+        } else {
+            throw new EntityNotFoundByIdException(id);
+        }
+
     }
 
     @Override
@@ -104,8 +117,10 @@ public class ProductServiceImpl implements ProductService{
     public ProductDTO getProductById(Long id) throws SQLException {
         if (productRepository.existsById(id)) {
             return productConverter.toProductDto(productRepository.getReferenceById(id));
+        } else {
+            throw new EntityNotFoundByIdException(id);
         }
-        return null;
+
     }
 
     @Override

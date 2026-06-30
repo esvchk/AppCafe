@@ -22,6 +22,7 @@ public class OrderDTO {
     private Long id;
 
     @Nullable
+    @Valid
     private List<OrderItemDTO> orderItemDTOS;
 
     @NotNull(message = "Payment data cannot be empty")

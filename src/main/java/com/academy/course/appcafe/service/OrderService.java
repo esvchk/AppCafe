@@ -13,7 +13,6 @@ public interface OrderService {
     Page<OrderDTO> getPaginatedListOfOrders(int page,int size);
     List<OrderDTO> getAllOrders();
     void buyOrder(Long orderId) throws SQLException;
-    void deleteOrder(Long id) throws SQLException;
     void addProductToOrder(Long productId,Long orderId, Integer quantity) throws SQLException;
     void deleteItemFromOrder(Long itemId,Long orderId,Integer quantity) throws SQLException;
     BigDecimal countTotalAmountOfOrders() throws SQLException;

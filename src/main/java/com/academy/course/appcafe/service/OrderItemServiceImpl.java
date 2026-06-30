@@ -2,6 +2,7 @@ package com.academy.course.appcafe.service;
 
 import com.academy.course.appcafe.converter.OrderItemConverter;
 import com.academy.course.appcafe.dto.OrderItemDTO;
+import com.academy.course.appcafe.exception.EntityNotFoundByIdException;
 import com.academy.course.appcafe.model.*;
 import com.academy.course.appcafe.repository.OrderItemRepository;
 import com.academy.course.appcafe.repository.OrderRepository;
@@ -30,20 +31,19 @@ public class OrderItemServiceImpl implements OrderItemService{
 
     @Override
     public OrderItemDTO getOrderItemById(Long orderItemId) throws SQLException {
-        if (orderItemRepository.existsById(orderItemId)) {
-            return orderItemConverter.toOrderItemDTO(orderItemRepository.getReferenceById(orderItemId));
-        }
-        return null;
+        return orderItemConverter.toOrderItemDTO(orderItemRepository.findById
+                (orderItemId).orElseThrow(() -> new EntityNotFoundByIdException(orderItemId)));
      }
 
     @Override
     public void deleteItem(Long orderItemId) throws SQLException {
-        if (orderItemRepository.existsById(orderItemId)) {
-            orderRepository.deleteById(orderItemId);
-        }
+       OrderItem orderItem = orderItemRepository.findById(orderItemId).orElseThrow(() -> new EntityNotFoundByIdException(orderItemId));
+            orderRepository.deleteById(orderItem.getId());
+
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<OrderItemDTO> getPaginatedItems(int page,int size) {
         if (page < 0 || size < 1) {
             return Page.empty();
@@ -64,7 +64,7 @@ public class OrderItemServiceImpl implements OrderItemService{
             return Page.empty();
         }
         Pageable pageable = PageRequest.of(page, size);
-        Order order = orderRepository.getReferenceById(orderId);
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new EntityNotFoundByIdException(orderId));
         Page<OrderItem> orderItemsPage = orderItemRepository.findAllByOrderIs(order,pageable);
         List<OrderItemDTO> orderItemDTOS = orderItemsPage.getContent().stream()
                 .map(orderItemConverter::toOrderItemDTO)

@@ -20,6 +20,5 @@ public class OrderOfEmployeeWithAvailableProducts {
     private OrderDTO orderDTO;
 
     @NotBlank(message = "Page cannot be empty")
-    @Valid
     private Page<ProductDTO> productDTOPage;
 }

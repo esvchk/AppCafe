@@ -5,6 +5,8 @@ import com.academy.course.appcafe.converter.RoleConverter;
 import com.academy.course.appcafe.dto.EmployeeDTO;
 import com.academy.course.appcafe.dto.EmployeeWithAllRolesToEdit;
 import com.academy.course.appcafe.dto.RoleDTO;
+import com.academy.course.appcafe.exception.EntityNotFoundByIdException;
+import com.academy.course.appcafe.model.Employee;
 import com.academy.course.appcafe.repository.EmployeeRepository;
 import com.academy.course.appcafe.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +31,8 @@ public class EmployeeWithRolesServiceImpl implements EmployeeWithRolesService{
         Set<RoleDTO> roles = roleRepository.findAll().stream()
                 .map(roleConverter::toRoleDTO)
                 .collect(Collectors.toSet());
-        EmployeeDTO employeeDTO = employeeConverter.toEmployeeDTO(employeeRepository.getReferenceById(id));
+        Employee employee = employeeRepository.findById(id).orElseThrow(() -> new EntityNotFoundByIdException(id));
+        EmployeeDTO employeeDTO = employeeConverter.toEmployeeDTO(employee);
         return EmployeeWithAllRolesToEdit.builder()
                 .employeeDTO(employeeDTO)
                 .roleDTOS(roles)

@@ -12,4 +12,6 @@ public interface OrderItemRepository extends JpaRepository<OrderItem,Long> {
     List<OrderItem> findAllByOrderIs(Order order);
 
     Page<OrderItem> findAllByOrderIs(Order order, Pageable pageable);
+
+    Long order(Order order);
 }

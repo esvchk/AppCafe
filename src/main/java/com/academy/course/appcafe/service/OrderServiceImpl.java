@@ -2,6 +2,10 @@ package com.academy.course.appcafe.service;
 
 import com.academy.course.appcafe.converter.OrderConverter;
 import com.academy.course.appcafe.dto.OrderDTO;
+import com.academy.course.appcafe.exception.EmptyFieldException;
+import com.academy.course.appcafe.exception.EntityNotFoundByIdException;
+import com.academy.course.appcafe.exception.EntityNotFoundByNameException;
+import com.academy.course.appcafe.exception.WrongValueException;
 import com.academy.course.appcafe.model.Employee;
 import com.academy.course.appcafe.model.Order;
 import com.academy.course.appcafe.model.OrderItem;
@@ -41,10 +45,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional(readOnly = true)
     public OrderDTO findOrderById(Long orderId) throws SQLException {
-        if (orderRepository.existsById(orderId)) {
-            return orderConverter.toOrderDTO(orderRepository.getReferenceById(orderId));
-        }
-        return null;
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new EntityNotFoundByIdException(orderId));
+        return orderConverter.toOrderDTO(order);
+
     }
 
     @Override
@@ -60,7 +63,7 @@ public class OrderServiceImpl implements OrderService {
             orderRepository.save(order);
             return orderConverter.toOrderDTO(order);
         }
-        return null;
+        throw new EntityNotFoundByNameException(login);
     }
 
     @Override
@@ -90,27 +93,19 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void buyOrder(Long orderId) throws SQLException {
-        if (orderRepository.existsById(orderId)) {
-            Order order = orderRepository.findById(orderId).orElse(null);
-            countAmountOfOrder(orderId);
-            order.setIsBought(true);
-            orderRepository.save(order);
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new EntityNotFoundByIdException(orderId));
+        countAmountOfOrder(orderId);
+        order.setIsBought(true);
+        orderRepository.save(order);
 //            logger.info("Order {} has been successfully bought", orderDTO);
-        }
 //        logger.info("Order {} has been successfully bought", orderDTO);
     }
 
-    @Override
-    public void deleteOrder(Long orderId) throws SQLException {
-        if (orderRepository.existsById(orderId)) {
-            orderRepository.deleteById(orderId);
-        }
-    }
 
     @Override
     public void addProductToOrder(Long productId, Long orderId, Integer quantity) throws SQLException {
-        Order order = orderRepository.findById(orderId).orElse(null);
-        Product product = productRepository.findById(productId).orElse(null);
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new EntityNotFoundByIdException(orderId));
+        Product product = productRepository.findById(productId).orElseThrow(() -> new EntityNotFoundByIdException(productId));
         Optional<OrderItem> items = order.getOrderItems().stream()
                 .filter(item1 -> item1.getProduct().getId().equals(product.getId()))
                 .findFirst();
@@ -126,11 +121,13 @@ public class OrderServiceImpl implements OrderService {
         }
 
         if (product.getProductLimit() != null) {
-            if (product.getProductLimit() >= 1 ) {
-                productService.setProductLimit(product.getId(),product.getProductLimit() - quantity);
+            if (product.getProductLimit() >= 1) {
+                productService.setProductLimit(product.getId(), product.getProductLimit() - quantity);
             } else {
-                throw new RuntimeException();
+                throw new WrongValueException("Quantity cannot be bigger than limit");
             }
+        } else {
+            throw new EmptyFieldException("Empty limit");
         }
         countAmountOfOrder(orderId);
         orderRepository.save(order);
@@ -141,16 +138,16 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void deleteItemFromOrder(Long itemId, Long orderId, Integer quantity) throws SQLException {
 
-            Order order = orderRepository.findById(orderId).orElse(null);
-            OrderItem item = orderItemRepository.findById(itemId).orElse(null);
-            if (item.getProductQuantity().equals(quantity)) {
-                order.getOrderItems().remove(item);
-            } else {
-                item.setProductQuantity(item.getProductQuantity() - quantity);
-            }
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new EntityNotFoundByIdException(orderId));
+        OrderItem item = orderItemRepository.findById(itemId).orElseThrow(() -> new EntityNotFoundByIdException(itemId));
+        if (item.getProductQuantity().equals(quantity)) {
+            order.getOrderItems().remove(item);
+        } else {
+            item.setProductQuantity(item.getProductQuantity() - quantity);
+        }
 
-            order.setTotalCost(countAmountOfOrder(orderId));
-            orderRepository.save(order);
+        order.setTotalCost(countAmountOfOrder(orderId));
+        orderRepository.save(order);
 
     }
 
@@ -161,42 +158,41 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public BigDecimal countAmountOfOrder(Long orderId) throws SQLException {
-        Order order = orderRepository.findById(orderId).orElse(null);
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new EntityNotFoundByIdException(orderId));
         BigDecimal percent = BigDecimal.ZERO;
         BigDecimal factor = BigDecimal.ONE.subtract(percent.divide(BigDecimal.valueOf(100), 4, RoundingMode.UP));
         BigDecimal total = BigDecimal.ZERO;
-        if (order != null) {
-            if (order.getPercentOfDiscount() != null) {
-                percent = order.getPercentOfDiscount();
-            }
 
-                for (OrderItem item : order.getOrderItems()) {
-                    if (item != null && item.getProduct() != null) {
-                        BigDecimal price = BigDecimal.valueOf(item.getProduct().getPrice());
-                        Integer quantity = item.getProductQuantity();
-                        if (quantity == null) quantity = 1;
-                        total = total.add(price.multiply(BigDecimal.valueOf(quantity)));
-                    }
-
-                }
-
-            total = total.multiply(factor).setScale(4, RoundingMode.UP);
-            order.setTotalCost(total);
+        if (order.getPercentOfDiscount() != null) {
+            percent = order.getPercentOfDiscount();
         }
+
+        for (OrderItem item : order.getOrderItems()) {
+
+            BigDecimal price = BigDecimal.valueOf(item.getProduct().getPrice());
+            Integer quantity = item.getProductQuantity();
+            if (quantity == null) quantity = 1;
+            total = total.add(price.multiply(BigDecimal.valueOf(quantity)));
+        }
+
+        total = total.multiply(factor).setScale(4, RoundingMode.UP);
+        order.setTotalCost(total);
+
+
         orderRepository.save(order);
         return total;
     }
 
     @Override
     public void setDiscountOnOrder(Long orderId, BigDecimal percent) {
-        Order order = orderRepository.findById(orderId).orElse(null);
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new EntityNotFoundByIdException(orderId));
         order.setPercentOfDiscount(percent);
         orderRepository.save(order);
     }
 
     @Override
     public void inputPaymentDataToOrder(String paymentData, Long orderId) {
-        Order order = orderRepository.findById(orderId).orElse(null);
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new EntityNotFoundByIdException(orderId));
         order.setPaymentData(paymentData);
         orderRepository.save(order);
     }

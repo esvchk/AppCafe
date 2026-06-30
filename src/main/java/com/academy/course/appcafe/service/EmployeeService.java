@@ -8,9 +8,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface EmployeeService {
-
-    void deleteOrderOfEmployee(Long id, OrderDTO orderDTO) throws SQLException;
-    List<EmployeeDTO> getFullListOfEmployees() ;
     Page<EmployeeDTO> getPaginatedListOfEmployees(int offset, int size);
     EmployeeDTO findEmployeeById(Long id) throws SQLException;
     EmployeeDTO findEmployeeByLogin(String login);
@@ -18,5 +15,4 @@ public interface EmployeeService {
     boolean registerEmployee(EmployeeRequest employeeRequest) throws SQLException;
     void updateEmployee(Long oldValueId, EmployeeEdit employeeEdit) throws SQLException;
     void deleteEmployee(Long employeeId) throws SQLException;
-    OrderDTO getCurrentOrderOfEmployee(String login);
 }

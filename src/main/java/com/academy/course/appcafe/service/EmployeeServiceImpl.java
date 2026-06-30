@@ -1,17 +1,17 @@
 package com.academy.course.appcafe.service;
 
 import com.academy.course.appcafe.converter.EmployeeConverter;
-import com.academy.course.appcafe.converter.OrderConverter;
-import com.academy.course.appcafe.converter.RoleConverter;
 import com.academy.course.appcafe.dto.EmployeeDTO;
 import com.academy.course.appcafe.dto.EmployeeEdit;
 import com.academy.course.appcafe.dto.EmployeeRequest;
-import com.academy.course.appcafe.dto.OrderDTO;
-
+import com.academy.course.appcafe.exception.EmptyEntityException;
+import com.academy.course.appcafe.exception.EntityNotFoundByIdException;
+import com.academy.course.appcafe.exception.EntityNotFoundByNameException;
 import com.academy.course.appcafe.model.Employee;
 import com.academy.course.appcafe.model.Order;
 import com.academy.course.appcafe.model.Role;
 import com.academy.course.appcafe.repository.EmployeeRepository;
+import com.academy.course.appcafe.repository.OrderRepository;
 import com.academy.course.appcafe.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,13 +21,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 
 @Service
@@ -38,30 +34,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final RoleRepository roleRepository;
     private final EmployeeConverter employeeConverter;
-    private final RoleConverter roleConverter;
-    private final OrderConverter orderConverter;
-    private final OrderService orderService;
+    private final OrderRepository orderRepository;
 
-
-    @Override
-    public void deleteOrderOfEmployee(Long id, OrderDTO orderDTO) throws SQLException {
-        if (employeeRepository.existsById(id)) {
-            Employee employee = employeeRepository.getReferenceById(id);
-            Order orderToRemove = employee.getOrders().stream()
-                    .filter(order -> order.getIsBought() == false)
-                    .findFirst().orElse(null);
-            employee.getOrders().remove(orderToRemove);
-            employeeRepository.save(employee);
-        }
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<EmployeeDTO> getFullListOfEmployees() {
-        return employeeRepository.findAll().stream()
-                .map(employeeConverter::toEmployeeDTO)
-                .toList();
-    }
 
     @Override
     @Transactional(readOnly = true)
@@ -80,38 +54,37 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional(readOnly = true)
-    public EmployeeDTO findEmployeeById(Long id) throws SQLException {
-        if (employeeRepository.existsById(id)) {
-            return employeeConverter.toEmployeeDTO(employeeRepository.getReferenceById(id));
-        }
-        return null;
+    public EmployeeDTO findEmployeeById(Long id) {
+        Employee employee = employeeRepository.findById(id).orElseThrow(() -> new EntityNotFoundByIdException(id));
+        return employeeConverter.toEmployeeDTO(employee);
     }
 
     @Override
     @Transactional(readOnly = true)
     public EmployeeDTO findEmployeeByLogin(String login) {
-        if (employeeRepository.existsByLogin(login)) {
-            return employeeConverter.toEmployeeDTO(employeeRepository.findByLogin(login));
+        Employee employee = employeeRepository.findByLogin(login);
+        if (employee != null) {
+            return employeeConverter.toEmployeeDTO(employee);
         }
-        return null;
+        throw new EntityNotFoundByNameException(login);
     }
 
     @Override
-    public void addNewOrderToEmployee(Long id) throws SQLException {
-        if (employeeRepository.existsById(id)) {
-            Employee employee = employeeRepository.getReferenceById(id);
+    public void addNewOrderToEmployee(Long id) {
+        Employee employee = employeeRepository.findById(id).orElseThrow(() -> new EntityNotFoundByIdException(id));
             Order order = Order.builder()
                     .isBought(false)
                     .employee(employee)
                     .build();
             employee.addOrder(order);
             employeeRepository.save(employee);
-        }
-//        logger.info("Order {} successfully created to Employee {}",order,employeeDTO);
     }
 
     @Override
-    public boolean registerEmployee(EmployeeRequest employeeRequest) throws SQLException {
+    public boolean registerEmployee(EmployeeRequest employeeRequest) {
+        if (employeeRequest == null) {
+            throw new EmptyEntityException(employeeRequest);
+        }
 
         Employee employee = Employee.builder()
                 .login(employeeRequest.getLogin())
@@ -119,6 +92,9 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .build();
 
         List<Role> roles = roleRepository.findAllByNameIn(employeeRequest.getRoleNames());
+        if (roles == null || roles.isEmpty()) {
+            throw new EmptyEntityException(roles);
+        }
 
         roles.forEach(employee::addRole);
 
@@ -129,35 +105,24 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public void updateEmployee(Long oldValueId, EmployeeEdit employeeEdit) throws SQLException {
-        if (employeeRepository.existsById(oldValueId)) {
-            Employee employee = employeeRepository.getReferenceById(oldValueId);
+    public void updateEmployee(Long oldValueId, EmployeeEdit employeeEdit) {
+        Employee employee = employeeRepository.findById(oldValueId).orElseThrow(() -> new EntityNotFoundByIdException(oldValueId));
             employee.setLogin(employeeEdit.getLogin());
             if (!employeeEdit.getRoleIds().isEmpty()) {
                 List<Role> roles = roleRepository.findAllById(employeeEdit.getRoleIds());
                 employee.setRoles(new HashSet<>(roles));
+            } else {
+                throw new EmptyEntityException(employeeEdit);
             }
             employeeRepository.save(employee);
-        }
+
     }
 
     @Override
-    public void deleteEmployee(Long employeeId) throws SQLException {
-        if (employeeRepository.existsById(employeeId)) {
-            employeeRepository.deleteById(employeeId);
-        }
+    public void deleteEmployee(Long employeeId) {
+        Employee employee = employeeRepository.findById(employeeId).orElseThrow(() -> new EntityNotFoundByIdException(employeeId));
+            employeeRepository.deleteById(employee.getId());
+
     }
 
-
-    @Override
-    public OrderDTO getCurrentOrderOfEmployee(String login) {
-        if (employeeRepository.existsByLogin(login)) {
-            Employee employee = employeeRepository.findByLogin(login);
-            List<Order> orderList = employee.getOrders();
-            Order currentOrder = orderList.stream().filter(order -> order.getIsBought() == false)
-                    .findFirst().orElse(null);
-            return orderConverter.toOrderDTO(currentOrder);
-        }
-        return null;
-    }
 }

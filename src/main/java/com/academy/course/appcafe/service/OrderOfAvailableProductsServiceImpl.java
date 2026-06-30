@@ -4,6 +4,9 @@ import com.academy.course.appcafe.converter.OrderConverter;
 import com.academy.course.appcafe.dto.OrderOfEmployeeWithAvailableProducts;
 import com.academy.course.appcafe.dto.OrderDTO;
 import com.academy.course.appcafe.dto.ProductDTO;
+import com.academy.course.appcafe.exception.EntityNotFoundByIdException;
+import com.academy.course.appcafe.exception.EntityNotFoundByNameException;
+import com.academy.course.appcafe.model.Order;
 import com.academy.course.appcafe.repository.EmployeeRepository;
 import com.academy.course.appcafe.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,13 +26,14 @@ public class OrderOfAvailableProductsServiceImpl implements OrderOfEmployeeWithA
     @Override
     public OrderOfEmployeeWithAvailableProducts getPairEntitiesByEmployeeLogin(String login, Long orderId, int page, int size) {
         if (employeeRepository.existsByLogin(login)) {
-            OrderDTO orderDTO = orderConverter.toOrderDTO(orderRepository.getReferenceById(orderId));
+            Order order = orderRepository.findById(orderId).orElseThrow(() -> new EntityNotFoundByIdException(orderId));
+            OrderDTO orderDTO = orderConverter.toOrderDTO(order);
                     Page<ProductDTO> productPage = productService.getAvailableProducts(page, size);
             return OrderOfEmployeeWithAvailableProducts.builder()
                     .productDTOPage(productPage)
                     .orderDTO(orderDTO)
                     .build();
         }
-        return null;
+        throw new EntityNotFoundByNameException(login);
     }
 }

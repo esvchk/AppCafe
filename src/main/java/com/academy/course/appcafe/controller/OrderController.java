@@ -59,7 +59,7 @@ public class OrderController {
     }
     @GetMapping(value = "/permitPurchase")
     public String showPermitForm(@RequestParam(value = "orderId")Long orderId,
-                                 Model model) throws SQLException {
+                                 Model model) {
         model.addAttribute("orderId",orderId);
         return "permit-form";
     }

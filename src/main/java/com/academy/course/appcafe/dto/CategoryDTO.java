@@ -1,6 +1,7 @@
 package com.academy.course.appcafe.dto;
 
 import jakarta.annotation.Nullable;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -28,6 +29,7 @@ public class CategoryDTO {
     private String name;
 
     @Nullable
+    @Valid
     private List<ProductDTO> productDTOS = new ArrayList<>();
 
 

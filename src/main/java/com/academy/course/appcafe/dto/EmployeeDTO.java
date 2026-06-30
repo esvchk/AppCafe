@@ -1,6 +1,7 @@
 package com.academy.course.appcafe.dto;
 
 import jakarta.annotation.Nullable;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,9 +29,11 @@ public class EmployeeDTO {
     private String login;
 
     @NotBlank
+    @Valid
     private Set<RoleDTO> roleDTOS = new HashSet<>();
 
     @Nullable
+    @Valid
     private List<OrderDTO> orderDTOS;
 
 }
