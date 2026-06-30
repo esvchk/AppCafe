@@ -13,11 +13,13 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 public class RoleServiceImpl implements RoleService{
+
     private final RoleRepository roleRepository;
     private final RoleConverter roleConverter;
 
 
     @Override
+    @Transactional(readOnly = true)
     public List<RoleDTO> findRolesByName(List<String> names) {
         return roleRepository.findAllByNameIn(names).stream()
                 .map(roleConverter::toRoleDTO)
@@ -25,6 +27,7 @@ public class RoleServiceImpl implements RoleService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<RoleDTO> findAll() {
         return roleRepository.findAll().stream()
                 .map(roleConverter::toRoleDTO)

@@ -60,6 +60,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public CategoryDTO getCategoryById(Long categoryId) throws SQLException {
         if (categoryRepository.existsById(categoryId)) {
             return categoryConverter.toCategoryDTO(categoryRepository.getReferenceById(categoryId));
@@ -68,13 +69,14 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<CategoryDTO> getPaginatedCategories(int page,int size) {
         if (page < 0 || size < 1) {
             return Page.empty();
         }
         Pageable pageable = PageRequest.of(page, size);
         Page<Category> categoryPage = categoryRepository.findAll(pageable);
-        List<CategoryDTO> categoryDTOS =categoryPage.getContent().stream()
+        List<CategoryDTO> categoryDTOS = categoryPage.getContent().stream()
                 .map(categoryConverter::toCategoryDTO)
                 .toList();
 

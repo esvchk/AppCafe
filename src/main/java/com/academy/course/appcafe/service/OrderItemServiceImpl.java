@@ -58,6 +58,7 @@ public class OrderItemServiceImpl implements OrderItemService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<OrderItemDTO> getAllItemsFromOrder(int page,int size,Long orderId) throws SQLException {
         if (page < 0 || size < 1) {
             return Page.empty();

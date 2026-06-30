@@ -39,6 +39,7 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
+    @Transactional(readOnly = true)
     public OrderDTO findOrderById(Long orderId) throws SQLException {
         if (orderRepository.existsById(orderId)) {
             return orderConverter.toOrderDTO(orderRepository.getReferenceById(orderId));
@@ -63,6 +64,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<OrderDTO> getPaginatedListOfOrders(int page, int size) {
         if (page < 0 || size < 1) {
             return Page.empty();
@@ -78,6 +80,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<OrderDTO> getAllOrders() {
         return orderRepository.findAll().stream()
                 .map(orderConverter::toOrderDTO)
@@ -132,8 +135,6 @@ public class OrderServiceImpl implements OrderService {
         countAmountOfOrder(orderId);
         orderRepository.save(order);
 
-//        logger.info("Product {} has been successfully added to order {} with quantity {} "
-//                , product, order, quantity);
     }
 
 

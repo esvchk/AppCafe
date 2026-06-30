@@ -56,6 +56,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<EmployeeDTO> getFullListOfEmployees() {
         return employeeRepository.findAll().stream()
                 .map(employeeConverter::toEmployeeDTO)
@@ -63,6 +64,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<EmployeeDTO> getPaginatedListOfEmployees(int page, int size) {
         if (page < 0 || size < 1) {
             return Page.empty();
@@ -77,6 +79,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public EmployeeDTO findEmployeeById(Long id) throws SQLException {
         if (employeeRepository.existsById(id)) {
             return employeeConverter.toEmployeeDTO(employeeRepository.getReferenceById(id));
@@ -85,6 +88,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public EmployeeDTO findEmployeeByLogin(String login) {
         if (employeeRepository.existsByLogin(login)) {
             return employeeConverter.toEmployeeDTO(employeeRepository.findByLogin(login));
@@ -114,20 +118,12 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .password(PasswordEncoder.hashPass(employeeRequest.getPassword()))
                 .build();
 
-//        Order order = Order.builder()
-//                .employee(employee)
-//                .isBought(false)
-//                .build();
-
         List<Role> roles = roleRepository.findAllByNameIn(employeeRequest.getRoleNames());
 
         roles.forEach(employee::addRole);
 
-//        employee.addOrder(order);
-
         employeeRepository.save(employee);
 
-//        logger.info("Employee {} successfully registered",login);
         return true;
 
     }
@@ -152,23 +148,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
     }
 
-    @Override
-    public boolean login(String login, String passWord) throws NoSuchFieldException, SQLException {
-        return false;
-    }
-
-    @Override
-    public Double getTotalAmountOfOrders() throws SQLException {
-        List<OrderDTO> orderDTOS = orderService.getAllOrders();
-        BigDecimal totalAmount = BigDecimal.ZERO;
-        for (OrderDTO orderDTO : orderDTOS) {
-            if (orderDTO.getIsBought()) {
-//                BigDecimal orderAmount = BigDecimal.valueOf(orderService.countAmountOfAllItems(orderDTO.getId()));
-//                totalAmount = totalAmount.add(orderAmount);
-            }
-        }
-        return totalAmount.setScale(2, RoundingMode.HALF_UP).doubleValue();
-    }
 
     @Override
     public OrderDTO getCurrentOrderOfEmployee(String login) {

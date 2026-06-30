@@ -29,6 +29,7 @@ public class ProductServiceImpl implements ProductService{
     private final ProductConverter productConverter;
 
     @Override
+    @Transactional(readOnly = true)
     public Page<ProductDTO> getAvailableProducts(int page,int size) {
         if (page < 0 || size < 1) {
             return Page.empty();
@@ -43,6 +44,7 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<ProductDTO> getPaginatedListOfProducts(int offset, int size) {
         if (offset < 0 || size < 1) {
             return Page.empty();
@@ -98,6 +100,7 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ProductDTO getProductById(Long id) throws SQLException {
         if (productRepository.existsById(id)) {
             return productConverter.toProductDto(productRepository.getReferenceById(id));
@@ -114,6 +117,7 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ProductDTO> getAllProducts() {
         return productRepository.findAll().stream()
                 .map(productConverter::toProductDto)
