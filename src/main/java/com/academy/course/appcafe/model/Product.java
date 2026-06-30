@@ -2,6 +2,7 @@ package com.academy.course.appcafe.model;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,16 +19,16 @@ import java.util.*;
 @Table
 public class Product extends DataEntity{
 
-    @Column
+    @Column(nullable = false)
     private String name;
 
-    @Column
+    @Column(nullable = false)
     private Double price;
 
-    @Column
+    @Column(nullable = true)
     private String info;
 
-    @Column
+    @Column(nullable = false)
     private Boolean isAvailable;
 
     @Column(nullable = true)

@@ -2,6 +2,8 @@ package com.academy.course.appcafe.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -39,19 +41,6 @@ public class Employee extends DataEntity{
     @Builder.Default
     private List<Order> orders = new ArrayList<>();
 
-
-//    @Override
-//    public boolean equals(Object object) {
-//        if (object == null || getClass() != object.getClass()) return false;
-//        if (!super.equals(object)) return false;
-//        Employee employee = (Employee) object;
-//        return Objects.equals(employee.getId(), getId());
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return Objects.hash(getId());
-//    }
 
     public void addOrder(Order order) {
         if (order == null) return;

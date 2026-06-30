@@ -2,6 +2,8 @@ package com.academy.course.appcafe.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.*;
@@ -15,7 +17,7 @@ import java.util.*;
 public class Category extends DataEntity {
 
 
-    @Column
+    @Column(nullable = false)
     private String name;
 
     @ToString.Exclude

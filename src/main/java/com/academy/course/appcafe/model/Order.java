@@ -1,6 +1,10 @@
 package com.academy.course.appcafe.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -19,20 +23,20 @@ public class Order extends DataEntity{
     @Builder.Default
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    @Column
+    @Column(nullable = false)
     private String paymentData;
 
-    @Column
+    @Column(nullable = true)
     private BigDecimal totalCost;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_id")
     private Employee employee;
 
-    @Column
+    @Column(nullable = true)
     private BigDecimal percentOfDiscount;
 
-    @Column
+    @Column(nullable = false,unique = true)
     private Boolean isBought;
 
     @Override

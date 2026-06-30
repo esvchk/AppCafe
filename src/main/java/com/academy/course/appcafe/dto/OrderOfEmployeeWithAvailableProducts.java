@@ -1,5 +1,7 @@
 package com.academy.course.appcafe.dto;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,8 +15,11 @@ import org.springframework.data.domain.Page;
 @AllArgsConstructor
 public class OrderOfEmployeeWithAvailableProducts {
 
-    @NotNull
+    @NotNull(message = "Order cannot be empty")
+    @Valid
     private OrderDTO orderDTO;
 
+    @NotBlank(message = "Page cannot be empty")
+    @Valid
     private Page<ProductDTO> productDTOPage;
 }

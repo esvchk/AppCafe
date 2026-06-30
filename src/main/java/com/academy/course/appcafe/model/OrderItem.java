@@ -1,9 +1,10 @@
 package com.academy.course.appcafe.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
+
 import lombok.*;
 
-import java.math.BigDecimal;
 import java.util.Objects;
 
 @Builder
@@ -14,7 +15,7 @@ import java.util.Objects;
 @Table
 public class OrderItem extends DataEntity {
 
-    @Column
+    @Column(nullable = false)
     private Integer productQuantity;
 
 

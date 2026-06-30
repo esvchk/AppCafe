@@ -1,6 +1,7 @@
 package com.academy.course.appcafe.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,7 +17,7 @@ import java.util.Set;
 @Entity
 @Table
 public class Role extends DataEntity {
-    @Column
+    @Column(nullable = false)
     private String name;
 
     @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
