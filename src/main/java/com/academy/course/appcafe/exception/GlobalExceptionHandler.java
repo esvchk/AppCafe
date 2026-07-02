@@ -1,36 +1,46 @@
 package com.academy.course.appcafe.exception;
 
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
-import java.sql.SQLException;
+import java.nio.file.AccessDeniedException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(EmployeeAlreadyExists.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ResponseEntity<ErrorResponse> handleEmployeeAlreadyExists(EmployeeAlreadyExists ex) {
-        return ResponseEntity
-                .status(ex.getStatus())
-                .body(ErrorResponse.builder()
-                        .errorCode(ex.getMessage())
-                        .message(ex.getMessage())
-                        .build());
+    @ExceptionHandler(NoResourceFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handleResourceNotFound(NoResourceFoundException ex, Model model) {
+        model.addAttribute("message", ex.getMessage());
+        model.addAttribute("errorCode", "NOT_FOUND");
+                return "error/404";
+    }
+//    @ExceptionHandler(Exception.class)
+//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+//    public String handleInternalServerError(Exception ex, Model model) {
+//        model.addAttribute("message", ex.getMessage());
+//        model.addAttribute("errorCode", "INTERNAL_SERVER_ERROR");
+//        return "error/500";
+//    }
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public String handleAccessDenied(AccessDeniedException ex, Model model) {
+        model.addAttribute("message", ex.getMessage());
+        model.addAttribute("errorCode", "ACCESS_DENIED");
+        return "error/403";
     }
 
-    @ExceptionHandler(EntityNotFoundByIdException.class)
-    @ResponseStatus
-    public ResponseEntity<ErrorResponse> handleEntityNotFoundById(EntityNotFoundByIdException ex) {
-        return ResponseEntity
-                .status(ex.getStatus())
-                .body(ErrorResponse.builder()
-                        .errorCode(ex.getMessage())
-                        .message(ex.getMessage())
-                        .build());
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public String handleUnauthorized(Exception ex, Model model) {
+        model.addAttribute("message", ex.getMessage());
+        model.addAttribute("errorCode", "ACCESS_DENIED");
+        return "error/401";
     }
 
 }

@@ -30,6 +30,7 @@ import java.util.NoSuchElementException;
 @Transactional
 public class EmployeeServiceImpl implements EmployeeService {
 
+
     private final EmployeeRepository employeeRepository;
     private final RoleRepository roleRepository;
     private final EmployeeConverter employeeConverter;
@@ -54,7 +55,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Transactional(readOnly = true)
     public EmployeeDTO findEmployeeById(Long id) {
         try {
-            Employee employee = employeeRepository.findById(id).orElseThrow(() -> new NoSuchElementException());
+            Employee employee = employeeRepository.findById(id).orElseThrow(NoSuchElementException::new);
             return employeeConverter.toEmployeeDTO(employee);
         } catch (NoSuchElementException e) {
             throw new EntityNotFoundByIdException(id);

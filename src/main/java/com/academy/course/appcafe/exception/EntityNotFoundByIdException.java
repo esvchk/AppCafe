@@ -2,6 +2,8 @@ package com.academy.course.appcafe.exception;
 
 import lombok.Data;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
 @Data
 public class EntityNotFoundByIdException extends AppCafeException {
 
@@ -11,7 +13,7 @@ public class EntityNotFoundByIdException extends AppCafeException {
     }
 
     public EntityNotFoundByIdException(Long entityId) {
-        super("NotFound " + entityId,HttpStatus.NOT_FOUND);
+        super("NotFound with id " + entityId,HttpStatus.NOT_FOUND);
         this.entityId = entityId;
     }
 
