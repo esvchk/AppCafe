@@ -8,10 +8,8 @@ import com.academy.course.appcafe.exception.EmptyEntityException;
 import com.academy.course.appcafe.exception.EntityNotFoundByIdException;
 import com.academy.course.appcafe.exception.EntityNotFoundByNameException;
 import com.academy.course.appcafe.model.Employee;
-import com.academy.course.appcafe.model.Order;
 import com.academy.course.appcafe.model.Role;
 import com.academy.course.appcafe.repository.EmployeeRepository;
-import com.academy.course.appcafe.repository.OrderRepository;
 import com.academy.course.appcafe.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,9 +19,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 
 
 @Service
@@ -54,8 +53,12 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional(readOnly = true)
     public EmployeeDTO findEmployeeById(Long id) {
-        Employee employee = employeeRepository.findById(id).orElseThrow(() -> new EntityNotFoundByIdException(id));
-        return employeeConverter.toEmployeeDTO(employee);
+        try {
+            Employee employee = employeeRepository.findById(id).orElseThrow(() -> new NoSuchElementException());
+            return employeeConverter.toEmployeeDTO(employee);
+        } catch (NoSuchElementException e) {
+            throw new EntityNotFoundByIdException(id);
+        }
     }
 
     @Override
@@ -68,19 +71,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         throw new EntityNotFoundByNameException(login);
     }
 
-    @Override
-    public void addNewOrderToEmployee(Long id) {
-        Employee employee = employeeRepository.findById(id).orElseThrow(() -> new EntityNotFoundByIdException(id));
-            Order order = Order.builder()
-                    .isBought(false)
-                    .employee(employee)
-                    .build();
-            employee.addOrder(order);
-            employeeRepository.save(employee);
-    }
+
 
     @Override
-    public boolean registerEmployee(EmployeeRequest employeeRequest) {
+    public void registerEmployee(EmployeeRequest employeeRequest) {
         if (employeeRequest == null) {
             throw new EmptyEntityException(employeeRequest);
         }
@@ -98,8 +92,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         roles.forEach(employee::addRole);
 
         employeeRepository.save(employee);
-
-        return true;
 
     }
 

@@ -38,7 +38,6 @@ public class OrderServiceImpl implements OrderService {
     private final ProductRepository productRepository;
     private final ProductService productService;
     private final EmployeeRepository employeeRepository;
-    private final OrderItemService orderItemService;
 
 
     @Override
@@ -91,7 +90,7 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
-    public void buyOrder(Long orderId) throws SQLException {
+    public void buyOrder(Long orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new EntityNotFoundByIdException(orderId));
         countAmountOfOrder(orderId);
         order.setIsBought(true);
@@ -121,11 +120,7 @@ public class OrderServiceImpl implements OrderService {
 
         if (product.getProductLimit() != null) {
             if (product.getProductLimit() >= 1) {
-                try {
-                    productService.setProductLimit(product.getId(), product.getProductLimit() - quantity);
-                } catch (SQLException e) {
-                    throw new EntityNotFoundByIdException(productId);
-                }
+                productService.setProductLimit(product.getId(), product.getProductLimit() - quantity);
 
             } else {
                 throw new WrongValueException("Quantity cannot be bigger than limit", String.valueOf(product.getProductLimit()));

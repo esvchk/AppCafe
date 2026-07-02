@@ -53,7 +53,7 @@ public class OrderController {
         return "productsToAddInOrder";
     }
     @PostMapping(value = "/buyOrder")
-    public String buyOrder(@RequestParam("orderId") Long orderId) throws SQLException {
+    public String buyOrder(@RequestParam("orderId") Long orderId) {
          orderService.buyOrder(orderId);
         return "redirect:/permitPurchase?orderId=" + orderId;
     }
@@ -74,14 +74,14 @@ public class OrderController {
     @PostMapping(value = "/addProductInOrder/{orderId}")
     public String addProductInOrder(@RequestParam("orderId") Long orderId,
                                     @RequestParam("productId") Long productId,
-                                    @RequestParam ("quantity") Integer quantity) throws SQLException {
+                                    @RequestParam ("quantity") Integer quantity)  {
         orderService.addProductToOrder(productId,orderId,quantity);
         return "redirect:/newOrderPage/" + orderId;
     }
     @PostMapping(value = "/removeProductFromOrder")
     public String removeProductFromOrder(@RequestParam("orderId") Long orderId,
                                          @RequestParam("itemId") Long itemId,
-                                         @RequestParam ("quantity") Integer quantity) throws SQLException {
+                                         @RequestParam ("quantity") Integer quantity) {
         orderService.deleteItemFromOrder(itemId,orderId,quantity);
         return "redirect:/newOrderPage/" + orderId;
     }

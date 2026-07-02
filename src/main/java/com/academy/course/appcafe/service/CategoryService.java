@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.Set;
 
 public interface CategoryService {
-    void createCategory(CategoryDTO categoryDTO) throws SQLException;
-    void addProductToCategory(Long categoryId, Long productId) throws SQLException;
-    void updateCategory(Long oldValueId,CategoryDTO newValue) throws SQLException;
-    void deleteCategory(Long categoryId) throws SQLException;
-    CategoryDTO getCategoryById(Long id) throws SQLException;
+    void createCategory(CategoryDTO categoryDTO) ;
+    void addProductToCategory(Long categoryId, Long productId) ;
+    void updateCategory(Long oldValueId,CategoryDTO newValue) ;
+    void deleteCategory(Long categoryId);
+    CategoryDTO getCategoryById(Long id) ;
     Page<CategoryDTO> getPaginatedCategories(int page,int size);
     void removeProductFromCategory(Long categoryId,Long productId);
 }

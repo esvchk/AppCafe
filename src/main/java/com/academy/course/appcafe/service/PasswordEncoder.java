@@ -10,7 +10,7 @@ public class PasswordEncoder {
         return BCrypt.hashpw(pass,salt);
     }
 
-    public static boolean checkPass(String pass, String hash) throws NoSuchFieldException {
+    public static boolean checkPass(String pass, String hash) {
         return BCrypt.checkpw(pass,hash);
     }
 }

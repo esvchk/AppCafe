@@ -10,10 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
 
@@ -39,8 +36,7 @@ public class EmployeeController {
     }
 
     @RequestMapping(value = "/registerEmployee",method = RequestMethod.POST)
-    public String register(@ModelAttribute @Valid EmployeeRequest employeeRequest) throws SQLException {
-
+    public String register(@ModelAttribute @Valid  EmployeeRequest employeeRequest) {
         employeeService.registerEmployee(employeeRequest);
         return "redirect:/getEmployeePage";
     }
@@ -54,7 +50,7 @@ public class EmployeeController {
 
     @RequestMapping(value = "/findEmployeeById",method = RequestMethod.GET)
     public String findEmployeeById(@RequestParam("id")Long id,
-                           Model model) throws SQLException {
+                           Model model) {
         model.addAttribute("employeeById",employeeService.findEmployeeById(id));
         return "employeeById";
     }
@@ -68,19 +64,19 @@ public class EmployeeController {
     }
 
     @RequestMapping(value = "/editEmployee", method = RequestMethod.GET)
-    public String showUpdateFormEmployee(@RequestParam("id") Long oldValueId, Model model) throws SQLException {
+    public String showUpdateFormEmployee(@RequestParam("id") Long oldValueId, Model model){
         model.addAttribute("employeeWithRoles", employeeWithRolesService.getPairByEmployeeId(oldValueId));
         return "editEmployee-form";
     }
 
     @RequestMapping(value = "/updateEmployee", method = RequestMethod.POST)
-    public String updateEmployee(EmployeeEdit employeeEdit) throws SQLException {
+    public String updateEmployee(EmployeeEdit employeeEdit) {
         employeeService.updateEmployee(employeeEdit.getId(), employeeEdit);
         return "redirect:/getEmployeePage";
     }
 
     @RequestMapping(value = "/deleteEmployee",method = RequestMethod.GET)
-    public String deleteEmployee(@RequestParam("id")Long id) throws SQLException {
+    public String deleteEmployee(@RequestParam("id")Long id) {
         employeeService.deleteEmployee(id);
         return "redirect:/getEmployeePage";
     }

@@ -1,11 +1,13 @@
 package com.academy.course.appcafe.exception;
 
-public class WrongValueException extends ValidationException {
-    public WrongValueException(String message, String value) {
-        super(message);
-        this.value = value;
-    }
+import org.springframework.http.HttpStatus;
 
+public class WrongValueException extends ValidationException {
 
     private final String value;
+
+    public WrongValueException(String message,String value) {
+        super(message,HttpStatus.BAD_GATEWAY);
+        this.value = value;
+    }
 }

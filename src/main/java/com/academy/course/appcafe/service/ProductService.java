@@ -16,11 +16,11 @@ public interface ProductService {
 
     Page<ProductDTO> getAvailableProducts(int page,int size);
     Page<ProductDTO> getPaginatedListOfProducts(int page, int size);
-    void setProductLimit(Long id,Integer limit) throws SQLException;
-    void updateProduct(Long oldValueId,ProductDTO newValue) throws SQLException;
-    void addProduct(ProductDTO productDTO) throws SQLException;
-    void deleteProduct(Long id) throws SQLException;
-    ProductDTO getProductById(Long id) throws SQLException;
+    void setProductLimit(Long id,Integer limit) ;
+    void updateProduct(Long oldValueId,ProductDTO newValue) ;
+    void addProduct(ProductDTO productDTO) ;
+    void deleteProduct(Long id) ;
+    ProductDTO getProductById(Long id) ;
     List<ProductDTO> findProductsByName(String name);
     List<ProductDTO> getAllProducts();
     void setIsAvailableToProduct(Long productId,Boolean isAvailable);

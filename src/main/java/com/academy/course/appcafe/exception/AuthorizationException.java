@@ -1,9 +1,13 @@
 package com.academy.course.appcafe.exception;
 
-public class AuthorizationException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+
+public class AuthorizationException extends AppCafeException{
+
     public AuthorizationException(String message) {
-        super("Authorization failed " + message);
+        super("Authorization failed" + message,HttpStatus.FORBIDDEN);
     }
+
 
 
 }

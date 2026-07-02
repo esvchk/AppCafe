@@ -1,8 +1,9 @@
 package com.academy.course.appcafe.exception;
 
-public abstract class ValidationException extends BusinessException {
-    public ValidationException(String message) {
-        super(message);
-    }
+import org.springframework.http.HttpStatus;
 
+public abstract class ValidationException extends AppCafeException {
+    public ValidationException(String message, HttpStatus status) {
+        super(message, status);
+    }
 }

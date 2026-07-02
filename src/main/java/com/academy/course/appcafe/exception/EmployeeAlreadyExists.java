@@ -1,8 +1,17 @@
 package com.academy.course.appcafe.exception;
 
-public class EmployeeAlreadyExists extends BusinessException {
+import lombok.Data;
+import org.springframework.http.HttpStatus;
+
+
+public class EmployeeAlreadyExists extends AppCafeException {
     public EmployeeAlreadyExists(String login) {
-        super("Employee with login " + login + " already registered");
+        super("Employee with login " + login + " already registered",HttpStatus.CONFLICT);
+        this.login = login;
+    }
+
+    public EmployeeAlreadyExists(String message, HttpStatus status, String login) {
+        super(message, status);
         this.login = login;
     }
 

@@ -33,26 +33,26 @@ public class ProductController {
     }
 
     @RequestMapping(value = "/addProduct", method = RequestMethod.POST)
-    public String addProduct(Model model,@Valid ProductDTO productDTO) throws SQLException {
+    public String addProduct(Model model,@Valid ProductDTO productDTO)  {
         productService.addProduct(productDTO);
         model.addAttribute("newProduct", new ProductDTO());
         return "redirect:/getProductPage";
     }
 
     @RequestMapping(value = "/deleteProduct", method = RequestMethod.GET)
-    public String deleteProduct(@RequestParam("id") Long id) throws SQLException {
+    public String deleteProduct(@RequestParam("id") Long id) {
         productService.deleteProduct(id);
         return "redirect:/getProductPage";
     }
 
     @RequestMapping(value = "/editProduct", method = RequestMethod.GET)
-    public String showUpdateFormProduct(@RequestParam("id") Long oldValueId, Model model) throws SQLException {
+    public String showUpdateFormProduct(@RequestParam("id") Long oldValueId, Model model) {
         model.addAttribute("product", productService.getProductById(oldValueId));
         return "editProduct-form";
     }
 
     @RequestMapping(value = "/updateProduct", method = RequestMethod.POST)
-    public String updateProduct(ProductDTO newValue) throws SQLException {
+    public String updateProduct(ProductDTO newValue) {
         productService.updateProduct(newValue.getId(), newValue);
         return "redirect:/getProductPage";
     }
@@ -66,25 +66,25 @@ public class ProductController {
     }
     @RequestMapping(value = "/findProductById",method = RequestMethod.GET)
     public String findById(@RequestParam("id")Long id,
-                           Model model) throws SQLException {
+                           Model model)  {
         model.addAttribute("productById",productService.getProductById(id));
         return "productById";
     }
     @RequestMapping(value = "/setProductLimit",method = RequestMethod.POST)
     public String setProductLimit(@RequestParam("id") Long id,
-                                  @RequestParam(name = "productLimit",required = false) Integer limit) throws SQLException {
+                                  @RequestParam(name = "productLimit",required = false) Integer limit){
         productService.setProductLimit(id,limit);
         return "redirect:/getProductPage";
     }
     @RequestMapping(value = "/editLimit",method = RequestMethod.GET)
     public String showLimitForm(@RequestParam("id")Long id,
-                                Model model) throws SQLException {
+                                Model model) {
         model.addAttribute("productWithLimit",productService.getProductById(id));
         return "limit-form";
     }
     @RequestMapping(value = "/setIsAvailable",method = RequestMethod.POST)
     public String setIsAvailable(@RequestParam("id") Long id,
-                                  @RequestParam(name = "isAvailable",required = true) Boolean isAvailable) throws SQLException {
+                                  @RequestParam(name = "isAvailable",required = true) Boolean isAvailable) {
         productService.setIsAvailableToProduct(id, isAvailable);
         return "redirect:/getProductPage";
     }
