@@ -19,7 +19,8 @@ import java.util.Set;
 @AllArgsConstructor
 
 public class EmployeeDTO {
-    @Min(value = 1,message = "Id must be positive and not equal 0")
+    @Min(value = 1,message = "Id must be bigger or equal 1")
+    @NotNull(message = "Id cannot be empty")
     private Long id;
 
     @NotBlank(message = "Login cannot be empty")
@@ -27,7 +28,7 @@ public class EmployeeDTO {
     @Pattern(regexp = "[a-zA-Z]*",message = "Login may contain only upper and lower case letters")
     private String login;
 
-    @NotBlank
+    @NotEmpty
     @Valid
     private Set<RoleDTO> roleDTOS = new HashSet<>();
 

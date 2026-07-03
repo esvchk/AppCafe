@@ -29,6 +29,7 @@
         </td>
                 <td>
                     <a th:href="@{/deleteEmployee(id=${employee.id})}">Delete </a>
+                    <br>
                     <a th:href="@{/editEmployee(id=${employee.id})}">Edit </a>
                 </td>
     </tr>
@@ -40,7 +41,11 @@
     <form th:action="@{/findEmployeeById}"
           method="get">
         Identifier:
-        <input type="text" name="id"/>
+        <!-- invalidId подставится из Flash-атрибута, если была ошибка -->
+        <input type="number" name="id" required th:value="${invalidId}"/>
+
+        <!-- Вывод текста ошибки -->
+        <span th:if="${error != null}" th:text="${error}" style="color: red; font-weight: bold;"></span>
         <br/>
         <input type="submit" value="Find Employee"/>
     </form>
@@ -49,10 +54,11 @@
     <br>
     <br>
 
+
     <form th:action="@{/findEmployeeByName}"
           method="get">
         Name:
-        <input type="text" name="login"/>
+        <input type="text" name="login" required />
         <br/>
         <input type="submit" value="Find Employee"/>
     </form>
@@ -63,7 +69,7 @@
 
 
 </table>
-
+<br>
 <div>
     <span th:if="${employeePage.hasPrevious()}">
         <a th:href="@{/getEmployeePage(offset=${employeePage.number - 1},size=${employeePage.size})}">Back</a>
@@ -80,6 +86,7 @@
 
 
 </div>
+<br>
 <a th:href="@{/registerForm}">Add New Employee </a>
 <br>
 <a th:href="@{/manager}" style="margin-right:15px;">Manager Page</a>

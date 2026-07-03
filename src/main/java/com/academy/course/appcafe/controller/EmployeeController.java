@@ -6,13 +6,18 @@ import com.academy.course.appcafe.service.EmployeeService;
 import com.academy.course.appcafe.service.EmployeeWithRolesService;
 import com.academy.course.appcafe.service.RoleService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.sql.SQLException;
@@ -20,6 +25,7 @@ import java.sql.SQLException;
 @Controller
 @RequiredArgsConstructor
 @SessionAttributes("availableRoles")
+@Validated
 public class EmployeeController {
 
     private final EmployeeService employeeService;
@@ -36,6 +42,7 @@ public class EmployeeController {
         model.addAttribute("offset", offset);
         model.addAttribute("size", size);
         model.addAttribute("requestedEmployee",new EmployeeRequest());
+        model.addAttribute("searchRequest",new SearchDTOId());
         return "employee-pages";
     }
 
@@ -59,10 +66,17 @@ public class EmployeeController {
         return "register";
     }
 
+
     @RequestMapping(value = "/findEmployeeById",method = RequestMethod.GET)
-    public String findEmployeeById(@RequestParam("id")Long id,
-                           Model model) {
-        model.addAttribute("employeeById",employeeService.findEmployeeById(id));
+    public String findEmployeeById(@Valid @ModelAttribute SearchDTOId searchDTOId, BindingResult result,
+                                   Model model, RedirectAttributes attributes) {
+        if (result.hasErrors()) {
+            String errorMessage = result.getFieldError("id").getDefaultMessage();
+            attributes.addFlashAttribute("error",errorMessage);
+            attributes.addFlashAttribute("invalidId",searchDTOId.getId());
+            return "redirect:/getEmployeePage";
+        }
+        model.addAttribute("employeeById",employeeService.findEmployeeById(searchDTOId.getId()));
         return "employeeById";
     }
 

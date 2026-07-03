@@ -19,8 +19,8 @@ public class EmployeeRequest {
     private Long id;
 
     @NotBlank(message = "Login cannot be empty")
-    @Size(min = 3,max = 18,message = "Length of login of EmployeeRequest must be from 3 to 18 symbols")
-    @Pattern(regexp = "[a-zA-Z]*",message = "Login EmployeeRequest may contain only upper and lower case letters")
+    @Size(min = 3,max = 18,message = "Length of login must be from 3 to 18 symbols")
+    @Pattern(regexp = "[a-zA-Z]*",message = "Login may contain only upper and lower case letters")
     private String login;
 
     @NotBlank(message = "Password cannot be empty")

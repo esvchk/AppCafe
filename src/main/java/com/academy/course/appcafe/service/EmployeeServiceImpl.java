@@ -82,9 +82,6 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .build();
 
         List<Role> roles = roleRepository.findAllByNameIn(employeeRequest.getRoleNames());
-        if (roles == null || roles.isEmpty()) {
-            throw new EmptyEntityException(roles);
-        }
 
         roles.forEach(employee::addRole);
 
@@ -95,13 +92,12 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public void updateEmployee(Long oldValueId, EmployeeEdit employeeEdit) {
         Employee employee = employeeRepository.findById(oldValueId).orElseThrow(() -> new EntityNotFoundByIdException(oldValueId));
+
         employee.setLogin(employeeEdit.getLogin());
-        if (!employeeEdit.getRoleIds().isEmpty()) {
+
             List<Role> roles = roleRepository.findAllById(employeeEdit.getRoleIds());
             employee.setRoles(new HashSet<>(roles));
-        } else {
-            throw new EmptyEntityException(employeeEdit);
-        }
+
         employeeRepository.save(employee);
 
     }
