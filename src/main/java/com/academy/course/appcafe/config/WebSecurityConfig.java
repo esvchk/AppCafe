@@ -38,7 +38,7 @@ public class WebSecurityConfig {
                                 "/buyOrder","/addNewOrder","/newOrderPage/",
                                 "/purchasingProcess/","/setProductLimit","/main","/getOrderPage")
                         .hasAnyAuthority("MANAGER","ADMIN","CASHIER")
-//                        .requestMatchers("/login").permitAll()
+                        .requestMatchers("/login","/logout").permitAll()
                         .requestMatchers("/error/**").permitAll()
                         .anyRequest().authenticated()
                 )

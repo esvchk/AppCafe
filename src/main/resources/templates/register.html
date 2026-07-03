@@ -2,33 +2,50 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Product List</title>
+    <title>Register New Employee</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
 </head>
 
-<h1>Registration</h1>
+<h1>Registration Form</h1>
 
-    <form th:action="@{/registerEmployee}"
-          th:object="${employeeRequest}" method="post">
-        Name:
-        <input type="text" th:field="*{login}"/>
-        <br/>
-        Password:
-        <input type="text" th:field="*{password}"/>
-        <br/>
-        Role:
-        <div>
-            <label>
-                <select th:field="*{roleNames}" multiple size="4">
-                    <option th:each="role : ${availableRoles}"
-                            th:value="${role.name}"
-                            th:text="${role.name}">
-                    </option>
-                </select>
-            </label>
+<form th:action="@{/registerEmployee}"
+      th:object="${employeeRequest}" method="post">
+    Name:
+    <input type="text" th:field="*{login}"/>
+    <div th:if="${#fields.hasErrors('login')}"
+         class="invalid-feedback"
+         th:errors="*{login}"></div>
+    </div>
+    <br/>
+    Password:
+    <input type="text" th:field="*{password}"/>
+    <div th:if="${#fields.hasErrors('password')}"
+         class="invalid-feedback"
+         th:errors="*{password}">
+
+    </div>
+    <br/>
+    Role:
+    <div>
+        <label>
+            <select th:field="*{roleNames}" multiple size="4">
+                <option th:each="role : ${availableRoles}"
+                        th:value="${role.name}"
+                        th:text="${role.name}">
+                </option>
+            </select>
+        </label>
+    </div>
+    <div th:if="${#fields.hasAnyErrors()}">
+        <div class="alert alert-danger">
+            <ul>
+                <li th:each="error : ${#fields.allErrors()}"
+                    th:text="${error}"></li>
+            </ul>
         </div>
+    </div>
 
-        <input type="submit" value="Add Employee"/>
-    </form>
+    <input type="submit" value="Add Employee"/>
+</form>
 <a th:href="@{/manager}"> Home </a>
 </html>

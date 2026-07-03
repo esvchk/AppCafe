@@ -22,7 +22,7 @@ public class EmployeeDTO {
     @Min(value = 1,message = "Id must be positive and not equal 0")
     private Long id;
 
-    @NotBlank
+    @NotBlank(message = "Login cannot be empty")
     @Size(min = 3,max = 18,message = "length of login must be from 3 to 18 symbols")
     @Pattern(regexp = "[a-zA-Z]*",message = "Login may contain only upper and lower case letters")
     private String login;

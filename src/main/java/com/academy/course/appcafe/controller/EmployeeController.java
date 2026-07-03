@@ -10,12 +10,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
 
+import java.security.Principal;
 import java.sql.SQLException;
 
 @Controller
 @RequiredArgsConstructor
+@SessionAttributes("availableRoles")
 public class EmployeeController {
 
     private final EmployeeService employeeService;
@@ -36,9 +40,16 @@ public class EmployeeController {
     }
 
     @RequestMapping(value = "/registerEmployee",method = RequestMethod.POST)
-    public String register(@ModelAttribute @Valid  EmployeeRequest employeeRequest) {
-        employeeService.registerEmployee(employeeRequest);
-        return "redirect:/getEmployeePage";
+    public String register(@ModelAttribute @Valid  EmployeeRequest employeeRequest, BindingResult result,
+                           Model model, SessionStatus status) {
+        if (result.hasErrors()) {
+            model.addAttribute("errors",result.getAllErrors());
+            return "register";
+        } else {
+            employeeService.registerEmployee(employeeRequest);
+            status.setComplete();
+            return "redirect:/getEmployeePage";
+        }
     }
 
     @RequestMapping(value = "/registerForm",method = RequestMethod.GET)

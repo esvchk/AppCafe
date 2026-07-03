@@ -1,0 +1,27 @@
+h1{
+    color:#0000FF
+}
+h2{
+    color: #FF0000;
+}
+table{
+    border-collapse: collapse;
+}
+table th,table td{
+    padding: 5px;
+}
+.invalid-feedback {
+    display: none;
+    color: red;
+    margin-top: 5px;
+}
+
+.form-control.is-invalid {
+    border-color: red;
+    box-shadow: 0 0 3px red;
+}
+
+.form-control:focus.is-invalid {
+    border-color: red;
+    box-shadow: 0 0 5px red;
+}

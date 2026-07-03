@@ -21,6 +21,6 @@ public class CategoryWithProducts {
     private Page<ProductDTO> productPage;
 
     @Valid
-    @NotNull(message = "category mustn't be empty")
+    @NotNull(message = "Category mustn't be empty")
     private CategoryDTO categoryDTO;
 }

@@ -50,8 +50,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDTO addNewOrderToEmployeeByLogin(String login) {
-        if (employeeRepository.existsByLogin(login)) {
-            Employee employee = employeeRepository.findByLogin(login);
+            Employee employee = employeeRepository.findByLogin(login).orElseThrow(() -> new EntityNotFoundByNameException(login));
             Order order = Order.builder()
                     .employee(employee)
                     .isBought(false)
@@ -60,8 +59,6 @@ public class OrderServiceImpl implements OrderService {
 
             orderRepository.save(order);
             return orderConverter.toOrderDTO(order);
-        }
-        throw new EntityNotFoundByNameException(login);
     }
 
     @Override

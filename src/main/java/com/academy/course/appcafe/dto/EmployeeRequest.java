@@ -18,18 +18,19 @@ public class EmployeeRequest {
     @Min(value = 1,message = "Id employeeRequest must be positive and not equal 0")
     private Long id;
 
-    @NotBlank
-    @Size(min = 3,max = 18,message = "length of login of EmployeeRequest must be from 3 to 18 symbols")
+    @NotBlank(message = "Login cannot be empty")
+    @Size(min = 3,max = 18,message = "Length of login of EmployeeRequest must be from 3 to 18 symbols")
     @Pattern(regexp = "[a-zA-Z]*",message = "Login EmployeeRequest may contain only upper and lower case letters")
     private String login;
 
-    @NotBlank
+    @NotBlank(message = "Password cannot be empty")
     @Size(min = 6,max = 16,message = "Password must have length from 6 to 16 symbols")
     @Pattern(regexp = "(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}",
             message = "Password must contain at least one figure,upper and lower case letter")
     private String password;
 
 
+    @NotEmpty(message = "List of roles cannot be empty")
     private List<String> roleNames = new ArrayList<>();
 
 

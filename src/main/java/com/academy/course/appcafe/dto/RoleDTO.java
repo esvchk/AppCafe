@@ -21,7 +21,7 @@ public class RoleDTO {
     private Long id;
 
     @Pattern(regexp = "[A-Z]*",message = "Role must have name only with upper case letters")
-    @NotNull
+    @NotNull(message = "Role must have name")
     private String name;
 
 

@@ -1,5 +1,6 @@
 package com.academy.course.appcafe.service;
 
+import com.academy.course.appcafe.exception.EntityNotFoundByNameException;
 import com.academy.course.appcafe.model.Employee;
 import com.academy.course.appcafe.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +16,8 @@ public class EmployeeDetailsServiceImpl implements UserDetailsService{
 
     private final EmployeeRepository employeeRepository;
     @Override
-    public UserDetails loadUserByUsername(@NonNull String userName) throws UsernameNotFoundException {
-        Employee employee = employeeRepository.findByLogin(userName);
+    public UserDetails loadUserByUsername(@NonNull String userName) {
+        Employee employee = employeeRepository.findByLogin(userName).orElseThrow(() -> new EntityNotFoundByNameException(userName));
         return new EmployeeDetailsImpl(employee);
     }
 }
