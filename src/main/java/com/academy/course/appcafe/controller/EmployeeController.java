@@ -1,14 +1,10 @@
 package com.academy.course.appcafe.controller;
 
 import com.academy.course.appcafe.dto.*;
-import com.academy.course.appcafe.repository.EmployeeRepository;
 import com.academy.course.appcafe.service.EmployeeService;
 import com.academy.course.appcafe.service.EmployeeWithRolesService;
 import com.academy.course.appcafe.service.RoleService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -19,13 +15,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.security.Principal;
-import java.sql.SQLException;
-
 @Controller
 @RequiredArgsConstructor
 @SessionAttributes("availableRoles")
-@Validated
 public class EmployeeController {
 
     private final EmployeeService employeeService;
@@ -41,8 +33,14 @@ public class EmployeeController {
         model.addAttribute("employeePage", employeePage);
         model.addAttribute("offset", offset);
         model.addAttribute("size", size);
+        if (!model.containsAttribute("searchByIdRequest")) {
+            model.addAttribute("searchByIdRequest",new SearchDTOById());
+        }
+        if (!model.containsAttribute("searchByNameRequest")) {
+            model.addAttribute("searchByNameRequest",new SearchDTOByName());
+        }
         model.addAttribute("requestedEmployee",new EmployeeRequest());
-        model.addAttribute("searchRequest",new SearchDTOId());
+
         return "employee-pages";
     }
 
@@ -68,23 +66,33 @@ public class EmployeeController {
 
 
     @RequestMapping(value = "/findEmployeeById",method = RequestMethod.GET)
-    public String findEmployeeById(@Valid @ModelAttribute SearchDTOId searchDTOId, BindingResult result,
-                                   Model model, RedirectAttributes attributes) {
+    public String findEmployeeById(@Valid @ModelAttribute(name = "searchByIdRequest") SearchDTOById searchDTOById,
+                                   BindingResult result,
+                                   Model model,
+                                   RedirectAttributes attributes) {
         if (result.hasErrors()) {
-            String errorMessage = result.getFieldError("id").getDefaultMessage();
-            attributes.addFlashAttribute("error",errorMessage);
-            attributes.addFlashAttribute("invalidId",searchDTOId.getId());
+            String errorMessage = result.getAllErrors().get(0).getDefaultMessage();
+            attributes.addFlashAttribute("invalidId",errorMessage);
+            attributes.addFlashAttribute("searchByIdRequest",searchDTOById);
             return "redirect:/getEmployeePage";
         }
-        model.addAttribute("employeeById",employeeService.findEmployeeById(searchDTOId.getId()));
+        model.addAttribute("employeeById",employeeService.findEmployeeById(searchDTOById.getId()));
         return "employeeById";
     }
 
     @RequestMapping(value = "/findEmployeeByName",method = RequestMethod.GET)
-    public String findEmployeeByLogin(@RequestParam("login")String login,
-                             Model model){
-        model.addAttribute("employeeByLogin",employeeService.findEmployeeByLogin(login));
-        model.addAttribute("login",login);
+    public String findEmployeeByLogin(@Valid @ModelAttribute(name = "searchByNameRequest") SearchDTOByName searchDTOByName,
+                                      BindingResult result,
+                                      Model model,
+                                      RedirectAttributes attributes){
+        if (result.hasErrors()) {
+            String errorMessage = result.getAllErrors().get(0).getDefaultMessage();
+            attributes.addFlashAttribute("invalidName",errorMessage);
+            attributes.addFlashAttribute("searchByNameRequest",searchDTOByName);
+            return "redirect:/getEmployeePage";
+        }
+        model.addAttribute("employeeByLogin",employeeService.findEmployeeByLogin(searchDTOByName.getLogin()));
+        model.addAttribute("login", searchDTOByName.getLogin());
         return "employeeByLogin-results";
     }
 

@@ -38,14 +38,15 @@
     <br>
     <br>
 
-    <form th:action="@{/findEmployeeById}"
+    <form th:action="@{/findEmployeeById}" th:object="${searchByIdRequest}"
           method="get">
         Identifier:
         <!-- invalidId подставится из Flash-атрибута, если была ошибка -->
-        <input type="number" name="id" required th:value="${invalidId}"/>
+        <input type="number" th:field="*{id}"/>
+
 
         <!-- Вывод текста ошибки -->
-        <span th:if="${error != null}" th:text="${error}" style="color: red; font-weight: bold;"></span>
+        <span th:if="${invalidId != null}" th:text="${invalidId}" style="color: red; font-weight: bold;"></span>
         <br/>
         <input type="submit" value="Find Employee"/>
     </form>
@@ -56,9 +57,12 @@
 
 
     <form th:action="@{/findEmployeeByName}"
-          method="get">
+          method="get" th:object="${searchByNameRequest}">
         Name:
-        <input type="text" name="login" required />
+        <input type="text" th:field="*{login}"/>
+
+        <!-- Вывод текста ошибки -->
+        <span th:if="${invalidName != null}" th:text="${invalidName}" style="color: red; font-weight: bold;"></span>
         <br/>
         <input type="submit" value="Find Employee"/>
     </form>
