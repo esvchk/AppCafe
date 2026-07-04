@@ -24,7 +24,7 @@ public class EmployeeEdit {
         @Pattern(regexp = "[a-zA-Z]*",message = "Login may contain only upper and lower case letters")
         private String login;
 
-        @NotBlank(message = "Employee must have roles")
+        @NotEmpty(message = "Employee must have roles")
         private List<Long> roleIds = new ArrayList<>();
 
     }

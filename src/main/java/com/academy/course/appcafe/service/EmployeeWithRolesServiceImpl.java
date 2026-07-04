@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class EmployeeWithRolesServiceImpl implements EmployeeWithRolesService{
+
     private final EmployeeRepository employeeRepository;
     private final RoleRepository roleRepository;
     private final RoleConverter roleConverter;

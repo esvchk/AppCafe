@@ -50,12 +50,6 @@ public class GlobalExceptionHandler {
         return "error/401";
     }
 
-    @ExceptionHandler(ConstraintViolationException.class)
-    public String handleConstraintViolation(ConstraintViolationException ex, RedirectAttributes redirectAttributes) {
-        String errorMessage = ex.getConstraintViolations().iterator().next().getMessage();
-        redirectAttributes.addFlashAttribute("error", errorMessage);
-        return "redirect:/getEmployeePage";
-    }
 
 
 
