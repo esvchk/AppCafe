@@ -20,6 +20,10 @@
      style="color: white; background-color: #dc3545; padding: 10px; margin-bottom: 15px; border-radius: 4px;">
     <span th:text="${validationError}">Error</span>
 </div>
+<div th:if="${pageError != null}" class="alert alert-danger"
+     style="color: white; background-color: #dc3545; padding: 10px; margin-bottom: 15px; border-radius: 4px;">
+    <span th:text="${pageError}">Error</span>
+</div>
 
 <body>
 <table border="1">
@@ -82,16 +86,16 @@
 <br>
 <div>
     <span th:if="${employeePage.hasPrevious()}">
-        <a th:href="@{/getEmployeePage(offset=${employeePage.number - 1},size=${employeePage.size})}">Back</a>
+        <a th:href="@{/getEmployeePage(page=${employeePage.number - 1},size=${employeePage.size})}">Back</a>
     </span>
     <th:block th:each="counter : ${#numbers.sequence(0,employeePage.totalPages - 1)}">
         <span th:if="${employeePage.number == counter} ">[[${counter} + 1]] </span>
         <span th:unless="${employeePage.number == counter}">
-        <a th:href="@{/getEmployeePage(offset=${counter},size=${employeePage.size})}">[[${counter} + 1]] </a>
+        <a th:href="@{/getEmployeePage(page=${counter},size=${employeePage.size})}">[[${counter} + 1]] </a>
         </span>
     </th:block>
     <span th:if="${employeePage.hasNext()}">
-        <a th:href="@{/getEmployeePage(offset=${employeePage.number + 1},size = ${employeePage.size})}">Forward</a>
+        <a th:href="@{/getEmployeePage(page=${employeePage.number + 1},size = ${employeePage.size})}">Forward</a>
     </span>
 
 

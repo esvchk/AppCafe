@@ -2,9 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <h1>Edit Employee</h1>
 
-<!-- Отображение общих ошибок -->
 <div th:if="${errors != null}">
-    <div class="alert alert-danger">
+    <div class="alert alert-danger" style="color: red;">
         <ul>
             <li th:each="error : ${errors}" th:text="${error.getDefaultMessage()}"></li>
         </ul>
@@ -12,30 +11,23 @@
 </div>
 
 <form th:action="@{/updateEmployee}" th:object="${employeeWithRoles}" method="post">
-    <!-- Скрытое поле ID -->
+
     <input type="hidden" th:field="*{id}"/>
 
-    <!-- Поле логина с валидацией -->
-    <div class="form-group"
-         th:classappend="${#fields.hasErrors('login') ? 'is-invalid' : ''}">
-        <label>Login:</label>
-        <input type="text" th:field="*{login}" class="form-control">
-        <div th:if="${#fields.hasErrors('login')}"
-             th:errors="*{login}"
-             class="invalid-feedback"></div>
+    <div>
+    <label>Login:</label>
+    <input type="text" th:field="*{login}" class="form-control">
+
     </div>
 
     <label>Roles:</label>
     <select th:field="*{roleIds}" multiple required size="5" style="width: 300px;">
-        <!-- Сценарий 1: Мы пришли из GET-запроса (коллекция ролей есть в памяти) -->
         <th:block th:if="*{roleDTOS != null and !roleDTOS.isEmpty()}">
             <option th:each="role : *{roleDTOS}"
                     th:value="${role.id}"
                     th:text="${role.name}"></option>
         </th:block>
 
-        <!-- Сценарий 2: Мы вернулись из POST при ошибке валидации (roleDTOS пуст) -->
-        <!-- Браузер не стер имена, так как мы подмешиваем скрытые текстовые поля для каждого ВЫБРАННОГО id -->
         <th:block th:if="*{roleDTOS == null or roleDTOS.isEmpty()}">
             <option th:each="id : *{roleIds}"
                     th:value="${id}"
@@ -43,9 +35,8 @@
         </th:block>
     </select>
 
-    <!-- Кнопки управления -->
-    <button type="submit" class="btn btn-primary">Сохранить изменения</button>
-    <a th:href="@{/getEmployeePage}" class="btn btn-secondary">Отмена</a>
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a th:href="@{/getEmployeePage}" class="btn btn-secondary">To Employees</a>
 </form>
 
 </html>

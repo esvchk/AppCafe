@@ -1,6 +1,8 @@
 package com.academy.course.appcafe.controller;
 
-import com.academy.course.appcafe.dto.*;
+import com.academy.course.appcafe.dto.EmployeeDTO;
+import com.academy.course.appcafe.dto.EmployeeRequest;
+import com.academy.course.appcafe.dto.EmployeeWithAllRolesToEdit;
 import com.academy.course.appcafe.service.EmployeeService;
 import com.academy.course.appcafe.service.EmployeeWithRolesService;
 import com.academy.course.appcafe.service.RoleService;
@@ -11,10 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequiredArgsConstructor
@@ -26,13 +26,13 @@ public class EmployeeController {
     private final EmployeeWithRolesService employeeWithRolesService;
 
     @RequestMapping(value = "/getEmployeePage", method = RequestMethod.GET)
-    public String paginatedEmployees(@RequestParam(value = "offset", defaultValue = "0") int offset,
+    public String paginatedEmployees(@RequestParam(value = "page", defaultValue = "0") int page,
                                      @RequestParam(value = "size", defaultValue = "5") int size, Model model) {
 
-        Page<EmployeeDTO> employeePage = employeeService.getPaginatedListOfEmployees(offset, size);
+        Page<EmployeeDTO> employeePage = employeeService.getPaginatedListOfEmployees(page, size);
 
         model.addAttribute("employeePage", employeePage);
-        model.addAttribute("offset", offset);
+        model.addAttribute("page", page);
         model.addAttribute("size", size);
         model.addAttribute("requestedEmployee", new EmployeeRequest());
 
@@ -62,18 +62,19 @@ public class EmployeeController {
 
     @RequestMapping(value = "/findEmployeeById", method = RequestMethod.GET)
     public String findEmployeeById(@Positive(message = "Id must be positive")
-                                       @NotNull(message = "Id cannot be null")
-                                       @RequestParam("id") Long id, Model model) {
+                                   @NotNull(message = "Id cannot be null")
+                                   @RequestParam("id") Long id, Model model) {
         model.addAttribute("employeeById", employeeService.findEmployeeById(id));
         return "employeeById";
     }
 
     @RequestMapping(value = "/findEmployeeByName", method = RequestMethod.GET)
     public String findEmployeeByLogin(@RequestParam
-                                          @NotBlank(message = "Login cannot be empty")
-                                          @Size(min = 3,max = 18,message = "length of login must be from 3 to 18 symbols")
-                                          @Pattern(regexp = "[a-zA-Z]*",message = "Login may contain only upper and lower case letters")
-                                          String login,
+                                      @NotBlank(message = "Login cannot be empty")
+                                      @Size(min = 3, max = 18, message = "length of login must be from 3 to 18 symbols")
+                                      @Pattern(regexp = "[a-zA-Z]*",
+                                              message = "Login may contain only upper and lower case letters")
+                                      String login,
                                       Model model) {
 
         model.addAttribute("employeeByLogin", employeeService.findEmployeeByLogin(login));
@@ -89,16 +90,8 @@ public class EmployeeController {
     }
 
     @RequestMapping(value = "/updateEmployee", method = RequestMethod.POST)
-    public String updateEmployee(@Valid @ModelAttribute EmployeeWithAllRolesToEdit employeeEdit,
-                                 BindingResult result,
-                                 Model model) {
-        if (result.hasErrors()) {
-            model.addAttribute("errors", result.getAllErrors());
-            model.addAttribute("employeeWithRoles", employeeEdit);
-            return "editEmployee-form";
-        }
+    public String updateEmployee(@Valid @ModelAttribute EmployeeWithAllRolesToEdit employeeEdit) {
         employeeService.updateEmployee(employeeEdit.getId(), employeeEdit);
-
         return "redirect:/getEmployeePage";
     }
 

@@ -8,11 +8,13 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.ui.Model;
 import org.springframework.validation.method.MethodValidationException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
@@ -78,7 +80,7 @@ public class GlobalExceptionHandler {
                 .flatMap(result -> result.getResolvableErrors().stream())
                 .map(error -> error.getDefaultMessage())
                 .findFirst()
-                .orElse("Not valid id");
+                .orElse("Not valid parameter");
         attributes.addFlashAttribute("validationError",errorMessage);
         return "redirect:/getEmployeePage";
     }
@@ -90,6 +92,42 @@ public class GlobalExceptionHandler {
         String message = String.format("Cannot use action URL parameter '%s' is wrong or missing.", ex.getParameterName());
                 attributes.addFlashAttribute("missingAttributeError",message);
         return "redirect:/getEmployeePage";
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public String handleTypeMismatchException(
+            MethodArgumentTypeMismatchException ex,
+            RedirectAttributes redirectAttributes) {
+
+
+        String message = String.format("Invalid value for parameter '%s'. number required.", ex.getName());
+
+        redirectAttributes.addFlashAttribute("pageError", message);
+
+        return "redirect:/getEmployeePage?page=0&size=5";
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public String handleFormValidationException(MethodArgumentNotValidException ex, Model model) {
+
+        // 1. Извлекаем объект, который пользователь отправлял из формы (заполненный логин, id и т.д.)
+        Object targetFormObject = ex.getBindingResult().getTarget();
+
+        // 2. Кладем его обратно под тем именем, которое ждет Thymeleaf (например, "employeeWithRoles")
+        model.addAttribute("employeeWithRoles", targetFormObject);
+
+        // 3. ПЕРЕДАЕМ ОШИБКИ: Привязываем BindingResult к модели с правильным префиксом Spring
+        // Имя ключа ДОЛЖНО быть строго: BindingResult.MODEL_KEY_PREFIX + "имя_объекта_в_форме"
+        model.addAttribute(
+                "org.springframework.validation.BindingResult.employeeWithRoles",
+                ex.getBindingResult()
+        );
+
+        // Дополнительно: если вам нужен плоский список всех ошибок для верхнего блока страницы
+        model.addAttribute("errors", ex.getBindingResult().getAllErrors());
+
+        // 4. Возвращаем имя HTML-шаблона вашей формы (НЕ РЕДИРЕКТ, иначе данные и ошибки сотрутся!)
+        return "editEmployee-form";
     }
 
 
