@@ -96,28 +96,31 @@ public class EmployeeController {
     public String showUpdateFormEmployee(@RequestParam(name = "id") Long id, Model model) {
         EmployeeWithAllRolesToEdit formData = employeeWithRolesService.getPairByEmployeeId(id);
         model.addAttribute("employeeWithRoles",formData);
-        EmployeeEdit employeeEdit = new EmployeeEdit();
-        employeeEdit.setId(formData.getEmployeeDTO().getId());
-        employeeEdit.setLogin(formData.getEmployeeDTO().getLogin());
-        model.addAttribute("employeeEdit",employeeEdit);
         return "editEmployee-form";
     }
 
     @RequestMapping(value = "/updateEmployee", method = RequestMethod.POST)
-    public String updateEmployee(@Valid @ModelAttribute EmployeeEdit employeeEdit,BindingResult result,Model model){
+    public String updateEmployee(@Valid @ModelAttribute EmployeeWithAllRolesToEdit employeeEdit,
+                                 BindingResult result,
+                                 Model model){
         if (result.hasErrors()) {
             model.addAttribute("errors",result.getAllErrors());
+            model.addAttribute("employeeWithRoles", employeeEdit);
             return "editEmployee-form";
         }
         employeeService.updateEmployee(employeeEdit.getId(),employeeEdit);
+
         return "redirect:/getEmployeePage";
     }
+
+
 
     @RequestMapping(value = "/deleteEmployee", method = RequestMethod.GET)
     public String deleteEmployee(@RequestParam("id") Long id) {
         employeeService.deleteEmployee(id);
         return "redirect:/getEmployeePage";
     }
+
 
 
 }

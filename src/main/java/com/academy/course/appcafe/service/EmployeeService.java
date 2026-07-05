@@ -8,6 +8,6 @@ public interface EmployeeService {
     EmployeeDTO findEmployeeById(Long id) ;
     EmployeeDTO findEmployeeByLogin(String login);
     void registerEmployee(EmployeeRequest employeeRequest) ;
-    void updateEmployee(Long oldValueId, EmployeeEdit employeeEdit);
+    void updateEmployee(Long oldValueId, EmployeeWithAllRolesToEdit employeeEdit);
     void deleteEmployee(Long employeeId);
 }

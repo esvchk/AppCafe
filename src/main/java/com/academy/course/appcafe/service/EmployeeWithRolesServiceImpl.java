@@ -3,10 +3,12 @@ package com.academy.course.appcafe.service;
 import com.academy.course.appcafe.converter.EmployeeConverter;
 import com.academy.course.appcafe.converter.RoleConverter;
 import com.academy.course.appcafe.dto.EmployeeDTO;
+import com.academy.course.appcafe.dto.EmployeeEdit;
 import com.academy.course.appcafe.dto.EmployeeWithAllRolesToEdit;
 import com.academy.course.appcafe.dto.RoleDTO;
 import com.academy.course.appcafe.exception.EntityNotFoundByIdException;
 import com.academy.course.appcafe.model.Employee;
+import com.academy.course.appcafe.model.Role;
 import com.academy.course.appcafe.repository.EmployeeRepository;
 import com.academy.course.appcafe.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -29,14 +34,26 @@ public class EmployeeWithRolesServiceImpl implements EmployeeWithRolesService{
 
     @Override
     public EmployeeWithAllRolesToEdit getPairByEmployeeId(Long id) {
-        Set<RoleDTO> roles = roleRepository.findAll().stream()
+        // Получаем все роли для выпадающего списка
+        Set<RoleDTO> allRoles = roleRepository.findAll().stream()
                 .map(roleConverter::toRoleDTO)
                 .collect(Collectors.toSet());
-        Employee employee = employeeRepository.findById(id).orElseThrow(() -> new EntityNotFoundByIdException(id));
-        EmployeeDTO employeeDTO = employeeConverter.toEmployeeDTO(employee);
+
+        // Получаем конкретного сотрудника
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundByIdException(id));
+
+        // Формируем список текущих ролей сотрудника
+        List<Long> currentRoleIds = employee.getRoles().stream()
+                .map(Role::getId)
+                .collect(Collectors.toList());
+
         return EmployeeWithAllRolesToEdit.builder()
-                .employeeDTO(employeeDTO)
-                .roleDTOS(roles)
+                .id(employee.getId())
+                .login(employee.getLogin())
+                .roleDTOS(allRoles)
+                .roleIds(currentRoleIds)
                 .build();
     }
+
 }

@@ -4,6 +4,7 @@ import com.academy.course.appcafe.converter.EmployeeConverter;
 import com.academy.course.appcafe.dto.EmployeeDTO;
 import com.academy.course.appcafe.dto.EmployeeEdit;
 import com.academy.course.appcafe.dto.EmployeeRequest;
+import com.academy.course.appcafe.dto.EmployeeWithAllRolesToEdit;
 import com.academy.course.appcafe.exception.EmptyEntityException;
 import com.academy.course.appcafe.exception.EntityNotFoundByIdException;
 import com.academy.course.appcafe.exception.EntityNotFoundByNameException;
@@ -90,7 +91,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public void updateEmployee(Long oldValueId, EmployeeEdit employeeEdit) {
+    public void updateEmployee(Long oldValueId, EmployeeWithAllRolesToEdit employeeEdit) {
         Employee employee = employeeRepository.findById(oldValueId).orElseThrow(() -> new EntityNotFoundByIdException(oldValueId));
 
         employee.setLogin(employeeEdit.getLogin());
