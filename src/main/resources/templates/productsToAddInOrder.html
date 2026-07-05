@@ -2,8 +2,9 @@
 <head>
     <title>Current order</title>
 
-
-    <br>
+    <div th:if="${orderError != null}" class="alert-danger">
+        <p th:text="${orderError}"></p>
+    </div>
     <table border="1">
         <thead>
         <tr>
@@ -28,7 +29,6 @@
                     <input type="hidden" name="itemId" th:value="${item.id}"/>
                     <input type="hidden" name="orderId" th:value="${orderWithProducts.orderDTO.id}"/>
                     <label>Кол-во:</label>
-                    <!-- min="0" запрещает вводить отрицательные числа -->
                     <input type="number" name="quantity" th:value="${item.productQuantity}" min="0"
                            style="width:60px;"/>
 
@@ -72,16 +72,17 @@
         <td th:utext="${product.categoryDTO != null ? product.categoryDTO.name : 'Without category' }">...</td>
         <td>
             <a th:href="@{/editLimit(id=${product.id})}">Set Limit </a>
-            <form th:action="@{/addProductInOrder/{id}(orderId=${orderWithProducts.orderDTO.id})}"
+            <br>
+            <form th:action="@{/addProductInOrder/{orderId}(orderId=${orderWithProducts.orderDTO.id})}"
                   method="post"
                   style="display:flex; gap:8px; align-items:center; margin-top:6px;">
-                <!-- Скрытое поле: передаём ID товара -->
+
                 <input type="hidden" name="productId" th:value="${product.id}"/>
 
-                <!-- Количество -->
+                <input type="hidden" name="orderId" th:value="${orderWithProducts.orderDTO.id}"/>
+
                 <input type="number" name="quantity" value="1" min="1" style="width:60px;"/>
 
-                <!-- Кнопка -->
                 <button type="submit" style="padding: 4px 12px;">Добавить</button>
             </form>
         </td>

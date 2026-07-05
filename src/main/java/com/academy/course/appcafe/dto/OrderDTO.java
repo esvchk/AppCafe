@@ -24,7 +24,7 @@ public class OrderDTO {
     @Valid
     private List<OrderItemDTO> orderItemDTOS;
 
-    @NotNull(message = "Payment data cannot be empty")
+    @NotBlank(message = "Payment data cannot be empty")
     private String paymentData;
 
     @DecimalMin(value = "0.01",message = "Min percent 0.01")

@@ -1,14 +1,10 @@
 package com.academy.course.appcafe.exception;
 
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.ValidationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.ui.Model;
-import org.springframework.validation.method.MethodValidationException;
-import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -59,38 +55,38 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(EntityNotFoundByIdException.class)
     public String handleEmployeeNotFoundById(EntityNotFoundByIdException ex,
-                                                 RedirectAttributes attributes){
-        attributes.addFlashAttribute("searchError",ex.getMessage());
+                                             RedirectAttributes attributes) {
+        attributes.addFlashAttribute("searchError", ex.getMessage());
         return "redirect:/getEmployeePage";
     }
 
 
     @ExceptionHandler(EntityNotFoundByNameException.class)
     public String handleEmployeeNotFoundByName(EntityNotFoundByIdException ex,
-                                         RedirectAttributes attributes){
-        attributes.addFlashAttribute("searchError",ex.getMessage());
+                                               RedirectAttributes attributes) {
+        attributes.addFlashAttribute("searchError", ex.getMessage());
         return "redirect:/getEmployeePage";
     }
 
 
     @ExceptionHandler(HandlerMethodValidationException.class)
     public String handleValidationFailed(HandlerMethodValidationException ex,
-                                                 RedirectAttributes attributes){
+                                         RedirectAttributes attributes) {
         String errorMessage = ex.getParameterValidationResults().stream()
                 .flatMap(result -> result.getResolvableErrors().stream())
                 .map(error -> error.getDefaultMessage())
                 .findFirst()
                 .orElse("Not valid parameter");
-        attributes.addFlashAttribute("validationError",errorMessage);
+        attributes.addFlashAttribute("validationError", errorMessage);
         return "redirect:/getEmployeePage";
     }
 
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public String handleMissingAttribute(MissingServletRequestParameterException ex,
-                                         RedirectAttributes attributes){
+                                         RedirectAttributes attributes) {
         String message = String.format("Cannot use action URL parameter '%s' is wrong or missing.", ex.getParameterName());
-                attributes.addFlashAttribute("missingAttributeError",message);
+        attributes.addFlashAttribute("missingAttributeError", message);
         return "redirect:/getEmployeePage";
     }
 
@@ -107,30 +103,22 @@ public class GlobalExceptionHandler {
         return "redirect:/getEmployeePage?page=0&size=5";
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public String handleFormValidationException(MethodArgumentNotValidException ex, Model model) {
+    @ExceptionHandler(EmployeeValidationException.class)
+    public String handleEmployeeValidation(EmployeeValidationException ex, Model model) {
+        BindingResult result = ex.getBindingResult();
 
-        // 1. Извлекаем объект, который пользователь отправлял из формы (заполненный логин, id и т.д.)
-        Object targetFormObject = ex.getBindingResult().getTarget();
+        model.addAttribute("employeeWithRoles", result.getTarget());
+        model.addAttribute("org.springframework.validation.BindingResult.employeeWithRoles", result);
+        model.addAttribute("errors", result.getAllErrors());
 
-        // 2. Кладем его обратно под тем именем, которое ждет Thymeleaf (например, "employeeWithRoles")
-        model.addAttribute("employeeWithRoles", targetFormObject);
-
-        // 3. ПЕРЕДАЕМ ОШИБКИ: Привязываем BindingResult к модели с правильным префиксом Spring
-        // Имя ключа ДОЛЖНО быть строго: BindingResult.MODEL_KEY_PREFIX + "имя_объекта_в_форме"
-        model.addAttribute(
-                "org.springframework.validation.BindingResult.employeeWithRoles",
-                ex.getBindingResult()
-        );
-
-        // Дополнительно: если вам нужен плоский список всех ошибок для верхнего блока страницы
-        model.addAttribute("errors", ex.getBindingResult().getAllErrors());
-
-        // 4. Возвращаем имя HTML-шаблона вашей формы (НЕ РЕДИРЕКТ, иначе данные и ошибки сотрутся!)
         return "editEmployee-form";
     }
 
-
+    @ExceptionHandler(OrderValidationException.class)
+    public String handleOrderValidation(OrderValidationException ex, RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("orderError", ex.getMessage());
+        return "redirect:/newOrderPage/" + ex.getOrderId();
+    }
 
 
 }

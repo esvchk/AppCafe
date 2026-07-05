@@ -89,8 +89,9 @@ public class EmployeeController {
         return "editEmployee-form";
     }
 
-    @RequestMapping(value = "/updateEmployee", method = RequestMethod.POST)
-    public String updateEmployee(@Valid @ModelAttribute EmployeeWithAllRolesToEdit employeeEdit) {
+    @PostMapping(value = "/updateEmployee")
+    public String updateEmployee(@Valid @ModelAttribute EmployeeWithAllRolesToEdit employeeEdit,
+                                 BindingResult result) {
         employeeService.updateEmployee(employeeEdit.getId(), employeeEdit);
         return "redirect:/getEmployeePage";
     }
@@ -99,7 +100,7 @@ public class EmployeeController {
     @RequestMapping(value = "/deleteEmployee", method = RequestMethod.GET)
     public String deleteEmployee(@Positive(message = "Id must be positive")
                                  @NotNull(message = "Id cannot be null")
-                                 @RequestParam("id") Long id) {
+                                 @RequestParam(name = "id") Long id) {
         employeeService.deleteEmployee(id);
         return "redirect:/getEmployeePage";
     }

@@ -1,16 +1,22 @@
 package com.academy.course.appcafe.controller;
 
 import com.academy.course.appcafe.dto.OrderDTO;
+import com.academy.course.appcafe.dto.ProductOrderRequest;
 import com.academy.course.appcafe.service.OrderOfEmployeeWithAvailableProductsService;
 import com.academy.course.appcafe.service.OrderService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.sql.SQLException;
 
 @Controller
 @RequiredArgsConstructor
@@ -20,69 +26,81 @@ public class OrderController {
 
     @RequestMapping(value = "/getOrderPage", method = RequestMethod.GET)
     public String paginatedOrders(@RequestParam(value = "offset", defaultValue = "0") int offset,
-                                     @RequestParam(value = "size", defaultValue = "5") int size, Model model) {
+                                  @RequestParam(value = "size", defaultValue = "5") int size, Model model) {
 
         Page<OrderDTO> employeePage = orderService.getPaginatedListOfOrders(offset, size);
 
         model.addAttribute("orderPage", employeePage);
         model.addAttribute("offset", offset);
         model.addAttribute("size", size);
-        model.addAttribute("order",new OrderDTO());
+        model.addAttribute("order", new OrderDTO());
         return "order-pages";
     }
 
     @PostMapping(value = "/addNewOrder")
-    public String addNewOrder(Principal principal){
-        String login =  principal.getName();
+    public String addNewOrder(Principal principal) {
+        String login = principal.getName();
         OrderDTO order = orderService.addNewOrderToEmployeeByLogin(login);
         return "redirect:/newOrderPage/" + order.getId();
     }
 
-    @GetMapping (value = "/newOrderPage/{orderId}")
-    public String newOrder( Model model,
+    @GetMapping(value = "/newOrderPage/{orderId}")
+    public String newOrder(Model model,
+                           @Positive(message = "Id must be positive")
+                           @NotNull(message = "Id cannot be null")
                            @PathVariable Long orderId,
-                           @RequestParam(value = "page",defaultValue = "0")int page,
-                           @RequestParam(value = "size",defaultValue = "10")int size,
-                           Principal principal){
+                           @RequestParam(value = "page", defaultValue = "0") int page,
+                           @RequestParam(value = "size", defaultValue = "10") int size,
+                           Principal principal) {
 
         String loginEmployee = principal.getName();
-        model.addAttribute("page",page);
-        model.addAttribute("size",size);
+        model.addAttribute("page", page);
+        model.addAttribute("size", size);
         model.addAttribute("orderWithProducts",
-                pairService.getPairEntitiesByEmployeeLogin(loginEmployee,orderId,page,size));
+                pairService.getPairEntitiesByEmployeeLogin(loginEmployee, orderId, page, size));
         return "productsToAddInOrder";
     }
+
     @PostMapping(value = "/buyOrder")
-    public String buyOrder(@RequestParam("orderId") Long orderId) {
-         orderService.buyOrder(orderId);
+    public String buyOrder(@Positive(message = "Id must be positive")
+                           @NotNull(message = "Id cannot be null")
+                           @RequestParam Long orderId) {
+        orderService.buyOrder(orderId);
         return "redirect:/permitPurchase?orderId=" + orderId;
     }
+
     @GetMapping(value = "/permitPurchase")
-    public String showPermitForm(@RequestParam(value = "orderId")Long orderId,
+    public String showPermitForm(@Positive(message = "Id must be positive")
+                                 @NotNull(message = "Id cannot be null")
+                                 @RequestParam Long orderId,
                                  Model model) {
-        model.addAttribute("orderId",orderId);
+        model.addAttribute("orderId", orderId);
         return "permit-form";
     }
 
     @PostMapping(value = "/purchasingProcess/{orderId}")
-    public String purchasingProcess(@PathVariable Long orderId,
-                                    @RequestParam("paymentData")String paymentData){
-        orderService.inputPaymentDataToOrder(paymentData,orderId);
+    public String purchasingProcess(@PathVariable
+                                    @Positive(message = "Id must be positive")
+                                    @NotNull(message = "Id cannot be null")
+                                    Long orderId,
+                                    @NotNull(message = "Payment data cannot be empty")
+                                    @RequestParam(name = "paymentData")
+                                    String paymentData) {
+        orderService.inputPaymentDataToOrder(paymentData, orderId);
         return "redirect:/getOrderPage";
     }
 
     @PostMapping(value = "/addProductInOrder/{orderId}")
-    public String addProductInOrder(@RequestParam("orderId") Long orderId,
-                                    @RequestParam("productId") Long productId,
-                                    @RequestParam ("quantity") Integer quantity)  {
-        orderService.addProductToOrder(productId,orderId,quantity);
-        return "redirect:/newOrderPage/" + orderId;
+    public String addProductInOrder(@Valid @ModelAttribute ProductOrderRequest request, BindingResult result) {
+        orderService.addProductToOrder(request.getProductId(), request.getOrderId(), request.getQuantity());
+        return "redirect:/newOrderPage/" + request.getOrderId();
     }
+
     @PostMapping(value = "/removeProductFromOrder")
-    public String removeProductFromOrder(@RequestParam("orderId") Long orderId,
-                                         @RequestParam("itemId") Long itemId,
-                                         @RequestParam ("quantity") Integer quantity) {
-        orderService.deleteItemFromOrder(itemId,orderId,quantity);
+    public String removeProductFromOrder(@RequestParam(name = "orderId") Long orderId,
+                                         @RequestParam(name = "itemId") Long itemId,
+                                         @RequestParam(name = "quantity") Integer quantity) {
+        orderService.deleteItemFromOrder(itemId, orderId, quantity);
         return "redirect:/newOrderPage/" + orderId;
     }
 
