@@ -68,8 +68,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional(readOnly = true)
     public EmployeeDTO findEmployeeByLogin(String login) {
-        Employee employee = employeeRepository.findByLogin(login).orElseThrow(() -> new EntityNotFoundByNameException(login));
-
+        Employee employee = employeeRepository.findByLogin(login).orElseThrow(() ->
+                new EntityNotFoundByNameException(login));
         return employeeConverter.toEmployeeDTO(employee);
 
     }
@@ -92,7 +92,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public void updateEmployee(Long oldValueId, EmployeeWithAllRolesToEdit employeeEdit) {
-        Employee employee = employeeRepository.findById(oldValueId).orElseThrow(() -> new EntityNotFoundByIdException(oldValueId));
+        Employee employee = employeeRepository.findById(oldValueId).orElseThrow(() ->
+                new EntityNotFoundByIdException(oldValueId));
 
         employee.setLogin(employeeEdit.getLogin());
 
@@ -105,7 +106,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public void deleteEmployee(Long employeeId) {
-        Employee employee = employeeRepository.findById(employeeId).orElseThrow(() -> new EntityNotFoundByIdException(employeeId));
+        Employee employee = employeeRepository.findById(employeeId).orElseThrow(() ->
+                new EntityNotFoundByIdException(employeeId));
         employeeRepository.deleteById(employee.getId());
 
     }

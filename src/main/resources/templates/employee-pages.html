@@ -8,6 +8,19 @@
 
 <h1>Employee List</h1>
 
+<div th:if="${searchError != null}" class="alert alert-danger"
+     style="color: white; background-color: #dc3545; padding: 10px; margin-bottom: 15px; border-radius: 4px;">
+    <span th:text="${searchError}">Error</span>
+</div>
+<div th:if="${missingAttributeError != null}" class="alert alert-danger"
+     style="color: white; background-color: #dc3545; padding: 10px; margin-bottom: 15px; border-radius: 4px;">
+    <span th:text="${missingAttributeError}">Error</span>
+</div>
+<div th:if="${validationError != null}" class="alert alert-danger"
+     style="color: white; background-color: #dc3545; padding: 10px; margin-bottom: 15px; border-radius: 4px;">
+    <span th:text="${validationError}">Error</span>
+</div>
+
 <body>
 <table border="1">
 
@@ -27,23 +40,22 @@
                 <span th:if="${!counter.last}">, </span>
             </th:block>
         </td>
-                <td>
-                    <a th:href="@{/deleteEmployee(id=${employee.id})}">Delete </a>
-                    <br>
-                    <a th:href="@{/editEmployee(id=${employee.id})}">Edit </a>
-                </td>
+        <td>
+            <a th:href="@{/deleteEmployee(id=${employee.id})}">Delete </a>
+            <br>
+            <a th:href="@{/editEmployee(id=${employee.id})}">Edit </a>
+        </td>
     </tr>
 
     <br>
     <br>
     <br>
 
-    <form th:action="@{/findEmployeeById}" th:object="${searchByIdRequest}"
+    <form th:action="@{/findEmployeeById}" th:object="${requestedEmployee}"
           method="get">
         Identifier:
         <input type="number" th:field="*{id}"/>
 
-        <span th:if="${invalidId != null}" th:text="${invalidId}" style="color: red; font-weight: bold;"></span>
         <br/>
         <input type="submit" value="Find Employee"/>
     </form>
@@ -54,10 +66,9 @@
 
 
     <form th:action="@{/findEmployeeByName}"
-          method="get" th:object="${searchByNameRequest}">
+          method="get" th:object="${requestedEmployee}">
         Name:
         <input type="text" th:field="*{login}"/>
-        <span th:if="${invalidName != null}" th:text="${invalidName}" style="color: red; font-weight: bold;"></span>
         <br/>
         <input type="submit" value="Find Employee"/>
     </form>

@@ -5,12 +5,13 @@ import com.academy.course.appcafe.service.EmployeeService;
 import com.academy.course.appcafe.service.EmployeeWithRolesService;
 import com.academy.course.appcafe.service.RoleService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.Banner;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -33,8 +34,6 @@ public class EmployeeController {
         model.addAttribute("employeePage", employeePage);
         model.addAttribute("offset", offset);
         model.addAttribute("size", size);
-        model.addAttribute("searchByIdRequest", new SearchDTOById());
-        model.addAttribute("searchByNameRequest", new SearchDTOByName());
         model.addAttribute("requestedEmployee", new EmployeeRequest());
 
         return "employee-pages";
@@ -62,65 +61,55 @@ public class EmployeeController {
 
 
     @RequestMapping(value = "/findEmployeeById", method = RequestMethod.GET)
-    public String findEmployeeById(@Valid @ModelAttribute(name = "searchByIdRequest") SearchDTOById searchDTOById,
-                                   BindingResult result,
-                                   Model model,
-                                   RedirectAttributes attributes) {
-        if (result.hasErrors()) {
-            String errorMessage = result.getAllErrors().get(0).getDefaultMessage();
-            attributes.addFlashAttribute("invalidId", errorMessage);
-            attributes.addFlashAttribute("searchByIdRequest", searchDTOById);
-            return "redirect:/getEmployeePage";
-        }
-        model.addAttribute("employeeById", employeeService.findEmployeeById(searchDTOById.getId()));
+    public String findEmployeeById(@Positive(message = "Id must be positive")
+                                       @NotNull(message = "Id cannot be null")
+                                       @RequestParam("id") Long id, Model model) {
+        model.addAttribute("employeeById", employeeService.findEmployeeById(id));
         return "employeeById";
     }
 
     @RequestMapping(value = "/findEmployeeByName", method = RequestMethod.GET)
-    public String findEmployeeByLogin(@Valid @ModelAttribute(name = "searchByNameRequest") SearchDTOByName searchDTOByName,
-                                      BindingResult result,
-                                      Model model,
-                                      RedirectAttributes attributes) {
-        if (result.hasErrors()) {
-            String errorMessage = result.getAllErrors().get(0).getDefaultMessage();
-            attributes.addFlashAttribute("invalidName", errorMessage);
-            attributes.addFlashAttribute("searchByNameRequest", searchDTOByName);
-            return "redirect:/getEmployeePage";
-        }
-        model.addAttribute("employeeByLogin", employeeService.findEmployeeByLogin(searchDTOByName.getLogin()));
-        model.addAttribute("login", searchDTOByName.getLogin());
+    public String findEmployeeByLogin(@RequestParam
+                                          @NotBlank(message = "Login cannot be empty")
+                                          @Size(min = 3,max = 18,message = "length of login must be from 3 to 18 symbols")
+                                          @Pattern(regexp = "[a-zA-Z]*",message = "Login may contain only upper and lower case letters")
+                                          String login,
+                                      Model model) {
+
+        model.addAttribute("employeeByLogin", employeeService.findEmployeeByLogin(login));
+        model.addAttribute("login", login);
         return "employeeByLogin-results";
     }
 
     @RequestMapping(value = "/editEmployee", method = RequestMethod.GET)
     public String showUpdateFormEmployee(@RequestParam(name = "id") Long id, Model model) {
         EmployeeWithAllRolesToEdit formData = employeeWithRolesService.getPairByEmployeeId(id);
-        model.addAttribute("employeeWithRoles",formData);
+        model.addAttribute("employeeWithRoles", formData);
         return "editEmployee-form";
     }
 
     @RequestMapping(value = "/updateEmployee", method = RequestMethod.POST)
     public String updateEmployee(@Valid @ModelAttribute EmployeeWithAllRolesToEdit employeeEdit,
                                  BindingResult result,
-                                 Model model){
+                                 Model model) {
         if (result.hasErrors()) {
-            model.addAttribute("errors",result.getAllErrors());
+            model.addAttribute("errors", result.getAllErrors());
             model.addAttribute("employeeWithRoles", employeeEdit);
             return "editEmployee-form";
         }
-        employeeService.updateEmployee(employeeEdit.getId(),employeeEdit);
+        employeeService.updateEmployee(employeeEdit.getId(), employeeEdit);
 
         return "redirect:/getEmployeePage";
     }
-
 
 
     @RequestMapping(value = "/deleteEmployee", method = RequestMethod.GET)
-    public String deleteEmployee(@RequestParam("id") Long id) {
+    public String deleteEmployee(@Positive(message = "Id must be positive")
+                                 @NotNull(message = "Id cannot be null")
+                                 @RequestParam("id") Long id) {
         employeeService.deleteEmployee(id);
         return "redirect:/getEmployeePage";
     }
-
 
 
 }
