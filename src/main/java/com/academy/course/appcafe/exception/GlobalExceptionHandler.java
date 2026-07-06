@@ -1,12 +1,10 @@
 package com.academy.course.appcafe.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -152,25 +150,21 @@ public class GlobalExceptionHandler {
         String message = String.format("Wrong parameter format '%s'.", ex.getMessage());
         redirectAttributes.addFlashAttribute("errorMessage", message);
 
-        String currentUri = request.getRequestURI();
-
-        if ("GET".equalsIgnoreCase(request.getMethod())) {
-            return "redirect:" + currentUri;
-        }
-
-        String referer = request.getHeader("Referer");
-        if (referer != null && !referer.isEmpty()) {
-            return "redirect:" + referer;
-        }
-        return "redirect:/main";
+        return "redirect:" + ex.getFallbackUrl();
     }
 
     @ExceptionHandler(EmployeeAlreadyExists.class)
     public String handleDuplicateValue(EmployeeAlreadyExists ex,
-                                       RedirectAttributes redirectAttributes,
-                                       HttpServletRequest request){
+                                       RedirectAttributes redirectAttributes){
         redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
         return "redirect:/registerForm";
+    }
+    @ExceptionHandler(InvalidOrderIdException.class)
+    public String handleInvalidOrderId(InvalidOrderIdException ex,RedirectAttributes redirectAttributes){
+        redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+
+        // 2. Жестко и безопасно редиректим на страницу пагинации всех заказов
+        return "redirect:/getOrderPage";
     }
 
 

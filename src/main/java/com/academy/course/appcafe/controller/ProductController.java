@@ -16,7 +16,6 @@ import java.sql.SQLException;
 
 @Controller
 @RequiredArgsConstructor
-@ValidId
 public class ProductController {
 
     private final ProductService productService;

@@ -24,7 +24,6 @@ import org.springframework.web.bind.support.SessionStatus;
 @Controller
 @RequiredArgsConstructor
 @SessionAttributes("availableRoles")
-@ValidId
 public class EmployeeController {
 
     private final EmployeeService employeeService;
@@ -68,6 +67,7 @@ public class EmployeeController {
     }
 
 
+    @ValidId
     @RequestMapping(value = "/findEmployeeById", method = RequestMethod.GET)
     public String findEmployeeById(@RequestParam("id") Long id, Model model) {
         model.addAttribute("employeeById", employeeService.findEmployeeById(id));
@@ -88,6 +88,7 @@ public class EmployeeController {
         return "employeeByLogin-results";
     }
 
+    @ValidId
     @RequestMapping(value = "/editEmployee", method = RequestMethod.GET)
     public String showUpdateFormEmployee(@RequestParam(name = "id") Long id, Model model) {
         EmployeeWithAllRolesToEdit formData = employeeWithRolesService.getPairByEmployeeId(id);
@@ -102,6 +103,7 @@ public class EmployeeController {
         return "redirect:/getEmployeePage";
     }
 
+    @ValidId
     @RequestMapping(value = "/deleteEmployee", method = RequestMethod.GET)
     public String deleteEmployee(@RequestParam(name = "id") Long id) {
         employeeService.deleteEmployee(id);

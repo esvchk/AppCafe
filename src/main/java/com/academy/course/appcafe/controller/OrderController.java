@@ -1,6 +1,7 @@
 package com.academy.course.appcafe.controller;
 
 import com.academy.course.appcafe.annotation.ValidId;
+import com.academy.course.appcafe.annotation.ValidPagination;
 import com.academy.course.appcafe.dto.OrderDTO;
 import com.academy.course.appcafe.dto.ProductOrderRequest;
 import com.academy.course.appcafe.service.OrderOfEmployeeWithAvailableProductsService;
@@ -18,11 +19,12 @@ import java.security.Principal;
 
 @Controller
 @RequiredArgsConstructor
-@ValidId
+
 public class OrderController {
     private final OrderService orderService;
     private final OrderOfEmployeeWithAvailableProductsService pairService;
 
+    @ValidPagination
     @RequestMapping(value = "/getOrderPage", method = RequestMethod.GET)
     public String paginatedOrders(@RequestParam(value = "offset", defaultValue = "0") int offset,
                                   @RequestParam(value = "size", defaultValue = "5") int size, Model model) {
@@ -44,13 +46,13 @@ public class OrderController {
     }
 
     @ValidId
+    @ValidPagination
     @GetMapping(value = "/newOrderPage/{orderId}")
     public String newOrder(@PathVariable Long orderId,
                            Model model,
                            @RequestParam(value = "page", defaultValue = "0") int page,
                            @RequestParam(value = "size", defaultValue = "10") int size,
                            Principal principal) {
-
         String loginEmployee = principal.getName();
         model.addAttribute("page", page);
         model.addAttribute("size", size);
@@ -60,13 +62,14 @@ public class OrderController {
     }
 
 
+    @ValidId
     @PostMapping(value = "/buyOrder")
     public String buyOrder(@RequestParam Long orderId) {
         orderService.buyOrder(orderId);
         return "redirect:/permitPurchase?orderId=" + orderId;
     }
 
-
+    @ValidId
     @GetMapping(value = "/permitPurchase")
     public String showPermitForm(@RequestParam Long orderId,
                                  Model model) {
@@ -74,6 +77,7 @@ public class OrderController {
         return "permit-form";
     }
 
+    @ValidId
     @PostMapping(value = "/purchasingProcess/{orderId}")
     public String purchasingProcess(@PathVariable
                                     Long orderId,
@@ -91,6 +95,7 @@ public class OrderController {
     }
 
 
+    @ValidId
     @PostMapping(value = "/removeProductFromOrder")
     public String removeProductFromOrder(@RequestParam(name = "orderId") Long orderId,
                                          @RequestParam(name = "itemId") Long itemId,
@@ -99,6 +104,7 @@ public class OrderController {
         return "redirect:/newOrderPage/" + orderId;
     }
 
+    @ValidId
     @GetMapping(value = "/findOrderById")
     public String findOrderById(@RequestParam(name="id")Long id,Model model){
         model.addAttribute("orderById",orderService.findOrderById(id));

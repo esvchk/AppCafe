@@ -5,8 +5,12 @@ import lombok.Getter;
 @Getter
 public class PaginationException extends RuntimeException {
 
-    public PaginationException(String message) {
+    private final String fallbackUrl;
+
+    public PaginationException(String message, String fallbackUrl) {
         super(message);
+        this.fallbackUrl = fallbackUrl;
     }
+
 
 }

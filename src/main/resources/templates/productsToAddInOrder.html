@@ -1,9 +1,8 @@
 <html>
 <head>
     <title>Current order</title>
-
-    <div th:if="${orderError != null}" class="alert-danger">
-        <p th:text="${orderError}"></p>
+    <div th:if="${errorMessage}" style="background-color: #f8d7da; color: #721c24; padding: 10px; margin-bottom: 15px; border-radius: 4px;">
+        <p th:text="${errorMessage}"></p>
     </div>
     <table border="1">
         <thead>

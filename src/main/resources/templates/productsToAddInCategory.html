@@ -1,14 +1,11 @@
 <html>
 <head>
-    <title>Current o</title>
-    <div th:if="${searchError != null}" class="alert alert-danger"
-         style="color: white; background-color: #dc3545; padding: 10px; margin-bottom: 15px; border-radius: 4px;">
-        <span th:text="${searchError}">Error</span>
+    <title>Current Order</title>
+
+    <div th:if="${errorMessage}" style="background-color: #f8d7da; color: #721c24; padding: 10px; margin-bottom: 15px; border-radius: 4px;">
+        <p th:text="${errorMessage}"></p>
     </div>
-    <div th:if="${validationError != null}" class="alert alert-danger"
-         style="color: white; background-color: #dc3545; padding: 10px; margin-bottom: 15px; border-radius: 4px;">
-        <span th:text="${validationError}">Error</span>
-    </div>
+
     <h2 th:text="${categoryWithProducts.categoryDTO.name}"></h2>
     <table border="1">
 
@@ -50,8 +47,6 @@
 
                     <button type="submit" style="margin-left:8px; padding:2px 8px;">OK</button>
                 </form>
-                <!--                <a th:href="@{/editProduct(id=${product.id})}">Edit </a>-->
-
             </td>
         </tr>
         </tbody>
