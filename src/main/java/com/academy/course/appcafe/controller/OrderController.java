@@ -1,14 +1,12 @@
 package com.academy.course.appcafe.controller;
 
+import com.academy.course.appcafe.annotation.ValidId;
 import com.academy.course.appcafe.dto.OrderDTO;
 import com.academy.course.appcafe.dto.ProductOrderRequest;
 import com.academy.course.appcafe.service.OrderOfEmployeeWithAvailableProductsService;
 import com.academy.course.appcafe.service.OrderService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -20,6 +18,7 @@ import java.security.Principal;
 
 @Controller
 @RequiredArgsConstructor
+@ValidId
 public class OrderController {
     private final OrderService orderService;
     private final OrderOfEmployeeWithAvailableProductsService pairService;
@@ -44,11 +43,10 @@ public class OrderController {
         return "redirect:/newOrderPage/" + order.getId();
     }
 
+    @ValidId
     @GetMapping(value = "/newOrderPage/{orderId}")
-    public String newOrder(Model model,
-                           @Positive(message = "Id must be positive")
-                           @NotNull(message = "Id cannot be null")
-                           @PathVariable Long orderId,
+    public String newOrder(@PathVariable Long orderId,
+                           Model model,
                            @RequestParam(value = "page", defaultValue = "0") int page,
                            @RequestParam(value = "size", defaultValue = "10") int size,
                            Principal principal) {
@@ -61,18 +59,16 @@ public class OrderController {
         return "productsToAddInOrder";
     }
 
+
     @PostMapping(value = "/buyOrder")
-    public String buyOrder(@Positive(message = "Id must be positive")
-                           @NotNull(message = "Id cannot be null")
-                           @RequestParam Long orderId) {
+    public String buyOrder(@RequestParam Long orderId) {
         orderService.buyOrder(orderId);
         return "redirect:/permitPurchase?orderId=" + orderId;
     }
 
+
     @GetMapping(value = "/permitPurchase")
-    public String showPermitForm(@Positive(message = "Id must be positive")
-                                 @NotNull(message = "Id cannot be null")
-                                 @RequestParam Long orderId,
+    public String showPermitForm(@RequestParam Long orderId,
                                  Model model) {
         model.addAttribute("orderId", orderId);
         return "permit-form";
@@ -80,8 +76,6 @@ public class OrderController {
 
     @PostMapping(value = "/purchasingProcess/{orderId}")
     public String purchasingProcess(@PathVariable
-                                    @Positive(message = "Id must be positive")
-                                    @NotNull(message = "Id cannot be null")
                                     Long orderId,
                                     @NotNull(message = "Payment data cannot be empty")
                                     @RequestParam(name = "paymentData")
@@ -96,12 +90,19 @@ public class OrderController {
         return "redirect:/newOrderPage/" + request.getOrderId();
     }
 
+
     @PostMapping(value = "/removeProductFromOrder")
     public String removeProductFromOrder(@RequestParam(name = "orderId") Long orderId,
                                          @RequestParam(name = "itemId") Long itemId,
                                          @RequestParam(name = "quantity") Integer quantity) {
         orderService.deleteItemFromOrder(itemId, orderId, quantity);
         return "redirect:/newOrderPage/" + orderId;
+    }
+
+    @GetMapping(value = "/findOrderById")
+    public String findOrderById(@RequestParam(name="id")Long id,Model model){
+        model.addAttribute("orderById",orderService.findOrderById(id));
+        return "orderById";
     }
 
 }

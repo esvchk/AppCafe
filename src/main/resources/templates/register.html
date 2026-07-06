@@ -8,6 +8,10 @@
 
 <h1>Registration Form</h1>
 
+<div th:if="${errorMessage}" style="background-color: #f8d7da; color: #721c24; padding: 10px; margin-bottom: 15px; border-radius: 4px;">
+    <p th:text="${errorMessage}"></p>
+</div>
+
 <form th:action="@{/registerEmployee}"
       th:object="${employeeRequest}" method="post">
     Name:
@@ -49,3 +53,4 @@
 </form>
 <a th:href="@{/manager}"> Home </a>
 </html>
+

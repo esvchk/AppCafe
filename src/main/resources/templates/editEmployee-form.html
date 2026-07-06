@@ -1,13 +1,8 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <h1>Edit Employee</h1>
-
-<div th:if="${errors != null}">
-    <div class="alert alert-danger" style="color: red;">
-        <ul>
-            <li th:each="error : ${errors}" th:text="${error.getDefaultMessage()}"></li>
-        </ul>
-    </div>
+<div th:if="${errorMessage}" style="background-color: #f8d7da; color: #721c24; padding: 10px; margin-bottom: 15px; border-radius: 4px;">
+    <p th:text="${errorMessage}"></p>
 </div>
 
 <form th:action="@{/updateEmployee}" th:object="${employeeWithRoles}" method="post">

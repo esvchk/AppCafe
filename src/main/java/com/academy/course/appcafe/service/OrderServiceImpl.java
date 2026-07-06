@@ -43,8 +43,8 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional(readOnly = true)
     public OrderDTO findOrderById(Long orderId) {
-        Order order = orderRepository.findById(orderId).orElseThrow(() -> new EntityNotFoundByIdException(orderId));
-        return orderConverter.toOrderDTO(order);
+        return orderConverter.toOrderDTO(orderRepository.findById(orderId).orElseThrow(() -> new EntityNotFoundByIdException(orderId)));
+
 
     }
 

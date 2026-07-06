@@ -1,0 +1,37 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Results</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+</head>
+<h1>Results</h1>
+<body>
+<table border="1">
+
+    <th:block th:value="${orderById}">
+        <label> Results </label>
+        <br>
+        <label>Id:</label>
+        <span th:text="${orderById.id}"></span>
+        <br>
+        <label>Total Cost:</label>
+        <span th:text="${orderById.totalCost}"></span>
+        <br>
+        <label>Employee:</label>
+        <span th:text="${orderById.employeeDTO.login}"></span>
+        <br>
+        <label>Discount:</label>
+        <span th:text="${orderById.percentOfDiscount}"></span>
+        <br>
+        <label>IsBought:</label>
+        <span th:text="${orderById.isBought}"></span>
+        <br>
+    </th:block>
+    <br>
+    <a th:href="@{/getOrderPage}">Home</a>
+
+
+</table>
+</body>
+</html>

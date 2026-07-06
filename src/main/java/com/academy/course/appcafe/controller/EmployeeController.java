@@ -1,5 +1,7 @@
 package com.academy.course.appcafe.controller;
 
+import com.academy.course.appcafe.annotation.ValidId;
+import com.academy.course.appcafe.annotation.ValidPagination;
 import com.academy.course.appcafe.dto.EmployeeDTO;
 import com.academy.course.appcafe.dto.EmployeeRequest;
 import com.academy.course.appcafe.dto.EmployeeWithAllRolesToEdit;
@@ -7,7 +9,10 @@ import com.academy.course.appcafe.service.EmployeeService;
 import com.academy.course.appcafe.service.EmployeeWithRolesService;
 import com.academy.course.appcafe.service.RoleService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -19,15 +24,18 @@ import org.springframework.web.bind.support.SessionStatus;
 @Controller
 @RequiredArgsConstructor
 @SessionAttributes("availableRoles")
+@ValidId
 public class EmployeeController {
 
     private final EmployeeService employeeService;
     private final RoleService roleService;
     private final EmployeeWithRolesService employeeWithRolesService;
 
+    @ValidPagination
     @RequestMapping(value = "/getEmployeePage", method = RequestMethod.GET)
     public String paginatedEmployees(@RequestParam(value = "page", defaultValue = "0") int page,
-                                     @RequestParam(value = "size", defaultValue = "5") int size, Model model) {
+                                     @RequestParam(value = "size", defaultValue = "5") int size,
+                                     Model model) {
 
         Page<EmployeeDTO> employeePage = employeeService.getPaginatedListOfEmployees(page, size);
 
@@ -61,9 +69,7 @@ public class EmployeeController {
 
 
     @RequestMapping(value = "/findEmployeeById", method = RequestMethod.GET)
-    public String findEmployeeById(@Positive(message = "Id must be positive")
-                                   @NotNull(message = "Id cannot be null")
-                                   @RequestParam("id") Long id, Model model) {
+    public String findEmployeeById(@RequestParam("id") Long id, Model model) {
         model.addAttribute("employeeById", employeeService.findEmployeeById(id));
         return "employeeById";
     }
@@ -96,11 +102,8 @@ public class EmployeeController {
         return "redirect:/getEmployeePage";
     }
 
-
     @RequestMapping(value = "/deleteEmployee", method = RequestMethod.GET)
-    public String deleteEmployee(@Positive(message = "Id must be positive")
-                                 @NotNull(message = "Id cannot be null")
-                                 @RequestParam(name = "id") Long id) {
+    public String deleteEmployee(@RequestParam(name = "id") Long id) {
         employeeService.deleteEmployee(id);
         return "redirect:/getEmployeePage";
     }

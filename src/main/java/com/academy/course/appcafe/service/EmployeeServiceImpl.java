@@ -5,6 +5,7 @@ import com.academy.course.appcafe.dto.EmployeeDTO;
 import com.academy.course.appcafe.dto.EmployeeEdit;
 import com.academy.course.appcafe.dto.EmployeeRequest;
 import com.academy.course.appcafe.dto.EmployeeWithAllRolesToEdit;
+import com.academy.course.appcafe.exception.EmployeeAlreadyExists;
 import com.academy.course.appcafe.exception.EmptyEntityException;
 import com.academy.course.appcafe.exception.EntityNotFoundByIdException;
 import com.academy.course.appcafe.exception.EntityNotFoundByNameException;
@@ -76,6 +77,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public void registerEmployee(EmployeeRequest employeeRequest) {
+        if (employeeRepository.existsByLogin(employeeRequest.getLogin())) {
+            throw new EmployeeAlreadyExists(employeeRequest.getLogin());
+        }
 
         Employee employee = Employee.builder()
                 .login(employeeRequest.getLogin())

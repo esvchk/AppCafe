@@ -1,5 +1,6 @@
 package com.academy.course.appcafe.controller;
 
+import com.academy.course.appcafe.annotation.ValidId;
 import com.academy.course.appcafe.dto.ProductDTO;
 import com.academy.course.appcafe.service.ProductService;
 import jakarta.validation.Valid;
@@ -15,6 +16,7 @@ import java.sql.SQLException;
 
 @Controller
 @RequiredArgsConstructor
+@ValidId
 public class ProductController {
 
     private final ProductService productService;
@@ -39,11 +41,13 @@ public class ProductController {
         return "redirect:/getProductPage";
     }
 
+
     @RequestMapping(value = "/deleteProduct", method = RequestMethod.GET)
     public String deleteProduct(@RequestParam("id") Long id) {
         productService.deleteProduct(id);
         return "redirect:/getProductPage";
     }
+
 
     @RequestMapping(value = "/editProduct", method = RequestMethod.GET)
     public String showUpdateFormProduct(@RequestParam("id") Long oldValueId, Model model) {
@@ -64,18 +68,21 @@ public class ProductController {
         model.addAttribute("name",name);
         return "productByName-results";
     }
+
     @RequestMapping(value = "/findProductById",method = RequestMethod.GET)
     public String findById(@RequestParam("id")Long id,
                            Model model)  {
         model.addAttribute("productById",productService.getProductById(id));
         return "productById";
     }
+
     @RequestMapping(value = "/setProductLimit",method = RequestMethod.POST)
     public String setProductLimit(@RequestParam("id") Long id,
                                   @RequestParam(name = "productLimit",required = false) Integer limit){
         productService.setProductLimit(id,limit);
         return "redirect:/getProductPage";
     }
+
     @RequestMapping(value = "/editLimit",method = RequestMethod.GET)
     public String showLimitForm(@RequestParam("id")Long id,
                                 Model model) {

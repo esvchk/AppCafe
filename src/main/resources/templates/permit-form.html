@@ -6,6 +6,11 @@
 
 <h3>Enter payment data for order #[[${orderId}]]</h3>
 
+<div th:if="${searchError != null}" class="alert alert-danger"
+     style="color: white; background-color: #dc3545; padding: 10px; margin-bottom: 15px; border-radius: 4px;">
+    <span th:text="${searchError}">Error</span>
+</div>
+
 <form th:action="@{/purchasingProcess/{orderId}(orderId=${orderId})}" method="post">
     <!-- Скрытый orderId -->
 <!--    <input type="hidden" name="orderId" th:value="${orderId}"/>-->

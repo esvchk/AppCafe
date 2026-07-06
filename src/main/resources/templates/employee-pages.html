@@ -8,21 +8,8 @@
 
 <h1>Employee List</h1>
 
-<div th:if="${searchError != null}" class="alert alert-danger"
-     style="color: white; background-color: #dc3545; padding: 10px; margin-bottom: 15px; border-radius: 4px;">
-    <span th:text="${searchError}">Error</span>
-</div>
-<div th:if="${missingAttributeError != null}" class="alert alert-danger"
-     style="color: white; background-color: #dc3545; padding: 10px; margin-bottom: 15px; border-radius: 4px;">
-    <span th:text="${missingAttributeError}">Error</span>
-</div>
-<div th:if="${validationError != null}" class="alert alert-danger"
-     style="color: white; background-color: #dc3545; padding: 10px; margin-bottom: 15px; border-radius: 4px;">
-    <span th:text="${validationError}">Error</span>
-</div>
-<div th:if="${pageError != null}" class="alert alert-danger"
-     style="color: white; background-color: #dc3545; padding: 10px; margin-bottom: 15px; border-radius: 4px;">
-    <span th:text="${pageError}">Error</span>
+<div th:if="${errorMessage}" style="background-color: #f8d7da; color: #721c24; padding: 10px; margin-bottom: 15px; border-radius: 4px;">
+    <p th:text="${errorMessage}"></p>
 </div>
 
 <body>
