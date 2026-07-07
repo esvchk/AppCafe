@@ -5,6 +5,7 @@ import com.academy.course.appcafe.annotation.ValidPagination;
 import com.academy.course.appcafe.dto.ProductDTO;
 import com.academy.course.appcafe.service.ProductService;
 import jakarta.annotation.Nullable;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -106,16 +107,33 @@ public class ProductController {
                                   @Nullable
                                   @Min(value = 0, message = "min limit 0")
                                   @Max(value = 100, message = "max limit 100")
-                                  Integer limit) {
+                                  Integer limit,HttpSession session) {
 
         productService.setProductLimit(id, limit);
+
+        String callbackUrl = (String) session.getAttribute("limitCallbackUrl");
+
+        // Очищаем сессию
+        session.removeAttribute("limitCallbackUrl");
+
+        // 3. Умный редирект
+        if (callbackUrl != null) {
+            return "redirect:" + callbackUrl; // Вернет на продукты или категории со всеми их параметрами
+        }
         return "redirect:/getProductPage";
     }
 
     @ValidId
     @RequestMapping(value = "/editLimit", method = RequestMethod.GET)
     public String showLimitForm(@RequestParam("id") Long id,
-                                Model model) {
+                                Model model,
+                                HttpSession session,
+                                @RequestHeader(value = "Referer", required = false)
+                                String refererUrl) {
+
+        if (refererUrl != null && !refererUrl.contains("/editLimit")) {
+            session.setAttribute("limitCallbackUrl", refererUrl);
+        }
         model.addAttribute("productWithLimit", productService.getProductById(id));
         return "limit-form";
     }
