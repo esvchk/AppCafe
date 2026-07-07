@@ -22,7 +22,6 @@ public interface ProductService {
     void deleteProduct(Long id) ;
     ProductDTO getProductById(Long id) ;
     List<ProductDTO> findProductsByName(String name);
-    List<ProductDTO> getAllProducts();
     void setIsAvailableToProduct(Long productId,Boolean isAvailable);
 
 }

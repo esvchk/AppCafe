@@ -39,18 +39,6 @@ public class Order extends DataEntity{
     @Column(nullable = false,unique = true)
     private Boolean isBought;
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        Order order = (Order) o;
-        return Objects.equals(getId(),order.getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId());
-    }
 
     public void addOrderItem(OrderItem item){
         if (this.getOrderItems()==null){

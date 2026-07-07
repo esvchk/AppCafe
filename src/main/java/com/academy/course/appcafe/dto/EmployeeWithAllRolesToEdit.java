@@ -19,6 +19,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class EmployeeWithAllRolesToEdit {
 
+    @Min(value = 1,message = "Id employeeRequest must be positive and not equal 0")
     private Long id;
 
     @NotBlank(message = "Login cannot be empty")

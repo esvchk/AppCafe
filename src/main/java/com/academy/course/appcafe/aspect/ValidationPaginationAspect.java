@@ -48,9 +48,11 @@ public class ValidationPaginationAspect {
             } else if (uri.contains("Product")) {
                 fallbackUrl = "/getProductPage";
             }
+
             if (uri.contains("/showCategoryPage/")) {
                 Map<String, String> pathVariables = (Map<String, String>) request.getAttribute
                         (HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+
                 if (pathVariables != null && pathVariables.containsKey("categoryId")) {
                     String categoryId = pathVariables.get("categoryId");
                     fallbackUrl = "/showCategoryPage/" + categoryId;

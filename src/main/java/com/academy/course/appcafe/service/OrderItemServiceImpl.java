@@ -37,7 +37,8 @@ public class OrderItemServiceImpl implements OrderItemService{
 
     @Override
     public void deleteItem(Long orderItemId)  {
-       OrderItem orderItem = orderItemRepository.findById(orderItemId).orElseThrow(() -> new EntityNotFoundByIdException(orderItemId));
+       OrderItem orderItem = orderItemRepository.findById(orderItemId).orElseThrow(() ->
+               new EntityNotFoundByIdException(orderItemId));
             orderRepository.deleteById(orderItem.getId());
 
     }

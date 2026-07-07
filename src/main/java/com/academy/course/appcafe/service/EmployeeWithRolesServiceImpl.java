@@ -30,20 +30,17 @@ public class EmployeeWithRolesServiceImpl implements EmployeeWithRolesService{
     private final EmployeeRepository employeeRepository;
     private final RoleRepository roleRepository;
     private final RoleConverter roleConverter;
-    private final EmployeeConverter employeeConverter;
 
     @Override
     public EmployeeWithAllRolesToEdit getPairByEmployeeId(Long id) {
-        // Получаем все роли для выпадающего списка
         Set<RoleDTO> allRoles = roleRepository.findAll().stream()
                 .map(roleConverter::toRoleDTO)
                 .collect(Collectors.toSet());
 
-        // Получаем конкретного сотрудника
+
         Employee employee = employeeRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundByIdException(id));
 
-        // Формируем список текущих ролей сотрудника
         List<Long> currentRoleIds = employee.getRoles().stream()
                 .map(Role::getId)
                 .collect(Collectors.toList());

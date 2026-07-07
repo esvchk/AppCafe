@@ -1,8 +1,9 @@
 package com.academy.course.appcafe.exception;
 
-import lombok.Data;
+
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
-@Data
+@Getter
 public abstract class AppCafeException extends RuntimeException {
 
     protected final String message;

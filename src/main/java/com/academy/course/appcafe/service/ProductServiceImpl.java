@@ -118,17 +118,6 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<ProductDTO> getAllProducts() {
-        List<ProductDTO> products = productRepository.findAll().stream()
-                .map(productConverter::toProductDto)
-                .toList();
-        if (products == null || products.isEmpty()) {
-            throw new EmptyListException();
-        }
-        return products;
-    }
 
 
     @Override

@@ -22,6 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 public class CategoryServiceImpl implements CategoryService {
+
     private final CategoryRepository categoryRepository;
     private final CategoryConverter categoryConverter;
     private final ProductRepository productRepository;

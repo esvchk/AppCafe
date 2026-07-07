@@ -77,15 +77,6 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<OrderDTO> getAllOrders() {
-        return orderRepository.findAll().stream()
-                .map(orderConverter::toOrderDTO)
-                .toList();
-    }
-
-
-    @Override
     public void buyOrder(Long orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new EntityNotFoundByIdException(orderId));
         countAmountOfOrder(orderId);

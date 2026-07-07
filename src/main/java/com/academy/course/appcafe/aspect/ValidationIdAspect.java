@@ -21,13 +21,11 @@ public class ValidationIdAspect {
 
         for (int i = 0; i < args.length; i++) {
             Object arg = args[i];
-
-            // Защита от NullPointerException
             if (arg == null || i >= parameterNames.length) continue;
 
             String paramName = parameterNames[i];
 
-            // 1. Специфичная проверка конкретно для orderId (Соблюдаем SRP)
+
             if ("orderId".equals(paramName) && arg instanceof Long) {
                 long value = (Long) arg;
                 if (value <= 0) {
@@ -36,7 +34,7 @@ public class ValidationIdAspect {
                     );
                 }
             }
-            // 2. Общая проверка для ВСЕХ ОСТАЛЬНЫХ Long идентификаторов (id, employeeId и т.д.)
+
             else if (arg instanceof Long) {
                 long idValue = (Long) arg;
                 if (idValue <= 0) {

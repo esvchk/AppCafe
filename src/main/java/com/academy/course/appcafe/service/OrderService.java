@@ -11,7 +11,6 @@ public interface OrderService {
     OrderDTO findOrderById(Long orderId) ;
     OrderDTO addNewOrderToEmployeeByLogin(String login);
     Page<OrderDTO> getPaginatedListOfOrders(int page,int size);
-    List<OrderDTO> getAllOrders();
     void buyOrder(Long orderId);
     void addProductToOrder(Long productId,Long orderId, Integer quantity) ;
     void deleteItemFromOrder(Long itemId,Long orderId,Integer quantity);
