@@ -77,16 +77,16 @@
 
 <div>
     <span th:if="${productPage.hasPrevious()}">
-        <a th:href="@{/getProductPage(offset=${productPage.number - 1},size=${productPage.size})}">Back</a>
+        <a th:href="@{/getProductPage(page=${productPage.number - 1},size=${productPage.size})}">Back</a>
     </span>
     <th:block th:each="counter : ${#numbers.sequence(0,productPage.totalPages - 1)}">
         <span th:if="${productPage.number == counter} " class="selected">[[${counter} + 1]] </span>
         <span th:unless="${productPage.number == counter}">
-        <a th:href="@{/getProductPage(offset=${counter},size=${productPage.size})}">[[${counter} + 1]] </a>
+        <a th:href="@{/getProductPage(page=${counter},size=${productPage.size})}">[[${counter} + 1]] </a>
         </span>
     </th:block>
     <span th:if="${productPage.hasNext()}">
-        <a th:href="@{/getProductPage(offset=${productPage.number + 1},size = ${productPage.size})}">Forward</a>
+        <a th:href="@{/getProductPage(page=${productPage.number + 1},size = ${productPage.size})}">Forward</a>
     </span>
 
 

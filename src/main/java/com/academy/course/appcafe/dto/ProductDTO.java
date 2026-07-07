@@ -20,7 +20,7 @@ public class ProductDTO {
     @Min(value = 1,message = "Id must be positive and not equal 0")
     private Long id;
 
-    @Size(min = 2,max = 20, message = "Name must have size from 2 to 20 symbols")
+    @Length(min = 2,max = 20, message = "Name must have size from 2 to 20 symbols")
     @Pattern(regexp = "(^[A-Z])([a-z\\s,-]*)",message = "Name must starts with upper case letter and without figures")
     private String name;
 

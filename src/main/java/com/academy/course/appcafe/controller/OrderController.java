@@ -26,13 +26,13 @@ public class OrderController {
 
     @ValidPagination
     @RequestMapping(value = "/getOrderPage", method = RequestMethod.GET)
-    public String paginatedOrders(@RequestParam(value = "offset", defaultValue = "0") int offset,
+    public String paginatedOrders(@RequestParam(value = "page", defaultValue = "0") int page,
                                   @RequestParam(value = "size", defaultValue = "5") int size, Model model) {
 
-        Page<OrderDTO> employeePage = orderService.getPaginatedListOfOrders(offset, size);
+        Page<OrderDTO> employeePage = orderService.getPaginatedListOfOrders(page, size);
 
         model.addAttribute("orderPage", employeePage);
-        model.addAttribute("offset", offset);
+        model.addAttribute("page", page);
         model.addAttribute("size", size);
         model.addAttribute("order", new OrderDTO());
         return "order-pages";

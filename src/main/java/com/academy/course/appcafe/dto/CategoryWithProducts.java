@@ -16,11 +16,11 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CategoryWithProducts {
-    @Valid
+
     @NotBlank(message = "Page cannot be empty")
     private Page<ProductDTO> productPage;
 
     @Valid
-    @NotNull(message = "Category mustn't be empty")
+    @NotNull(message = "Category cannot be empty")
     private CategoryDTO categoryDTO;
 }

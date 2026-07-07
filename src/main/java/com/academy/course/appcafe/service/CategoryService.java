@@ -14,6 +14,7 @@ public interface CategoryService {
     void updateCategory(Long oldValueId,CategoryDTO newValue) ;
     void deleteCategory(Long categoryId);
     CategoryDTO getCategoryById(Long id) ;
+    CategoryDTO getCategoryByName(String name);
     Page<CategoryDTO> getPaginatedCategories(int page,int size);
     void removeProductFromCategory(Long categoryId,Long productId);
 }

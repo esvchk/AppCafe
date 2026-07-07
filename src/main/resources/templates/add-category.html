@@ -1,0 +1,41 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Product List</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+</head>
+
+<h1>Category List</h1>
+
+<div th:if="${errorMessage}" style="background-color: #f8d7da; color: #721c24; padding: 10px; margin-bottom: 15px; border-radius: 4px;">
+    <p th:text="${errorMessage}"></p>
+</div>
+<body>
+<table border="1">
+
+    <form th:action="@{/addCategory}"
+          th:object="${category}" method="post">
+        Name:
+        <input type="text" th:field="*{name}"/>
+        <div th:if="${#fields.hasErrors('name')}"
+             class="invalid-feedback"
+             th:errors="*{name}">
+        </div>
+        <br/>
+        <div th:if="${#fields.hasAnyErrors()}">
+            <div class="alert alert-danger">
+                <ul>
+                    <li th:each="error : ${#fields.allErrors()}"
+                        th:text="${error}"></li>
+                </ul>
+            </div>
+        </div>
+
+        <input type="submit" value="Add Category"/>
+    </form>
+
+<a th:href="@{/manager}"> Home </a>
+</table>
+</body>
+</html>

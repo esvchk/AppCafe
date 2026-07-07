@@ -17,6 +17,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,6 +54,14 @@ public class GlobalExceptionHandler {
         model.addAttribute("errorMessage", ex.getMessage());
         model.addAttribute("errorCode", "UNAUTHORIZED");
         return "error/401";
+    }
+
+    @ExceptionHandler(InvalidParameterException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleBadRequest(InvalidParameterException ex, Model model) {
+        model.addAttribute("errorMessage","Wrong or missing parameter for page size");
+        model.addAttribute("errorCode","BAD_REQUEST");
+        return "error/400";
     }
 
 
@@ -136,7 +145,7 @@ public class GlobalExceptionHandler {
     public String handleMissingServlet(MissingServletRequestParameterException ex,
                                        RedirectAttributes redirectAttributes,
                                        HttpServletRequest request){
-        String message = String.format("Cannot use action URL parameter '%s' is wrong or missing."
+        String message = String.format("Cannot use action parameter '%s' is wrong or missing."
                 , ex.getParameterName());
         redirectAttributes.addFlashAttribute("errorMessage", message);
         String referer = request.getHeader("Referer");

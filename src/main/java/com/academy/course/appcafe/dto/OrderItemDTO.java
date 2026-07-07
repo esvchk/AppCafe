@@ -29,7 +29,7 @@ public class OrderItemDTO {
     @NotNull(message = "Order cannot be null")
     private OrderDTO orderDTO;
 
-    @NotBlank(message = "Cannot be empty")
+    @NotNull(message = "Cannot be empty")
     @Pattern(regexp = "(.*[0-9].*)",message = "Product quantity may contain only figures")
     private Integer productQuantity;
 

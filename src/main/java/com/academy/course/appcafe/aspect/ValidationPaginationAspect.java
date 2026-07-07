@@ -9,7 +9,6 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.servlet.HandlerMapping;
 
 import java.util.Map;
@@ -26,7 +25,6 @@ public class ValidationPaginationAspect {
 
         if (parameterNames == null || args == null) return;
 
-        // 1. Формируем безопасный динамический URL для отката
         String fallbackUrl = "/main";
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
 
@@ -39,14 +37,28 @@ public class ValidationPaginationAspect {
                         (HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
                 if (pathVariables != null && pathVariables.containsKey("orderId")) {
                     String orderId = pathVariables.get("orderId");
-                    fallbackUrl = "/newOrderPage/" + orderId; // Собрали точный URL: /newOrderPage/5
-                } else {
+                    fallbackUrl = "/newOrderPage/" + orderId;
+                } else  {
                     fallbackUrl = uri;
                 }
             } else if (uri.contains("Employee")) {
                 fallbackUrl = "/getEmployeePage";
             } else if (uri.contains("Order")) {
                 fallbackUrl = "/getOrderPage";
+            } else if (uri.contains("Product")) {
+                fallbackUrl = "/getProductPage";
+            }
+            if (uri.contains("/showCategoryPage/")) {
+                Map<String, String> pathVariables = (Map<String, String>) request.getAttribute
+                        (HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+                if (pathVariables != null && pathVariables.containsKey("categoryId")) {
+                    String categoryId = pathVariables.get("categoryId");
+                    fallbackUrl = "/showCategoryPage/" + categoryId;
+                } else {
+                    fallbackUrl = uri;
+                }
+            } else if (uri.contains("Category")) {
+                fallbackUrl = "/getCategoryPage";
             }
             for (int i = 0; i < args.length; i++) {
                 Object arg = args[i];
@@ -54,13 +66,12 @@ public class ValidationPaginationAspect {
 
                 if (arg instanceof Integer) {
                     int value = (Integer) arg;
-
                     if ("page".equals(paramName) && value < 0) {
                         throw new PaginationException(
-                                String.format("Page number '%s' must be positive or 0. Send: %d", paramName, value), fallbackUrl);
+                                String.format("Page number must be positive or 0. Send: %d", value), fallbackUrl);
                     } else if ("size".equals(paramName) && value < 1) {
-                        throw new IllegalArgumentException(
-                                String.format("Page size '%s' must be positive. Send %d", paramName, value));
+                        throw new PaginationException(
+                                String.format("Page size must be positive. Send: %d", value),fallbackUrl);
                     }
                 }
             }

@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Results</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+</head>
+<h1>Results</h1>
+<body>
+<div th:if="${errorMessage}" style="background-color: #f8d7da; color: #721c24; padding: 10px; margin-bottom: 15px; border-radius: 4px;">
+    <p th:text="${errorMessage}"></p>
+</div>
+<table border="1">
+
+    <th:block th:value="${categoryByName}" >
+        <label> Results </label>
+        <br>
+        <label>Id:</label>
+        <span th:text="${categoryByName.id}"></span>
+        <br>
+        <label>Name:</label>
+        <span th:text="${categoryByName.name}"></span>
+        <br>
+        <label>Products:</label>
+        <th:block th:each="product,counter : ${categoryByName.productDTOS}">
+            <span th:text="${product.name}"></span>
+            <span th:if="${!counter.last}">, </span>
+        </th:block>
+    </th:block>
+    <br>
+    <a th:href="@{/getCategoryPage}">Home</a>
+    <a th:href="@{/showCategoryPage/{cid}(cid=${categoryByName.id})}">Edit Category</a>
+    <a th:href="@{/deleteCategory(categoryId=${categoryByName.id})}">Delete </a>
+
+
+</table>
+</body>
+</html>

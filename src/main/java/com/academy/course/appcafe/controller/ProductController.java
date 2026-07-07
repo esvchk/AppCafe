@@ -25,13 +25,13 @@ public class ProductController {
 
     @ValidPagination
     @RequestMapping(value = "/getProductPage", method = RequestMethod.GET)
-    public String paginatedProducts(@RequestParam(value = "offset", defaultValue = "0") int offset,
+    public String paginatedProducts(@RequestParam(value = "page", defaultValue = "0") int page,
                                     @RequestParam(value = "size", defaultValue = "5") int size, Model model) {
 
-        Page<ProductDTO> productPage = productService.getPaginatedListOfProducts(offset, size);
+        Page<ProductDTO> productPage = productService.getPaginatedListOfProducts(page, size);
 
         model.addAttribute("productPage", productPage);
-        model.addAttribute("offset", offset);
+        model.addAttribute("page", page);
         model.addAttribute("size", size);
         model.addAttribute("newProduct", new ProductDTO());
         return "product-pages";
@@ -39,7 +39,7 @@ public class ProductController {
 
     @PostMapping(value = "/addProduct")
     public String addProduct(@Valid @ModelAttribute(name = "newProduct") ProductDTO productDTO,
-                             BindingResult result, Model model) {
+                             BindingResult result) {
         if (result.hasErrors()) {
             return "add-product";
         }
@@ -120,5 +120,12 @@ public class ProductController {
         return "limit-form";
     }
 
+    @ValidId
+    @RequestMapping(value = "/setIsAvailable", method = RequestMethod.POST)
+    public String setIsAvailable(@RequestParam("id") Long id,
+                                 @RequestParam(name = "isAvailable", required = true) Boolean isAvailable) {
+        productService.setIsAvailableToProduct(id, isAvailable);
+        return "redirect:/getProductPage";
+    }
 
 }

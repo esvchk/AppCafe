@@ -136,4 +136,11 @@ public class ProductServiceImpl implements ProductService {
         return products;
     }
 
+
+    @Override
+    public void setIsAvailableToProduct(Long productId, Boolean isAvailable) {
+        Product product = productRepository.findById(productId).orElseThrow(() -> new EntityNotFoundByIdException(productId));
+        product.setIsAvailable(isAvailable);
+        productRepository.save(product);
+    }
 }

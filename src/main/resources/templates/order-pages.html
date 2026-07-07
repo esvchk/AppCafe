@@ -53,16 +53,16 @@
 
 <div>
     <span th:if="${orderPage.hasPrevious()}">
-        <a th:href="@{/getOrderPage(offset=${orderPage.number - 1},size=${orderPage.size})}">Back</a>
+        <a th:href="@{/getOrderPage(page=${orderPage.number - 1},size=${orderPage.size})}">Back</a>
     </span>
     <th:block th:each="counter : ${#numbers.sequence(0,orderPage.totalPages - 1)}">
         <span th:if="${orderPage.number == counter} ">[[${counter} + 1]] </span>
         <span th:unless="${orderPage.number == counter}">
-        <a th:href="@{/getOrderPage(offset=${counter},size=${orderPage.size})}">[[${counter} + 1]] </a>
+        <a th:href="@{/getOrderPage(page=${counter},size=${orderPage.size})}">[[${counter} + 1]] </a>
         </span>
     </th:block>
     <span th:if="${orderPage.hasNext()}">
-        <a th:href="@{/getOrderPage(offset=${orderPage.number + 1},size = ${orderPage.size})}">Forward</a>
+        <a th:href="@{/getOrderPage(page=${orderPage.number + 1},size = ${orderPage.size})}">Forward</a>
     </span>
 
 
