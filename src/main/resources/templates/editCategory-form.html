@@ -1,0 +1,21 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<h1>Edit Product</h1>
+<div>
+    <div th:if="${errorMessage}" style="background-color: #f8d7da; color: #721c24; padding: 10px; margin-bottom: 15px; border-radius: 4px;">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
+
+    <form th:action="@{/updateCategory(id=${category.id})}" th:object="${category}" method="post">
+
+
+        Name:
+        <input type="text" th:field="*{name}" required/>
+        <div th:if="${#fields.hasErrors('name')}" class="invalid-feedback" th:errors="*{name}"></div>
+        <br/>
+
+        <input type="submit" value="Save changes"/>
+    </form>
+</div>
+</html>

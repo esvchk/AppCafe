@@ -2,7 +2,6 @@ package com.academy.course.appcafe.service;
 
 import com.academy.course.appcafe.converter.ProductConverter;
 import com.academy.course.appcafe.dto.ProductDTO;
-import com.academy.course.appcafe.exception.EmptyEntityException;
 import com.academy.course.appcafe.exception.EmptyListException;
 import com.academy.course.appcafe.exception.EntityNotFoundByIdException;
 import com.academy.course.appcafe.exception.EntityNotFoundByNameException;
@@ -77,16 +76,11 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void updateProduct(Long oldValueId, ProductDTO newValue) {
         Product oldProduct = productRepository.findById(oldValueId).orElseThrow(() -> new EntityNotFoundByIdException(oldValueId));
-        if (newValue != null) {
             oldProduct.setName(newValue.getName());
             oldProduct.setPrice(newValue.getPrice());
             oldProduct.setInfo(newValue.getInfo());
             oldProduct.setIsAvailable(newValue.getIsAvailable());
             productRepository.save(productConverter.toEntityProduct(newValue));
-        } else {
-            throw new EmptyEntityException(newValue);
-        }
-//              logger.info("Product with id {} has been successfully updated", oldValueId);
 
     }
 

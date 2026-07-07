@@ -113,10 +113,8 @@ public class ProductController {
 
         String callbackUrl = (String) session.getAttribute("limitCallbackUrl");
 
-        // Очищаем сессию
         session.removeAttribute("limitCallbackUrl");
 
-        // 3. Умный редирект
         if (callbackUrl != null) {
             return "redirect:" + callbackUrl; // Вернет на продукты или категории со всеми их параметрами
         }

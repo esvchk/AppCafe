@@ -4,7 +4,7 @@ import com.academy.course.appcafe.converter.OrderConverter;
 import com.academy.course.appcafe.dto.OrderDTO;
 import com.academy.course.appcafe.exception.EntityNotFoundByIdException;
 import com.academy.course.appcafe.exception.EntityNotFoundByNameException;
-import com.academy.course.appcafe.exception.WrongValueException;
+import com.academy.course.appcafe.exception.QuantityOutOfBoundsException;
 import com.academy.course.appcafe.model.Employee;
 import com.academy.course.appcafe.model.Order;
 import com.academy.course.appcafe.model.OrderItem;
@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,15 +49,15 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDTO addNewOrderToEmployeeByLogin(String login) {
-            Employee employee = employeeRepository.findByLogin(login).orElseThrow(() -> new EntityNotFoundByNameException(login));
-            Order order = Order.builder()
-                    .employee(employee)
-                    .isBought(false)
-                    .build();
-            employee.addOrder(order);
+        Employee employee = employeeRepository.findByLogin(login).orElseThrow(() -> new EntityNotFoundByNameException(login));
+        Order order = Order.builder()
+                .employee(employee)
+                .isBought(false)
+                .build();
+        employee.addOrder(order);
 
-            orderRepository.save(order);
-            return orderConverter.toOrderDTO(order);
+        orderRepository.save(order);
+        return orderConverter.toOrderDTO(order);
     }
 
     @Override
@@ -114,13 +113,11 @@ public class OrderServiceImpl implements OrderService {
             order.addOrderItem(item);
 
         }
-
         if (product.getProductLimit() != null) {
-            if (product.getProductLimit() >= 1) {
+            if (product.getProductLimit() >= quantity) {
                 productService.setProductLimit(product.getId(), product.getProductLimit() - quantity);
-
             } else {
-                throw new WrongValueException("Quantity cannot be bigger than limit", String.valueOf(product.getProductLimit()));
+                throw new QuantityOutOfBoundsException(product.getProductLimit(), quantity);
             }
         }
         countAmountOfOrder(orderId);
@@ -135,12 +132,12 @@ public class OrderServiceImpl implements OrderService {
         OrderItem item = orderItemRepository.findById(itemId).orElseThrow(() -> new EntityNotFoundByIdException(itemId));
         if (item.getProductQuantity().equals(quantity)) {
             order.getOrderItems().remove(item);
-        } else {
+        } else if (item.getProductQuantity() > quantity) {
             item.setProductQuantity(item.getProductQuantity() - quantity);
+        } else {
+            throw new QuantityOutOfBoundsException(item.getProduct().getProductLimit(),quantity);
         }
-
         order.setTotalCost(countAmountOfOrder(orderId));
-
 
         orderRepository.save(order);
 

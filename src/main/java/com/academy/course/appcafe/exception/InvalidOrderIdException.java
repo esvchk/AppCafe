@@ -1,7 +1,9 @@
 package com.academy.course.appcafe.exception;
 
-public class InvalidOrderIdException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+
+public class InvalidOrderIdException extends AppCafeException {
     public InvalidOrderIdException(String message) {
-        super(message);
+        super(message, HttpStatus.BAD_REQUEST);
     }
 }

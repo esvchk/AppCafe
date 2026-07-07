@@ -26,7 +26,11 @@
         <td th:utext="${category.name}">...</td>
         <td>
             <a th:href="@{/deleteCategory(categoryId=${category.id})}">Delete </a>
-            <a th:href="@{/showCategoryPage/{cid}(cid=${category.id})}">Edit Category</a>
+            <br>
+            <a th:href="@{/showCategoryPage/{cid}(cid=${category.id})}">Add Products</a>
+            <br>
+            <a th:href="@{/showEditCategoryForm(id=${category.id})}">Edit Category</a>
+            <br>
         </td>
     </tr>
 

@@ -2,7 +2,6 @@ package com.academy.course.appcafe.service;
 
 import com.academy.course.appcafe.converter.CategoryConverter;
 import com.academy.course.appcafe.dto.CategoryDTO;
-import com.academy.course.appcafe.exception.EmptyEntityException;
 import com.academy.course.appcafe.exception.EntityNotFoundByIdException;
 import com.academy.course.appcafe.exception.EntityNotFoundByNameException;
 import com.academy.course.appcafe.model.Category;
@@ -45,13 +44,8 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void updateCategory(Long oldValueId, CategoryDTO newValue) {
         Category category = categoryRepository.findById(oldValueId).orElseThrow(() -> new EntityNotFoundByIdException(oldValueId));
-        if (newValue != null) {
-            category.setName(newValue.getName());
-            categoryRepository.save(category);
-        } else {
-            throw new EmptyEntityException(newValue);
-        }
-
+        category.setName(newValue.getName());
+        categoryRepository.save(category);
 
     }
 
@@ -67,11 +61,8 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional(readOnly = true)
     public CategoryDTO getCategoryById(Long categoryId) {
-        if (categoryRepository.existsById(categoryId)) {
-            return categoryConverter.toCategoryDTO(categoryRepository.getReferenceById(categoryId));
-        } else {
-            throw new EntityNotFoundByIdException(categoryId);
-        }
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new EntityNotFoundByIdException(categoryId));
+        return categoryConverter.toCategoryDTO(category);
     }
 
     @Override

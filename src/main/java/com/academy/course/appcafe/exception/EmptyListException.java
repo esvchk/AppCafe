@@ -1,9 +1,11 @@
 package com.academy.course.appcafe.exception;
 
 
-public class EmptyListException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+
+public class EmptyListException extends AppCafeException {
     public EmptyListException() {
-        super("Empty List");
+        super("Empty List", HttpStatus.NOT_FOUND);
 
     }
 }

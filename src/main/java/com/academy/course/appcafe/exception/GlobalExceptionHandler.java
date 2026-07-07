@@ -193,5 +193,15 @@ public class GlobalExceptionHandler {
         return "redirect:" + (referer != null ? referer: "/main");
     }
 
+    @ExceptionHandler(QuantityOutOfBoundsException.class)
+    public String handleQuantityOutOfBounds(QuantityOutOfBoundsException ex,
+                                            RedirectAttributes redirectAttributes,
+                                            HttpServletRequest request){
+
+        redirectAttributes.addFlashAttribute("errorMessage",ex.getMessage());
+        String referer = request.getHeader("Referer");
+        return "redirect:" + (referer != null ? referer: "/main");
+    }
+
 
 }

@@ -3,6 +3,7 @@ package com.academy.course.appcafe.controller;
 import com.academy.course.appcafe.annotation.ValidId;
 import com.academy.course.appcafe.annotation.ValidPagination;
 import com.academy.course.appcafe.dto.CategoryDTO;
+import com.academy.course.appcafe.dto.ProductDTO;
 import com.academy.course.appcafe.service.CategoryService;
 import com.academy.course.appcafe.service.CategoryWithProductsService;
 import com.academy.course.appcafe.service.ProductService;
@@ -125,5 +126,22 @@ public class CategoryController {
                            Model model) {
         model.addAttribute("categoryById", categoryService.getCategoryById(id));
         return "categoryById-result";
+    }
+
+    @ValidId
+    @GetMapping(value = "/showEditCategoryForm")
+    public String showEditCategoryForm(@RequestParam("id") Long id, Model model) {
+        model.addAttribute("category", categoryService.getCategoryById(id));
+        return "editCategory-form";
+    }
+
+    @PostMapping(value = "/updateCategory")
+    public String updateCategory(@Valid @ModelAttribute(name = "category") CategoryDTO newValue,
+                                 BindingResult result) {
+        if (result.hasErrors()) {
+            return "editCategory-form";
+        }
+        categoryService.updateCategory(newValue.getId(), newValue);
+        return "redirect:/getCategoryPage";
     }
 }
