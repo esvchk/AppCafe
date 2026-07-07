@@ -80,7 +80,8 @@ public class ProductServiceImpl implements ProductService {
             oldProduct.setPrice(newValue.getPrice());
             oldProduct.setInfo(newValue.getInfo());
             oldProduct.setIsAvailable(newValue.getIsAvailable());
-            productRepository.save(productConverter.toEntityProduct(newValue));
+
+            productRepository.save(oldProduct);
 
     }
 
@@ -117,8 +118,6 @@ public class ProductServiceImpl implements ProductService {
         return products;
 
     }
-
-
 
     @Override
     public void setIsAvailableToProduct(Long productId, Boolean isAvailable) {

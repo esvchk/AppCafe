@@ -9,11 +9,11 @@ import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product,Long> {
 
-    boolean existsByName(String name);
-
     List<Product> findAllByName(String name);
 
     Page<Product> findAllByIsAvailableTrue(Boolean isAvailable, Pageable pageable);
 
     List<Product> findAllByIsAvailable(Boolean isAvailable);
+
+    List<Product> findProductsByName(String name);
 }
