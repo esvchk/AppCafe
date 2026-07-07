@@ -1,6 +1,11 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <h1>Edit Product</h1>
+
+<div th:if="${errorMessage}" style="background-color: #f8d7da; color: #721c24; padding: 10px; margin-bottom: 15px; border-radius: 4px;">
+    <p th:text="${errorMessage}"></p>
+</div>
+
 <div>
     <form th:action="@{/setProductLimit(id=${productWithLimit.id})}"
           th:object="${productWithLimit}" method="post">

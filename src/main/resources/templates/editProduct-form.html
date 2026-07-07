@@ -2,25 +2,38 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <h1>Edit Product</h1>
 <div>
-    <form th:action="@{/updateProduct(id=${product.id})}"
-          th:object="${product}" method="post">
+    <div th:if="${errorMessage}" style="background-color: #f8d7da; color: #721c24; padding: 10px; margin-bottom: 15px; border-radius: 4px;">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
+
+    <form th:action="@{/updateProduct(id=${product.id})}" th:object="${product}" method="post">
+
+
         Name:
-        <input type="text" th:field="*{name}"/>
+        <input type="text" th:field="*{name}" required/>
+        <div th:if="${#fields.hasErrors('name')}" class="invalid-feedback" th:errors="*{name}"></div>
         <br/>
+
+
         Price:
-        <input type="number" th:field="*{price}"/>
+        <input type="number" step="0.01" th:field="*{price}" required/>
+        <div th:if="${#fields.hasErrors('price')}" class="invalid-feedback" th:errors="*{price}"></div>
         <br/>
+
+
         Info:
         <input type="text" th:field="*{info}"/>
+        <div th:if="${#fields.hasErrors('info')}" class="invalid-feedback" th:errors="*{info}"></div>
         <br/>
+
+
         IsAvailable:
-        <input type="text" th:field="*{isAvailable}"/>
-        <br/>
-        Limit:
-        <input type="number" th:field="*{productLimit}"/>
-        <br/>
-        <input type="submit" value="Edit product"/>
+        <input type="radio" value="true" th:field="*{isAvailable}" required/> Yes
+        <input type="radio" value="false" th:field="*{isAvailable}" required/> No
+        <br/><br/>
+
+        <input type="submit" value="Add product"/>
     </form>
-    <a th:href="@{/getProductPage}">Home</a>
 </div>
 </html>

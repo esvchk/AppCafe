@@ -2,18 +2,15 @@ package com.academy.course.appcafe.service;
 
 import com.academy.course.appcafe.converter.EmployeeConverter;
 import com.academy.course.appcafe.dto.EmployeeDTO;
-import com.academy.course.appcafe.dto.EmployeeEdit;
 import com.academy.course.appcafe.dto.EmployeeRequest;
 import com.academy.course.appcafe.dto.EmployeeWithAllRolesToEdit;
 import com.academy.course.appcafe.exception.EmployeeAlreadyExists;
-import com.academy.course.appcafe.exception.EmptyEntityException;
 import com.academy.course.appcafe.exception.EntityNotFoundByIdException;
 import com.academy.course.appcafe.exception.EntityNotFoundByNameException;
 import com.academy.course.appcafe.model.Employee;
 import com.academy.course.appcafe.model.Role;
 import com.academy.course.appcafe.repository.EmployeeRepository;
 import com.academy.course.appcafe.repository.RoleRepository;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -25,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 
 @Service
@@ -58,12 +54,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional(readOnly = true)
     public EmployeeDTO findEmployeeById(Long id) {
-        try {
-            Employee employee = employeeRepository.findById(id).orElseThrow(NoSuchElementException::new);
-            return employeeConverter.toEmployeeDTO(employee);
-        } catch (NoSuchElementException e) {
-            throw new EntityNotFoundByIdException(id);
-        }
+        Employee employee = employeeRepository.findById(id).orElseThrow(() -> new EntityNotFoundByIdException(id));
+        return employeeConverter.toEmployeeDTO(employee);
     }
 
     @Override
@@ -101,8 +93,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         employee.setLogin(employeeEdit.getLogin());
 
-            List<Role> roles = roleRepository.findAllById(employeeEdit.getRoleIds());
-            employee.setRoles(new HashSet<>(roles));
+        List<Role> roles = roleRepository.findAllById(employeeEdit.getRoleIds());
+        employee.setRoles(new HashSet<>(roles));
 
         employeeRepository.save(employee);
 

@@ -8,22 +8,12 @@
 
 <h1>Product List</h1>
 
-<div th:if="${validationError != null}" class="alert alert-danger"
-     style="color: white; background-color: #dc3545; padding: 10px; margin-bottom: 15px; border-radius: 4px;">
-    <span th:text="${validationError}">Error</span>
-</div>
-<div th:if="${searchError != null}" class="alert alert-danger"
-     style="color: white; background-color: #dc3545; padding: 10px; margin-bottom: 15px; border-radius: 4px;">
-    <span th:text="${searchError}">Error</span>
-</div>
-
-<div th:if="${missingAttributeError != null}" class="alert alert-danger"
-     style="color: white; background-color: #dc3545; padding: 10px; margin-bottom: 15px; border-radius: 4px;">
-    <span th:text="${missingAttributeError}">Error</span>
+<div th:if="${errorMessage}" style="background-color: #f8d7da; color: #721c24; padding: 10px; margin-bottom: 15px; border-radius: 4px;">
+    <p th:text="${errorMessage}"></p>
 </div>
 
 
-
+<a th:href="@{/addingProductForm}"> Add New Product </a>
 
 <body>
 <table border="1">
@@ -53,27 +43,6 @@
         </td>
     </tr>
 
-    <form th:action="@{/addProduct}"
-          th:object="${newProduct}" method="post">
-        Name:
-        <input type="text" th:field="*{name}"/>
-        <br/>
-        Price:
-        <input type="number" th:field="*{price}"/>
-        <br/>
-        Info:
-        <input type="text" th:field="*{info}"/>
-        <br/>
-        IsAvailable:
-        <input type="radio"  value="true" th:field="*{isAvailable}" required> Yes
-        <input type="radio" value="false" th:field="*{isAvailable}" required> No<br>
-        <br/>
-        Limit:
-        <input type="number" th:field="*{productLimit}"/>
-        <br/>
-
-        <input type="submit" value="Add product"/>
-    </form>
 
     <br>
     <br>

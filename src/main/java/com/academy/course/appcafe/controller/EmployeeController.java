@@ -59,7 +59,7 @@ public class EmployeeController {
         }
     }
 
-    @RequestMapping(value = "/registerForm", method = RequestMethod.GET)
+    @GetMapping(value = "/registerForm")
     public String getRegisterForm(Model model) {
         model.addAttribute("employeeRequest", new EmployeeRequest());
         model.addAttribute("availableRoles", roleService.findAll());
@@ -68,13 +68,13 @@ public class EmployeeController {
 
 
     @ValidId
-    @RequestMapping(value = "/findEmployeeById", method = RequestMethod.GET)
+    @GetMapping(value = "/findEmployeeById")
     public String findEmployeeById(@RequestParam("id") Long id, Model model) {
         model.addAttribute("employeeById", employeeService.findEmployeeById(id));
         return "employeeById";
     }
 
-    @RequestMapping(value = "/findEmployeeByName", method = RequestMethod.GET)
+    @GetMapping(value = "/findEmployeeByName")
     public String findEmployeeByLogin(@RequestParam
                                       @NotBlank(message = "Login cannot be empty")
                                       @Size(min = 3, max = 18, message = "length of login must be from 3 to 18 symbols")

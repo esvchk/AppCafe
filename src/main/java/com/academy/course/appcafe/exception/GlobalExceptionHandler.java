@@ -7,6 +7,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -127,7 +128,6 @@ public class GlobalExceptionHandler {
 
         String message = String.format("Wrong parameter format '%s'.", ex.getName());
         redirectAttributes.addFlashAttribute("errorMessage", message);
-
         String referer = request.getHeader("Referer");
         return "redirect:" + (referer != null ? referer : "/main");
     }
@@ -162,13 +162,27 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidOrderIdException.class)
     public String handleInvalidOrderId(InvalidOrderIdException ex,RedirectAttributes redirectAttributes){
         redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
-
-        // 2. Жестко и безопасно редиректим на страницу пагинации всех заказов
         return "redirect:/getOrderPage";
     }
 
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public String handleNotValidMethod(MethodArgumentNotValidException ex,
+                                       RedirectAttributes redirectAttributes,HttpServletRequest request){
+        String message = String.format("Validation failed '%s'"
+                , ex.getParameter());
+        redirectAttributes.addFlashAttribute("errorMessage", message);
+        String referer = request.getHeader("Referer");
+        return "redirect:" + (referer != null ? referer : "/main");
+    }
 
-
+    @ExceptionHandler(EmptyListException.class)
+    public String handleEmptyList(EmptyListException ex,
+                                  RedirectAttributes redirectAttributes,
+                                  HttpServletRequest request){
+        redirectAttributes.addFlashAttribute("errorMessage",ex.getMessage());
+        String referer = request.getHeader("Referer");
+        return "redirect:" + (referer != null ? referer: "/main");
+    }
 
 
 }
